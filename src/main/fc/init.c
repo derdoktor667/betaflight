@@ -538,7 +538,7 @@ void init(void)
 
 #ifdef USE_OVERCLOCK
 #if defined(STM32F3) && defined(USE_VCP)
-    if (systemConfig()->cpu_overclock == OVERCLOCK_120MHZ_VCP) {
+    if (systemConfig()->cpu_overclock > OVERCLOCK_128MHZ) {
         usbVcpOpen();
         delayMicroseconds(1000000);
         bool usbConnected = usbVcpIsConnected() != 0;
@@ -546,7 +546,7 @@ void init(void)
         /* void indicate(uint8_t count, uint16_t duration); */
         /* indicate((RCC->CFGR & (0xf << 18)) >> 18, 500); */
         if (!usbConnected) {
-            OverclockRebootIfNecessary(OVERCLOCK_120MHZ_VCP);
+            OverclockRebootIfNecessary(systemConfig()->cpu_overclock);
         }
     } else 
 #endif    
