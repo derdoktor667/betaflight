@@ -57,6 +57,7 @@
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
+#define USE_QUAD_MIXER_ONLY
 //#define USE_VTX_TABLE
 
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
@@ -358,7 +359,7 @@
 #define USE_SERIALRX_FPORT      // FrSky FPort
 #endif
 
-#if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
+#if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
 #define USE_BOARD_INFO
 #define USE_EXTENDED_CMS_MENUS
 #define USE_RTC_TIME
