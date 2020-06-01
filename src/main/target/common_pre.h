@@ -235,7 +235,7 @@
 #define USE_PPM
 
 #define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
-// #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
+#define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
 #define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
 #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
 #define USE_SERIALRX_SUMD       // Graupner Hott protocol
@@ -326,13 +326,13 @@
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 7))
 #define USE_THROTTLE_BOOST
-//#define USE_INTEGRATED_YAW_CONTROL
+#define USE_INTEGRATED_YAW_CONTROL
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 6))
 #define USE_ITERM_RELAX
 #define USE_RC_SMOOTHING_FILTER
-//#define USE_THRUST_LINEARIZATION
+#define USE_THRUST_LINEARIZATION
 #define USE_TPA_MODE
 #endif
 
