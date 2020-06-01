@@ -63,8 +63,8 @@ OBJECT_DIR      := $(ROOT)/obj/main
 BIN_DIR         := $(ROOT)/obj
 CMSIS_DIR       := $(ROOT)/lib/main/CMSIS
 INCLUDE_DIRS    := $(SRC_DIR) \
-                   $(ROOT)/src/main/target \
-                   $(ROOT)/src/main/startup
+				   $(ROOT)/src/main/target \
+				   $(ROOT)/src/main/startup
 LINKER_DIR      := $(ROOT)/src/link
 
 ## V                 : Set verbosity level based on the V= parameter
@@ -201,10 +201,10 @@ EXTRA_LD_FLAGS += -Wl,--defsym=USE_CUSTOM_DEFAULTS_EXTENDED=1
 endif
 
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
-                   $(ROOT)/lib/main/MAVLink
+				   $(ROOT)/lib/main/MAVLink
 
 INCLUDE_DIRS    := $(INCLUDE_DIRS) \
-                   $(TARGET_DIR)
+				   $(TARGET_DIR)
 
 VPATH           := $(VPATH):$(TARGET_DIR)
 
@@ -245,51 +245,51 @@ CC_NO_OPTIMISATION      :=
 TEMPORARY_FLAGS :=
 
 CFLAGS     += $(ARCH_FLAGS) \
-              $(addprefix -D,$(OPTIONS)) \
-              $(addprefix -I,$(INCLUDE_DIRS)) \
-              $(DEBUG_FLAGS) \
-              -std=gnu11 \
-              -Wall -Wextra -Wunsafe-loop-optimizations -Wdouble-promotion \
-              -ffunction-sections \
-              -fdata-sections \
-              -fno-common \
-              -pedantic \
-              $(TEMPORARY_FLAGS) \
-              $(DEVICE_FLAGS) \
-              -D_GNU_SOURCE \
-              -DUSE_STDPERIPH_DRIVER \
-              -D$(TARGET) \
-              $(TARGET_FLAGS) \
-              -D'__FORKNAME__="$(FORKNAME)"' \
-              -D'__TARGET__="$(TARGET)"' \
-              -D'__REVISION__="$(REVISION)"' \
-              -save-temps=obj \
-              -MMD -MP \
-              $(EXTRA_FLAGS)
+			  $(addprefix -D,$(OPTIONS)) \
+			  $(addprefix -I,$(INCLUDE_DIRS)) \
+			  $(DEBUG_FLAGS) \
+			  -std=gnu11 \
+			  -Wall -Wextra -Wunsafe-loop-optimizations -Wdouble-promotion \
+			  -ffunction-sections \
+			  -fdata-sections \
+			  -fno-common \
+			  -pedantic \
+			  $(TEMPORARY_FLAGS) \
+			  $(DEVICE_FLAGS) \
+			  -D_GNU_SOURCE \
+			  -DUSE_STDPERIPH_DRIVER \
+			  -D$(TARGET) \
+			  $(TARGET_FLAGS) \
+			  -D'__FORKNAME__="$(FORKNAME)"' \
+			  -D'__TARGET__="$(TARGET)"' \
+			  -D'__REVISION__="$(REVISION)"' \
+			  -save-temps=obj \
+			  -MMD -MP \
+			  $(EXTRA_FLAGS)
 
 ASFLAGS     = $(ARCH_FLAGS) \
-              $(DEBUG_FLAGS) \
-              -x assembler-with-cpp \
-              $(addprefix -I,$(INCLUDE_DIRS)) \
-              -MMD -MP
+			  $(DEBUG_FLAGS) \
+			  -x assembler-with-cpp \
+			  $(addprefix -I,$(INCLUDE_DIRS)) \
+			  -MMD -MP
 
 ifeq ($(LD_FLAGS),)
 LD_FLAGS     = -lm \
-              -nostartfiles \
-              --specs=nano.specs \
-              -lc \
-              -lnosys \
-              $(ARCH_FLAGS) \
-              $(LTO_FLAGS) \
-              $(DEBUG_FLAGS) \
-              -static \
-              -Wl,-gc-sections,-Map,$(TARGET_MAP) \
-              -Wl,-L$(LINKER_DIR) \
-              -Wl,--cref \
-              -Wl,--no-wchar-size-warning \
-              -Wl,--print-memory-usage \
-              -T$(LD_SCRIPT) \
-               $(EXTRA_LD_FLAGS)
+			  -nostartfiles \
+			  --specs=nano.specs \
+			  -lc \
+			  -lnosys \
+			  $(ARCH_FLAGS) \
+			  $(LTO_FLAGS) \
+			  $(DEBUG_FLAGS) \
+			  -static \
+			  -Wl,-gc-sections,-Map,$(TARGET_MAP) \
+			  -Wl,-L$(LINKER_DIR) \
+			  -Wl,--cref \
+			  -Wl,--no-wchar-size-warning \
+			  -Wl,--print-memory-usage \
+			  -T$(LD_SCRIPT) \
+			   $(EXTRA_LD_FLAGS)
 endif
 
 ###############################################################################
@@ -297,9 +297,9 @@ endif
 ###############################################################################
 
 CPPCHECK        = cppcheck $(CSOURCES) --enable=all --platform=unix64 \
-                  --std=c99 --inline-suppr --quiet --force \
-                  $(addprefix -I,$(INCLUDE_DIRS)) \
-                  -I/usr/include -I/usr/include/linux
+				  --std=c99 --inline-suppr --quiet --force \
+				  $(addprefix -I,$(INCLUDE_DIRS)) \
+				  -I/usr/include -I/usr/include/linux
 
 #EXT ?= ""
 

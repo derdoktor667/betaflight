@@ -229,24 +229,21 @@
 #define USE_DMA
 #define USE_TIMER
 
-#ifndef STM32F3
 #define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
 #define USE_SERIAL_PASSTHROUGH
 #define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 #define USE_PPM
 
 #define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
-#define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
+// #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
 #define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
 #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
 #define USE_SERIALRX_SUMD       // Graupner Hott protocol
-#endif
 
 #define USE_CLI
 #define USE_TASK_STATISTICS
 #define USE_IMU_CALC
 #define USE_SERIAL_RX
-
 
 #if (TARGET_FLASH_SIZE > 128)
 #define PID_PROFILE_COUNT 3
@@ -274,6 +271,8 @@
 #define USE_DSHOT_DMAR
 //#define USE_TELEMETRY_CRSF
 //#define USE_TELEMETRY_SRXL
+#endif
+
 #ifdef USE_SERIALRX_SPEKTRUM
 #define USE_SPEKTRUM_BIND
 #define USE_SPEKTRUM_BIND_PLUG

@@ -118,7 +118,7 @@ PG_RESET_TEMPLATE(systemConfig_t, systemConfig,
     .debug_mode = DEBUG_MODE,
     .task_statistics = true,
     .rateProfile6PosSwitch = false,
-    .cpu_overclock = DEFAULT_CPU_OVERCLOCK,
+    .cpu_overclock = 0,
     .powerOnArmingGraceTime = 5,
     .boardIdentifier = TARGET_BOARD_IDENTIFIER,
     .hseMhz = SYSTEM_HSE_VALUE,  // Not used for non-F4 targets
