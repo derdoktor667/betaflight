@@ -238,7 +238,7 @@
 #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
 #define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
 #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
-#define USE_SERIALRX_SUMD       // Graupner Hott protocol
+// #define USE_SERIALRX_SUMD       // Graupner Hott protocol
 
 #define USE_CLI
 #define USE_TASK_STATISTICS
@@ -250,7 +250,7 @@
 #define CONTROL_RATE_PROFILE_COUNT  6
 #else
 #define PID_PROFILE_COUNT 2
-#define CONTROL_RATE_PROFILE_COUNT  3
+#define CONTROL_RATE_PROFILE_COUNT  2
 #endif
 
 #if (FLASH_SIZE > 64)
@@ -301,15 +301,15 @@
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 11))
-#define USE_VTX_COMMON
-#define USE_VTX_CONTROL
-#define USE_VTX_SMARTAUDIO
-#define USE_VTX_TRAMP
+// #define USE_VTX_COMMON
+// #define USE_VTX_CONTROL
+// #define USE_VTX_SMARTAUDIO
+// #define USE_VTX_TRAMP
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 10))
 #define USE_VIRTUAL_CURRENT_METER
-#define USE_CAMERA_CONTROL
+// #define USE_CAMERA_CONTROL
 #define USE_SERIAL_4WAY_BLHELI_BOOTLOADER
 #define USE_RCDEVICE
 #endif
@@ -378,30 +378,30 @@
 #define USE_RX_RSSI_DBM
 #endif
 
-#if (TARGET_FLASH_SIZE > 256)
+#if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL == 0))
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
 #define USE_DASHBOARD
 #define USE_DSHOT_DMAR
-#define USE_GPS
-#define USE_GPS_NMEA
-#define USE_GPS_UBLOX
-#define USE_GPS_RESCUE
+// #define USE_GPS
+// #define USE_GPS_NMEA
+// #define USE_GPS_UBLOX
+// #define USE_GPS_RESCUE
 #define USE_GYRO_DLPF_EXPERIMENTAL
-#define USE_OSD
-#define USE_OSD_OVER_MSP_DISPLAYPORT
-#define USE_MULTI_GYRO
-#define USE_OSD_ADJUSTMENTS
+// #define USE_OSD
+// #define USE_OSD_OVER_MSP_DISPLAYPORT
+// #define USE_MULTI_GYRO
+// #define USE_OSD_ADJUSTMENTS
 #define USE_SENSOR_NAMES
-#define USE_SERIALRX_JETIEXBUS
+// #define USE_SERIALRX_JETIEXBUS
 #define USE_TELEMETRY_IBUS
 #define USE_TELEMETRY_IBUS_EXTENDED
-#define USE_TELEMETRY_JETIEXBUS
-#define USE_TELEMETRY_MAVLINK
+// #define USE_TELEMETRY_JETIEXBUS
+// #define USE_TELEMETRY_MAVLINK
 #define USE_UNCOMMON_MIXERS
 #define USE_SIGNATURE
 #define USE_ABSOLUTE_CONTROL
-#define USE_HOTT_TEXTMODE
+// #define USE_HOTT_TEXTMODE
 #define USE_LED_STRIP_STATUS_MODE
 #define USE_VARIO
 #define USE_RX_LINK_QUALITY_INFO
