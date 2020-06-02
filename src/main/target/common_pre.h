@@ -55,12 +55,17 @@
 #define USE_OVERCLOCK
 #define USE_FLYSKY
 #define USE_USB_MSC
-#define USE_PERSISTENT_MSC_RTC
+// #define USE_PERSISTENT_MSC_RTC
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
 #define USE_QUAD_MIXER_ONLY
-#define USE_VTX_TABLE
+// #define USE_VTX_TABLE
+#define USE_BLACKBOX
+#define USE_CLI_BATCH
+#define USE_RESOURCE_MGMT
+#define USE_RUNAWAY_TAKEOFF     // Runaway Takeoff Prevention (anti-taz)
+#define USE_TELEMETRY
 
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
 #define USE_FRSKY
@@ -230,7 +235,7 @@
 #define USE_DMA
 #define USE_TIMER
 
-#define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
+// #define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
 #define USE_SERIAL_PASSTHROUGH
 #define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 #define USE_PPM
@@ -238,7 +243,7 @@
 #define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
 #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
 #define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
-#define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
+// #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
 // #define USE_SERIALRX_SUMD       // Graupner Hott protocol
 
 #define USE_CLI
@@ -345,8 +350,8 @@
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 4))
 #define USE_HUFFMAN
-#define USE_PINIO
-#define USE_PINIOBOX
+// #define USE_PINIO
+// #define USE_PINIOBOX
 #define USE_LAUNCH_CONTROL
 #endif
 
@@ -382,7 +387,7 @@
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL == 0))
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
-#define USE_DASHBOARD
+// #define USE_DASHBOARD
 #define USE_DSHOT_DMAR
 // #define USE_GPS
 // #define USE_GPS_NMEA
@@ -407,18 +412,18 @@
 #define USE_VARIO
 #define USE_RX_LINK_QUALITY_INFO
 #define USE_ESC_SENSOR_TELEMETRY
-#define USE_OSD_PROFILES
-#define USE_OSD_STICK_OVERLAY
+// #define USE_OSD_PROFILES
+// #define USE_OSD_STICK_OVERLAY
 #define USE_ESCSERIAL_SIMONK
 #define USE_SERIAL_4WAY_SK_BOOTLOADER
-#define USE_CMS_FAILSAFE_MENU
-#define USE_CMS_GPS_RESCUE_MENU
+// #define USE_CMS_FAILSAFE_MENU
+// #define USE_CMS_GPS_RESCUE_MENU
 #define USE_TELEMETRY_SENSORS_DISABLED_DETAILS
-#define USE_VTX_TABLE
+// #define USE_VTX_TABLE
 #define USE_PERSISTENT_STATS
 #define USE_PROFILE_NAMES
 // #define USE_SERIALRX_SRXL2     // Spektrum SRXL2 protocol
 #define USE_INTERPOLATED_SP
-#define USE_CUSTOM_BOX_NAMES
+// #define USE_CUSTOM_BOX_NAMES
 #define USE_BATTERY_VOLTAGE_SAG_COMPENSATION
 #endif
