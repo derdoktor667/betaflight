@@ -306,6 +306,8 @@ static const char *mcuTypeNames[] = {
     "H743 (Rev.V)",
 };
 
+static const char *configurationStates[] = { "UNCONFIGURED", "CUSTOM DEFAULTS", "CONFIGURED" };
+
 typedef enum dumpFlags_e {
     DUMP_MASTER = (1 << 0),
     DUMP_PROFILE = (1 << 1),
@@ -452,7 +454,7 @@ void cliPrintLinef(const char *format, ...)
 static void cliPrintErrorVa(const char *cmdName, const char *format, va_list va)
 {
     if (cliErrorWriter) {
-        cliPrintInternal(cliErrorWriter, "###ERROR: ");
+        cliPrintInternal(cliErrorWriter, "###ERROR IN ");
         cliPrintInternal(cliErrorWriter, cmdName);
         cliPrintInternal(cliErrorWriter, ": ");
 
@@ -4704,7 +4706,7 @@ static void cliStatus(const char *cmdName, char *cmdline)
 #endif
     cliPrintLinefeed();
 
-    cliPrintLinef("Config size: %d, Max available config: %d", getEEPROMConfigSize(), getEEPROMStorageSize());
+    cliPrintLinef("Configuration: %s, size: %d, max available: %d", configurationStates[systemConfigMutable()->configurationState], getEEPROMConfigSize(), getEEPROMStorageSize());
 
     // Sensors
     cliPrint("Gyros detected:");
@@ -6160,6 +6162,10 @@ static void printConfig(const char *cmdName, char *cmdline, bool doDiff)
 #endif
 #endif
 
+        printFeature(dumpMask, featureConfig_Copy.enabledFeatures, featureConfig()->enabledFeatures, "feature");
+
+        printSerial(dumpMask, &serialConfig_Copy, serialConfig(), "serial");
+
         if (!(dumpMask & HARDWARE_ONLY)) {
 #ifndef USE_QUAD_MIXER_ONLY
             const char *mixerHeadingStr = "mixer";
@@ -6186,8 +6192,6 @@ static void printConfig(const char *cmdName, char *cmdline, bool doDiff)
 #endif
 #endif
 
-            printFeature(dumpMask, featureConfig_Copy.enabledFeatures, featureConfig()->enabledFeatures, "feature");
-
 #if defined(USE_BEEPER)
             printBeeper(dumpMask, beeperConfig_Copy.beeper_off_flags, beeperConfig()->beeper_off_flags, "beeper", BEEPER_ALLOWED_MODES, "beeper");
 
@@ -6197,8 +6201,6 @@ static void printConfig(const char *cmdName, char *cmdline, bool doDiff)
 #endif // USE_BEEPER
 
             printMap(dumpMask, &rxConfig_Copy, rxConfig(), "map");
-
-            printSerial(dumpMask, &serialConfig_Copy, serialConfig(), "serial");
 
 #ifdef USE_LED_STRIP_STATUS_MODE
             printLed(dumpMask, ledStripStatusModeConfig_Copy.ledConfigs, ledStripStatusModeConfig()->ledConfigs, "led");

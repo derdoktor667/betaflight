@@ -97,6 +97,7 @@ COMMON_SRC = \
             flight/mixer.c \
             flight/mixer_tricopter.c \
             flight/pid.c \
+            flight/pid_init.c \
             flight/rpm_filter.c \
             flight/servos.c \
             flight/servos_tricopter.c \
@@ -223,6 +224,7 @@ SPEED_OPTIMISED_SRC := $(SPEED_OPTIMISED_SRC) \
             drivers/accgyro/accgyro_mpu3050.c \
             drivers/accgyro/accgyro_spi_bmi160.c \
             drivers/accgyro/accgyro_spi_bmi270.c \
+            drivers/accgyro/accgyro_spi_lsm6dso.c \
             drivers/accgyro_legacy/accgyro_adxl345.c \
             drivers/accgyro_legacy/accgyro_bma280.c \
             drivers/accgyro_legacy/accgyro_l3g4200d.c \
@@ -346,7 +348,8 @@ SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             osd/osd.c \
             osd/osd_elements.c \
             rx/rx_bind.c \
-            sensors/gyro_init.c
+            sensors/gyro_init.c\
+            flight/pid_init.c
 
 # Gyro driver files that only contain initialization and configuration code - not runtime code
 SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
@@ -355,7 +358,8 @@ SIZE_OPTIMISED_SRC := $(SIZE_OPTIMISED_SRC) \
             drivers/accgyro/accgyro_spi_mpu6000.c \
             drivers/accgyro/accgyro_spi_mpu6500.c \
             drivers/accgyro/accgyro_spi_mpu9250.c \
-            drivers/accgyro/accgyro_spi_icm20689.c
+            drivers/accgyro/accgyro_spi_icm20689.c \
+            drivers/accgyro/accgyro_spi_lsm6dso_init.c
 
 
 # F4 and F7 optimizations

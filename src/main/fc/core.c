@@ -74,7 +74,6 @@
 
 #include "io/beeper.h"
 #include "io/gps.h"
-#include "io/motors.h"
 #include "io/pidaudio.h"
 #include "io/serial.h"
 #include "io/servos.h"
@@ -1189,7 +1188,7 @@ static FAST_CODE void subTaskMotorUpdate(timeUs_t currentTimeUs)
         startTime = micros();
     }
 
-    mixTable(currentTimeUs, currentPidProfile->vbatPidCompensation);
+    mixTable(currentTimeUs);
 
 #ifdef USE_SERVOS
     // motor outputs are used as sources for servo mixing, so motors must be calculated using mixTable() before servos.

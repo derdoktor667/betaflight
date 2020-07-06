@@ -38,6 +38,7 @@
 #include "common/maths.h"
 #include "common/printf_serial.h"
 
+#include "config/config.h"
 #include "config/config_eeprom.h"
 #include "config/feature.h"
 
@@ -84,7 +85,6 @@
 #include "drivers/vtx_table.h"
 
 #include "fc/board_info.h"
-#include "config/config.h"
 #include "fc/dispatch.h"
 #include "fc/init.h"
 #include "fc/rc_controls.h"
@@ -96,6 +96,7 @@
 #include "flight/imu.h"
 #include "flight/mixer.h"
 #include "flight/pid.h"
+#include "flight/pid_init.h"
 #include "flight/rpm_filter.h"
 #include "flight/servos.h"
 
@@ -111,7 +112,6 @@
 #include "io/gimbal.h"
 #include "io/gps.h"
 #include "io/ledstrip.h"
-#include "io/motors.h"
 #include "io/pidaudio.h"
 #include "io/piniobox.h"
 #include "io/rcdevice_cam.h"
@@ -719,20 +719,6 @@ void init(void)
 
 #ifdef USE_CAMERA_CONTROL
     cameraControlInit();
-#endif
-
-// XXX These kind of code should goto target/config.c?
-// XXX And these no longer work properly as FEATURE_RANGEFINDER does control HCSR04 runtime configuration.
-#if defined(RANGEFINDER_HCSR04_SOFTSERIAL2_EXCLUSIVE) && defined(USE_RANGEFINDER_HCSR04) && defined(USE_SOFTSERIAL2)
-    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL)) {
-        serialRemovePort(SERIAL_PORT_SOFTSERIAL2);
-    }
-#endif
-
-#if defined(RANGEFINDER_HCSR04_SOFTSERIAL1_EXCLUSIVE) && defined(USE_RANGEFINDER_HCSR04) && defined(USE_SOFTSERIAL1)
-    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL)) {
-        serialRemovePort(SERIAL_PORT_SOFTSERIAL1);
-    }
 #endif
 
 #ifdef USE_ADC
