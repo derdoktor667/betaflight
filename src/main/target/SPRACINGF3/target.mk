@@ -1,10 +1,10 @@
 F3_TARGETS  += $(TARGET)
 
 FEATURES    = ONBOARDFLASH
+TARGET_SRC = drivers/accgyro/accgyro_mpu.c
 
 ifeq ($(TARGET), SPRF3)
-TARGET_SRC = \
-			drivers/accgyro/accgyro_mpu.c \
+TARGET_SRC += \
 			drivers/accgyro/accgyro_mpu6050.c
 
 FEATURE_CUT_LEVEL = 0
@@ -12,8 +12,7 @@ else
 
 FEATURE_CUT_LEVEL = 6
 
-TARGET_SRC = \
-			drivers/accgyro/accgyro_mpu.c \
+TARGET_SRC += \
 			drivers/barometer/barometer_ms5611.c \
 			drivers/barometer/barometer_bmp085.c \
 			drivers/barometer/barometer_bmp280.c \

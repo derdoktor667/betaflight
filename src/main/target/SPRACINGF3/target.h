@@ -54,9 +54,7 @@
 #define ENSURE_MPU_DATA_READY_IS_LOW
 
 #define USE_GYRO
-
 #define USE_ACC
-
 #define USE_BARO
 #define USE_BARO_BMP280
 
@@ -181,13 +179,15 @@
 #define CURRENT_METER_ADC_PIN PA5
 #define RSSI_ADC_PIN PB2
 
+#if !defined(SPRF3)
 #define USE_OSD
 #define USE_OSD_OVER_MSP_DISPLAYPORT
 #define USE_SLOW_MSP_DISPLAYPORT_RATE_WHEN_UNARMED
 #endif
 
-#define USE_MSP_CURRENT_METER
+#endif
 
+#define USE_MSP_CURRENT_METER
 #define REMAP_TIM17_DMA
 
 // UART1 TX uses DMA1_Channel4, which is also used by dshot on motor 4
@@ -197,11 +197,11 @@
 
 #if !defined(IRCSYNERGYF3)
 #define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
-
 #define DEFAULT_RX_FEATURE FEATURE_RX_PPM
 #define DEFAULT_FEATURES (FEATURE_RSSI_ADC | FEATURE_TELEMETRY)
 #endif
 
+// ...tear down
 #if defined(SPRF3)
 #undef USE_RANGEFINDER
 #undef USE_RANGEFINDER_HCSR04
@@ -217,6 +217,8 @@
 #undef USE_MAG_HMC5883
 #undef USE_MAG_QMC5883
 #undef MAG_HMC5883_ALIGN
+
+#define DEFAULT_RX_FEATURE FEATURE_RX_PPM
 #endif
 
 // IO - stm32f303cc in 48pin package

@@ -79,7 +79,8 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
             break;
         default:
             gyro->gyroRateKHz = GYRO_RATE_8_kHz;
-            gyroSampleRateHz = 8000;
+            // ...default 8000 too fast for SPRACINGF3 
+            gyroSampleRateHz = 4000;
             accSampleRateHz = 1000;
             break;
     }

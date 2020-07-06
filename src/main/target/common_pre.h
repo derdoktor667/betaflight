@@ -55,7 +55,6 @@
 #define USE_OVERCLOCK
 #define USE_FLYSKY
 #define USE_USB_MSC
-// #define USE_PERSISTENT_MSC_RTC
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
@@ -235,7 +234,7 @@
 #define USE_DMA
 #define USE_TIMER
 
-// #define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
+#define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
 #define USE_SERIAL_PASSTHROUGH
 #define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
 #define USE_PPM
