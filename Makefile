@@ -306,17 +306,16 @@ CPPCHECK        = cppcheck $(CSOURCES) --enable=all --platform=unix64 \
 #
 # Things we will build
 #
-TARGET_BIN      = $(TARGET_BASENAME).bin
-TARGET_HEX      = $(TARGET_BASENAME).hex
-TARGET_DFU      = $(TARGET_BASENAME).dfu
-TARGET_ZIP      = $(TARGET_BASENAME).zip
-TARGET_ELF      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET).elf
-TARGET_EXST_ELF = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET)_EXST.elf
-TARGET_UNPATCHED_BIN = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET)_UNPATCHED.bin
-TARGET_LST      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET).lst
-TARGET_OBJS     = $(addsuffix .o,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename $(SRC))))
-TARGET_DEPS     = $(addsuffix .d,$(addprefix $(OBJECT_DIR)/$(TARGET)/,$(basename $(SRC))))
-TARGET_MAP      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET).map
+TARGET_S19      = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)$(EXT).s19
+TARGET_BIN      = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)$(EXT).bin
+TARGET_HEX      = $(BIN_DIR)/$(FORKNAME)_$(FC_VER)_$(TARGET)$(EXT).hex
+TARGET_ELF      = $(OBJECT_DIR)/$(FORKNAME)$(EXT)_$(TARGET)$(EXT).elf
+TARGET_EXST_ELF = $(OBJECT_DIR)/$(FORKNAME)$(EXT)_$(TARGET)_EXST$(EXT).elf
+TARGET_UNPATCHED_BIN = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET)$(EXT)_UNPATCHED.bin
+TARGET_LST      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET)$(EXT).lst
+TARGET_OBJS     = $(addsuffix .o,$(addprefix $(OBJECT_DIR)/$(TARGET)$(EXT)/,$(basename $(SRC))))
+TARGET_DEPS     = $(addsuffix .d,$(addprefix $(OBJECT_DIR)/$(TARGET)$(EXT)/,$(basename $(SRC))))
+TARGET_MAP      = $(OBJECT_DIR)/$(FORKNAME)_$(TARGET)$(EXT).map
 
 TARGET_EXST_HASH_SECTION_FILE = $(OBJECT_DIR)/$(TARGET)/exst_hash_section.bin
 

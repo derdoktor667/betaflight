@@ -60,6 +60,7 @@
 #define USE_THROTTLE_BOOST
 #define USE_QUAD_MIXER_ONLY
 // #define USE_VTX_TABLE
+#define USE_TIMER_MGMT
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
 #define USE_RESOURCE_MGMT
@@ -274,7 +275,7 @@
 #define USE_GYRO_OVERFLOW_CHECK
 #define USE_YAW_SPIN_RECOVERY
 #define USE_DSHOT_DMAR
-//#define USE_TELEMETRY_CRSF
+#define USE_TELEMETRY_CRSF
 //#define USE_TELEMETRY_SRXL
 #endif
 
@@ -386,7 +387,7 @@
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL == 0))
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
-// #define USE_DASHBOARD
+#define USE_DASHBOARD
 #define USE_DSHOT_DMAR
 // #define USE_GPS
 // #define USE_GPS_NMEA
