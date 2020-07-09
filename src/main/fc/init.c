@@ -97,7 +97,6 @@
 #include "flight/mixer.h"
 #include "flight/pid.h"
 #include "flight/pid_init.h"
-#include "flight/rpm_filter.h"
 #include "flight/servos.h"
 
 #include "io/asyncfatfs/asyncfatfs.h"
@@ -1002,6 +1001,10 @@ void init(void)
 
         // osdInit will register with CMS by itself.
         osdInit(osdDisplayPort, osdDisplayPortDevice);
+
+        if (osdDisplayPortDevice == OSD_DISPLAYPORT_DEVICE_NONE) {
+            featureDisableImmediate(FEATURE_OSD);
+        }
     }
 #endif // USE_OSD
 
