@@ -53,12 +53,20 @@
 #define USE_TPA_MODE
 #define USE_CCM_CODE
 #define USE_OVERCLOCK
+#define USE_GYRO_LPF2
+#define USE_DYN_LPF
+#define USE_D_MIN
 #define USE_FLYSKY
 #define USE_USB_MSC
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
 #define USE_QUAD_MIXER_ONLY
+#define USE_ADC
+// #define USE_ADC_INTERNAL
+#define USE_GYRO_OVERFLOW_CHECK
+#define USE_YAW_SPIN_RECOVERY
+#define USE_DSHOT_DMAR
 // #define USE_VTX_TABLE
 #define USE_TIMER_MGMT
 #define USE_BLACKBOX
@@ -66,6 +74,7 @@
 #define USE_RESOURCE_MGMT
 #define USE_RUNAWAY_TAKEOFF     // Runaway Takeoff Prevention (anti-taz)
 #define USE_TELEMETRY
+#define USE_TELEMETRY_IBUS
 
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
 #define USE_FRSKY
@@ -404,7 +413,7 @@
 #define USE_TELEMETRY_IBUS_EXTENDED
 // #define USE_TELEMETRY_JETIEXBUS
 // #define USE_TELEMETRY_MAVLINK
-#define USE_UNCOMMON_MIXERS
+// #define USE_UNCOMMON_MIXERS
 #define USE_SIGNATURE
 #define USE_ABSOLUTE_CONTROL
 // #define USE_HOTT_TEXTMODE
