@@ -188,17 +188,6 @@
 #define USE_MSP_CURRENT_METER
 #define REMAP_TIM17_DMA
 
-// UART1 TX uses DMA1_Channel4, which is also used by dshot on motor 4
-#if defined(USE_UART1_TX_DMA) && defined(USE_DSHOT)
-#undef USE_UART1_TX_DMA
-#endif
-
-#if !defined(IRCSYNERGYF3)
-#define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
-#define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
-#define DEFAULT_FEATURES (FEATURE_RSSI_ADC | FEATURE_TELEMETRY)
-#endif
-
 // ...tear down
 #if defined(SPRF3)
 #undef USE_RANGEFINDER
@@ -219,6 +208,18 @@
 #define USE_DSHOT
 // #define DEFAULT_RX_FEATURE  FEATURE_RX_SERIAL
 #endif
+
+// UART1 TX uses DMA1_Channel4, which is also used by dshot on motor 4
+#if defined(USE_UART1_TX_DMA) && defined(USE_DSHOT)
+#undef USE_UART1_TX_DMA
+#endif
+
+#if !defined(IRCSYNERGYF3)
+#define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
+#define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
+#define DEFAULT_FEATURES (FEATURE_RSSI_ADC | FEATURE_TELEMETRY)
+#endif
+
 
 // IO - stm32f303cc in 48pin package
 #define TARGET_IO_PORTA 0xffff
