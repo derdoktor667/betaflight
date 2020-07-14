@@ -20,7 +20,69 @@
 
 #pragma once
 
-#if defined(STM32F405)
+#if defined(STM32F303)
+#define TARGET_BOARD_IDENTIFIER "SPR3"
+
+#define USBD_PRODUCT_STRING     "Betaflight STM32F303"
+
+#define USE_TARGET_CONFIG
+
+#define USE_EXTI
+#define USE_MPU_DATA_READY_SIGNAL
+#define USE_GYRO_EXTI
+#define USE_ESCSERIAL
+#define USE_ACC
+#define USE_GYRO
+#define USE_GYRO_MPU6050
+#define USE_ACC_MPU6050
+#define GYRO_1_ALIGN CW270_DEG
+#define USE_USB_DETECT
+#define SERIAL_PORT_COUNT 5
+
+#define LED0_PIN PB3
+
+#define USE_BEEPER
+#define BEEPER_PIN PC15
+#define BEEPER_INVERTED
+
+#define USE_I2C
+#define USE_I2C_DEVICE_1
+#define I2C_DEVICE (I2CDEV_1)
+
+#define FLASH_CS_PIN PB12
+#define FLASH_SPI_INSTANCE SPI2
+
+#define USE_SPI
+#define USE_SPI_DEVICE_2 // PB12,13,14,15 on AF5
+
+#define USE_UART1
+#define USE_UART2
+#define USE_UART3
+
+#define ESCSERIAL_TIMER_TX_PIN PA0 // (HARDARE=0,PPM)
+
+#define UART1_TX_PIN PA9
+#define UART1_RX_PIN PA10
+
+#define UART2_TX_PIN PA14 // PA14 / SWCLK
+#define UART2_RX_PIN PA15
+
+#define UART3_TX_PIN PB10 // PB10 (AF7)
+#define UART3_RX_PIN PB11 // PB11 (AF7)
+
+#define USE_RX_CC2500_SPI_PA_LNA
+#define USE_RX_CC2500_SPI_DIVERSITY
+
+// IO - stm32f303cc in 48pin package
+#define TARGET_IO_PORTA 0xffff
+#define TARGET_IO_PORTB 0xffff
+#define TARGET_IO_PORTC (BIT(13) | BIT(14) | BIT(15))
+#define TARGET_IO_PORTF (BIT(0) | BIT(1) | BIT(3) | BIT(4))
+
+#define USABLE_TIMER_CHANNEL_COUNT 17
+#define USED_TIMERS (TIM_N(1) | TIM_N(2) | TIM_N(3) | TIM_N(4) | TIM_N(15) | TIM_N(16) | TIM_N(17))
+
+#elif defined(STM32F405)
 #define TARGET_BOARD_IDENTIFIER "S405"
 
 #define USBD_PRODUCT_STRING     "Betaflight STM32F405"
@@ -149,6 +211,8 @@
 // to be supplied when the board is configured for the first time
 #define USE_UNIFIED_TARGET
 
+#if !defined(STM32F303)
+
 #define USE_BEEPER
 
 // MPU interrupt
@@ -253,3 +317,4 @@
 #define USE_RX_SPEKTRUM_TELEMETRY
 
 #define USE_CUSTOM_DEFAULTS
+#endif

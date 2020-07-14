@@ -26,7 +26,7 @@
 #include "build_config.h"
 
 #ifdef STM32F1
-#warning STM32F1 based targets are unsupported as of Betaflight 3.3.
+#error STM32F1 based targets are unsupported as of Betaflight 3.3.
 #endif
 
 // ...we know what we are doing 

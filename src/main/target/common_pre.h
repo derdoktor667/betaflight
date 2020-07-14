@@ -41,7 +41,6 @@
 #endif
 
 #ifdef STM32F3
-// #define MINIMAL_CLI
 #define USE_DSHOT
 #define USE_GYRO_DATA_ANALYSE
 #define USE_DSHOT_TELEMETRY
@@ -63,11 +62,15 @@
 #define USE_THROTTLE_BOOST
 #define USE_QUAD_MIXER_ONLY
 #define USE_ADC
-// #define USE_ADC_INTERNAL
+#define USE_ITERM_RELAX
+#define USE_RC_SMOOTHING_FILTER
+#define USE_TPA_MODE
 #define USE_GYRO_OVERFLOW_CHECK
 #define USE_YAW_SPIN_RECOVERY
 #define USE_DSHOT_DMAR
-// #define USE_VTX_TABLE
+#define USE_LED_STRIP
+#define USE_LED_STRIP_STATUS_MODE
+#define USE_VTX_TABLE
 #define USE_TIMER_MGMT
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
@@ -75,6 +78,8 @@
 #define USE_RUNAWAY_TAKEOFF     // Runaway Takeoff Prevention (anti-taz)
 #define USE_TELEMETRY
 #define USE_TELEMETRY_IBUS
+#define USE_PERSISTENT_OBJECTS
+#define USE_CUSTOM_DEFAULTS_ADDRESS
 
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
 #define USE_FRSKY
@@ -301,9 +306,9 @@
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
-#define USE_CMS
-#define USE_MSP_DISPLAYPORT
-#define USE_MSP_OVER_TELEMETRY
+// #define USE_CMS
+// #define USE_MSP_DISPLAYPORT
+// #define USE_MSP_OVER_TELEMETRY
 #define USE_LED_STRIP
 #define USE_GYRO_LPF2
 #define USE_DYN_LPF
@@ -359,8 +364,8 @@
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 4))
 #define USE_HUFFMAN
-// #define USE_PINIO
-// #define USE_PINIOBOX
+#define USE_PINIO
+#define USE_PINIOBOX
 #define USE_LAUNCH_CONTROL
 #endif
 
@@ -402,7 +407,7 @@
 // #define USE_GPS_NMEA
 // #define USE_GPS_UBLOX
 // #define USE_GPS_RESCUE
-#define USE_GYRO_DLPF_EXPERIMENTAL
+// #define USE_GYRO_DLPF_EXPERIMENTAL
 // #define USE_OSD
 // #define USE_OSD_OVER_MSP_DISPLAYPORT
 // #define USE_MULTI_GYRO
@@ -413,7 +418,7 @@
 #define USE_TELEMETRY_IBUS_EXTENDED
 // #define USE_TELEMETRY_JETIEXBUS
 // #define USE_TELEMETRY_MAVLINK
-// #define USE_UNCOMMON_MIXERS
+#define USE_UNCOMMON_MIXERS
 #define USE_SIGNATURE
 #define USE_ABSOLUTE_CONTROL
 // #define USE_HOTT_TEXTMODE
@@ -428,7 +433,7 @@
 // #define USE_CMS_FAILSAFE_MENU
 // #define USE_CMS_GPS_RESCUE_MENU
 #define USE_TELEMETRY_SENSORS_DISABLED_DETAILS
-// #define USE_VTX_TABLE
+#define USE_VTX_TABLE
 #define USE_PERSISTENT_STATS
 #define USE_PROFILE_NAMES
 // #define USE_SERIALRX_SRXL2     // Spektrum SRXL2 protocol

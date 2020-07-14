@@ -61,7 +61,7 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         case MPU_60x0:
             gyro->gyroRateKHz = GYRO_RATE_4_kHz;
             gyroSampleRateHz = 4000;
-            accSampleRateHz = 1000;
+            accSampleRateHz = 2000;
             break;
         case BMI_270_SPI:
 #ifdef USE_GYRO_DLPF_EXPERIMENTAL
