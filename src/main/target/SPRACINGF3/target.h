@@ -35,7 +35,6 @@
 #endif
 
 #if defined(ZCOREF3)
-
 #define LED0_PIN PB8
 #else
 #define LED0_PIN PB3

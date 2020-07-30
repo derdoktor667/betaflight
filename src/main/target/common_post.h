@@ -29,7 +29,7 @@
 #endif
 
 #ifdef STM32F3
-#undef USE_ESCSERIAL
+// #undef USE_ESCSERIAL
 #undef USE_BARO
 #undef USE_RANGEFINDER
 #endif
