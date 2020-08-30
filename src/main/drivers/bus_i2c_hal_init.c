@@ -35,7 +35,7 @@
 #include "drivers/bus_i2c.h"
 #include "drivers/bus_i2c_impl.h"
 
-// Number of bits in I2C protocol phase
+ // Number of bits in I2C protocol phase
 #define LEN_ADDR 7
 #define LEN_RW 1
 #define LEN_ACK 1
@@ -149,8 +149,12 @@ const i2cHardware_t i2cHardware[I2CDEV_COUNT] = {
     {
         .device = I2CDEV_1,
         .reg = I2C1,
-        .sclPins = { I2CPINDEF(PA15, GPIO_AF4_I2C1), I2CPINDEF(PB6,  GPIO_AF4_I2C1), I2CPINDEF(PB8,  GPIO_AF4_I2C1), },
-        .sdaPins = { I2CPINDEF(PB7,  GPIO_AF4_I2C1), I2CPINDEF(PB9,  GPIO_AF4_I2C1), },
+
+        // Some boards are overloading SWD pins with I2C1 for maximum pin utilization on 48-pin CE(U) packages.
+        // Be carefull when using SWD on these boards if I2C1 pins are defined by default.
+
+        .sclPins = { I2CPINDEF(PA13, GPIO_AF4_I2C1), I2CPINDEF(PA15, GPIO_AF4_I2C1), I2CPINDEF(PB6,  GPIO_AF4_I2C1), I2CPINDEF(PB8,  GPIO_AF4_I2C1), },
+        .sdaPins = { I2CPINDEF(PA14, GPIO_AF4_I2C1), I2CPINDEF(PB7,  GPIO_AF4_I2C1), I2CPINDEF(PB9,  GPIO_AF4_I2C1), },
         .rcc = RCC_APB11(I2C1),
         .ev_irq = I2C1_EV_IRQn,
         .er_irq = I2C1_ER_IRQn,
@@ -182,7 +186,11 @@ const i2cHardware_t i2cHardware[I2CDEV_COUNT] = {
     {
         .device = I2CDEV_4,
         .reg = I2C4,
-        .sclPins = { I2CPINDEF(PB6,  GPIO_AF3_I2C4), I2CPINDEF(PC6,  GPIO_AF8_I2C4), },
+
+        // Here, SWDIO(PA13) is overloaded with I2C4_SCL, too.
+        // See comment in the I2C1 section above.
+
+        .sclPins = { I2CPINDEF(PA13, GPIO_AF3_I2C4), I2CPINDEF(PB6,  GPIO_AF3_I2C4), I2CPINDEF(PC6,  GPIO_AF8_I2C4), },
         .sdaPins = { I2CPINDEF(PB7,  GPIO_AF4_I2C4), I2CPINDEF(PC7,  GPIO_AF8_I2C4), },
         .rcc = RCC_APB12(I2C4),
         .ev_irq = I2C4_EV_IRQn,
@@ -213,15 +221,15 @@ static uint8_t  tAF = 70;   // Analog filter delay
  * Compute SCLDEL, SDADEL, SCLH and SCLL for TIMINGR register according to reference manuals.
  */
 static void i2cClockComputeRaw(uint32_t pclkFreq, int i2cFreqKhz, int presc, int dfcoeff,
-                       uint8_t *scldel, uint8_t *sdadel, uint16_t *sclh, uint16_t *scll)
-{
+    uint8_t* scldel, uint8_t* sdadel, uint16_t* sclh, uint16_t* scll) {
     if (i2cFreqKhz > 400) {
         // Fm+ (Fast mode plus)
         trmax = 120;
         tfmax = 120;
         tsuDATmin = 50;
         thdDATmin = 0;
-    } else {
+    }
+    else {
         // Fm (Fast mode)
         trmax = 300;
         tfmax = 300;
@@ -237,7 +245,7 @@ static void i2cClockComputeRaw(uint32_t pclkFreq, int i2cFreqKhz, int presc, int
     // Convert target i2cFreq into cycle time (nsec)
     float tSCL = 1000000.0f / i2cFreqKhz;
 
-    uint32_t SCLDELmin = (trmax + tsuDATmin)/((presc + 1) * tI2cclk) - 1;
+    uint32_t SCLDELmin = (trmax + tsuDATmin) / ((presc + 1) * tI2cclk) - 1;
 
     uint32_t SDADELmin = (tfmax + thdDATmin - tAFmin - ((dfcoeff + 3) * tI2cclk)) / ((presc + 1) * tI2cclk);
 
@@ -256,8 +264,7 @@ static void i2cClockComputeRaw(uint32_t pclkFreq, int i2cFreqKhz, int presc, int
     *scll = SCLL - 1;
 }
 
-static uint32_t i2cClockTIMINGR(uint32_t pclkFreq, int i2cFreqKhz, int dfcoeff)
-{
+static uint32_t i2cClockTIMINGR(uint32_t pclkFreq, int i2cFreqKhz, int dfcoeff) {
 #define TIMINGR(presc, scldel, sdadel, sclh, scll) \
     ((presc << 28)|(scldel << 20)|(sdadel << 16)|(sclh << 8)|(scll << 0))
 
@@ -278,15 +285,14 @@ static uint32_t i2cClockTIMINGR(uint32_t pclkFreq, int i2cFreqKhz, int dfcoeff)
     return 0; // Shouldn't reach here
 }
 
-void i2cInit(I2CDevice device)
-{
+void i2cInit(I2CDevice device) {
     if (device == I2CINVALID) {
         return;
     }
 
-    i2cDevice_t *pDev = &i2cDevice[device];
+    i2cDevice_t* pDev = &i2cDevice[device];
 
-    const i2cHardware_t *hardware = pDev->hardware;
+    const i2cHardware_t* hardware = pDev->hardware;
     const IO_t scl = pDev->scl;
     const IO_t sda = pDev->sda;
 
@@ -316,7 +322,7 @@ void i2cInit(I2CDevice device)
 
     // Init I2C peripheral
 
-    I2C_HandleTypeDef *pHandle = &pDev->handle;
+    I2C_HandleTypeDef* pHandle = &pDev->handle;
 
     memset(pHandle, 0, sizeof(*pHandle));
 
@@ -362,8 +368,7 @@ void i2cInit(I2CDevice device)
     HAL_NVIC_EnableIRQ(hardware->ev_irq);
 }
 
-static void i2cUnstick(IO_t scl, IO_t sda)
-{
+static void i2cUnstick(IO_t scl, IO_t sda) {
     int i;
 
     IOHi(scl);
@@ -386,19 +391,19 @@ static void i2cUnstick(IO_t scl, IO_t sda)
 
         // Pull low
         IOLo(scl); // Set bus low
-        delayMicroseconds(UNSTICK_CLK_US/2);
+        delayMicroseconds(UNSTICK_CLK_US / 2);
         IOHi(scl); // Set bus high
-        delayMicroseconds(UNSTICK_CLK_US/2);
+        delayMicroseconds(UNSTICK_CLK_US / 2);
     }
 
     // Generate a stop condition in case there was none
     IOLo(scl);
-    delayMicroseconds(UNSTICK_CLK_US/2);
+    delayMicroseconds(UNSTICK_CLK_US / 2);
     IOLo(sda);
-    delayMicroseconds(UNSTICK_CLK_US/2);
+    delayMicroseconds(UNSTICK_CLK_US / 2);
 
     IOHi(scl); // Set bus scl high
-    delayMicroseconds(UNSTICK_CLK_US/2);
+    delayMicroseconds(UNSTICK_CLK_US / 2);
     IOHi(sda); // Set bus sda high
 }
 
