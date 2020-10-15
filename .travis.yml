@@ -14,7 +14,7 @@ env:
 #  - PUBLISHMETA=True
 #  - PUBLISHDOCS=True
 # Specify the main Mafile supported goals.
-  - GOAL=´STMF3
+  - GOAL=´SPRF3
 #  - GOAL=all
 #  - GOAL=AFROMINI
 #  - GOAL=AIORACERF3
