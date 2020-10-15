@@ -755,6 +755,8 @@ void init(void)
 
     pidInit(currentPidProfile);
 
+    mixerInitProfile();
+
 #ifdef USE_PID_AUDIO
     pidAudioInit();
 #endif

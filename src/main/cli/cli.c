@@ -1776,7 +1776,6 @@ static void printMotorMix(dumpFlags_t dumpMask, const motorMixer_t *customMotorM
 static void cliMotorMix(const char *cmdName, char *cmdline)
 {
 #ifdef USE_QUAD_MIXER_ONLY
-    // ...no warning
     UNUSED(cmdName);
     UNUSED(cmdline);
 #else

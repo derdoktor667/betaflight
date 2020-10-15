@@ -285,6 +285,7 @@
 #define USE_PPM
 
 #define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
+#define USE_SERIALRX_GHST       // ImmersionRC Ghost Protocol
 #define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
 #define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
 // #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
@@ -320,20 +321,8 @@
 #define USE_YAW_SPIN_RECOVERY
 #define USE_DSHOT_DMAR
 #define USE_TELEMETRY_CRSF
-//#define USE_TELEMETRY_SRXL
-#endif
-
-#ifdef USE_SERIALRX_SPEKTRUM
-#define USE_SPEKTRUM_BIND
-#define USE_SPEKTRUM_BIND_PLUG
-#define USE_SPEKTRUM_REAL_RSSI
-#define USE_SPEKTRUM_FAKE_RSSI
-#define USE_SPEKTRUM_RSSI_PERCENT_CONVERSION
-#define USE_SPEKTRUM_VTX_CONTROL
-#define USE_SPEKTRUM_VTX_TELEMETRY
-#define USE_SPEKTRUM_CMS_TELEMETRY
-#define USE_PIN_PULL_UP_DOWN
-#endif
+// #define USE_TELEMETRY_GHST
+// #define USE_TELEMETRY_SRXL
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
 // #define USE_CMS
