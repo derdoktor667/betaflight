@@ -323,6 +323,7 @@
 #define USE_TELEMETRY_CRSF
 // #define USE_TELEMETRY_GHST
 // #define USE_TELEMETRY_SRXL
+#endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
 // #define USE_CMS
@@ -336,7 +337,6 @@
 #define USE_ITERM_RELAX
 #define USE_RC_SMOOTHING_FILTER
 #define USE_TPA_MODE
-
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 11))
