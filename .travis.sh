@@ -68,8 +68,8 @@ elif [ $TARGET ] ; then
 elif [ $GOAL ] ; then
 	if [ "test-all" == "$GOAL" ] ; then
 		$MAKE checks || exit $?
-	else
-	 export V=0
+	# else
+	#  export V=0
 	fi
 
 	$MAKE $GOAL || exit $?
