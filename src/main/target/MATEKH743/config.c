@@ -18,30 +18,28 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>
 #include <stdint.h>
-
+#include <stdbool.h>
 #include "platform.h"
 
-#ifdef USE_TARGET_CONFIG
-
 #include "config_helper.h"
-
 #include "io/serial.h"
-
-#include "osd/osd.h"
-
+#include "pg/piniobox.h"
 #include "pg/sdcard.h"
+#include "pg/motor.h"
+#include "target.h"
+#include "config/config.h"
+#include "drivers/pwm_output.h"
 
-static targetSerialPortFunction_t targetSerialPortFunction[] = {
-    { SERIAL_PORT_USART1, FUNCTION_MSP },
-    { SERIAL_PORT_USART2, FUNCTION_MSP },
-};
+#define  USE_TARGET_CONFIG
 
 void targetConfiguration(void)
 {
-    osdConfigMutable()->core_temp_alarm = 85;
-    targetSerialPortFunctionConfig(targetSerialPortFunction, ARRAYLEN(targetSerialPortFunction));
+    pinioBoxConfigMutable()->permanentId[0] = 40;
+    pinioBoxConfigMutable()->permanentId[1] = 41;
+
     sdcardConfigMutable()->mode = SDCARD_MODE_SDIO;
+    sdcardConfigMutable()->useDma = true;
+
 }
-#endif
+
