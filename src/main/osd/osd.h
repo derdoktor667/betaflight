@@ -51,6 +51,7 @@ extern const char * const osdTimerSourceNames[OSD_NUM_TIMER_TYPES];
 
 #define OSD_TASK_FREQUENCY_MIN 30
 #define OSD_TASK_FREQUENCY_MAX 300
+#define OSD_TASK_FREQUENCY_DEFAULT 60
 
 #define OSD_PROFILE_BITS_POS 11
 #define OSD_PROFILE_MASK    (((1 << OSD_PROFILE_COUNT) - 1) << OSD_PROFILE_BITS_POS)
@@ -82,6 +83,13 @@ extern const char * const osdTimerSourceNames[OSD_NUM_TIMER_TYPES];
 #define OSD_TIMER_SRC(timer)        (timer & 0x0F)
 #define OSD_TIMER_PRECISION(timer)  ((timer >> 4) & 0x0F)
 #define OSD_TIMER_ALARM(timer)      ((timer >> 8) & 0xFF)
+
+#ifdef USE_MAX7456
+#define OSD_DRAW_FREQ_DENOM 5
+#else
+// MWOSD @ 115200 baud
+#define OSD_DRAW_FREQ_DENOM 10
+#endif
 
 // NB: to ensure backwards compatibility, new enum values must be appended at the end but before the OSD_XXXX_COUNT entry.
 

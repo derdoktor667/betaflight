@@ -175,6 +175,7 @@ FAST_CODE_NOINLINE void rpmFilterUpdate()
         if (motor < 4) {
             DEBUG_SET(DEBUG_RPM_FILTER, motor, motorFrequency[motor]);
         }
+        motorFrequency[motor] = erpmToHz * filteredMotorErpm[motor];
     }
 
     for (int i = 0; i < filterUpdatesPerIteration; i++) {
@@ -204,7 +205,6 @@ FAST_CODE_NOINLINE void rpmFilterUpdate()
                 if (++currentMotor == getMotorCount()) {
                     currentMotor = 0;
                 }
-                motorFrequency[currentMotor] = erpmToHz * filteredMotorErpm[currentMotor];
                 minMotorFrequency = 0.0f;
             }
             currentFilter = &filters[currentFilterNumber];

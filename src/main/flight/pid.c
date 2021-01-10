@@ -33,6 +33,7 @@
 #include "common/maths.h"
 
 #include "config/config_reset.h"
+#include "config/simplified_tuning.h"
 
 #include "drivers/pwm_output.h"
 #include "drivers/sound_beeper.h"
@@ -121,15 +122,15 @@ PG_RESET_TEMPLATE(pidConfig_t, pidConfig,
 
 #define LAUNCH_CONTROL_YAW_ITERM_LIMIT 50 // yaw iterm windup limit when launch mode is "FULL" (all axes)
 
-PG_REGISTER_ARRAY_WITH_RESET_FN(pidProfile_t, PID_PROFILE_COUNT, pidProfiles, PG_PID_PROFILE, 1);
+PG_REGISTER_ARRAY_WITH_RESET_FN(pidProfile_t, PID_PROFILE_COUNT, pidProfiles, PG_PID_PROFILE, 2);
 
 void resetPidProfile(pidProfile_t *pidProfile)
 {
     RESET_CONFIG(pidProfile_t, pidProfile,
         .pid = {
-            [PID_ROLL] =  { 42, 85, 35, 90 },
-            [PID_PITCH] = { 46, 90, 38, 95 },
-            [PID_YAW] =   { 45, 90, 0, 90 },
+            [PID_ROLL] =  PID_ROLL_DEFAULT,
+            [PID_PITCH] = PID_PITCH_DEFAULT,
+            [PID_YAW] =   PID_YAW_DEFAULT,
             [PID_LEVEL] = { 50, 50, 75, 0 },
             [PID_MAG] =   { 40, 0, 0, 0 },
         },
@@ -177,11 +178,11 @@ void resetPidProfile(pidProfile_t *pidProfile)
                                     // overridden and the static lowpass 1 is disabled. We can't set this
                                     // value to 0 otherwise Configurator versions 10.4 and earlier will also
                                     // reset the lowpass filter type to PT1 overriding the desired BIQUAD setting.
-        .dterm_lowpass2_hz = 150,   // second Dterm LPF ON by default
+        .dterm_lowpass2_hz = DTERM_LOWPASS_2_HZ_DEFAULT,   // second Dterm LPF ON by default
         .dterm_filter_type = FILTER_PT1,
         .dterm_filter2_type = FILTER_PT1,
-        .dyn_lpf_dterm_min_hz = 70,
-        .dyn_lpf_dterm_max_hz = 170,
+        .dyn_lpf_dterm_min_hz = DYN_LPF_DTERM_MIN_HZ_DEFAULT,
+        .dyn_lpf_dterm_max_hz = DYN_LPF_DTERM_MAX_HZ_DEFAULT,
         .launchControlMode = LAUNCH_CONTROL_MODE_NORMAL,
         .launchControlThrottlePercent = 20,
         .launchControlAngleLimit = 0,
@@ -190,18 +191,18 @@ void resetPidProfile(pidProfile_t *pidProfile)
         .use_integrated_yaw = false,
         .integrated_yaw_relax = 200,
         .thrustLinearization = 0,
-        .d_min = { 23, 25, 0 },      // roll, pitch, yaw
+        .d_min = D_MIN_DEFAULT,
         .d_min_gain = 37,
         .d_min_advance = 20,
         .motor_output_limit = 100,
         .auto_profile_cell_count = AUTO_PROFILE_CELL_COUNT_STAY,
         .transient_throttle_limit = 0,
         .profileName = { 0 },
-        .idle_min_rpm = 0,
-        .idle_adjustment_speed = 50,
-        .idle_p = 50,
-        .idle_pid_limit = 200,
-        .idle_max_increase = 150,
+        .dyn_idle_min_rpm = 0,
+        .dyn_idle_p_gain = 50,
+        .dyn_idle_i_gain = 50,
+        .dyn_idle_d_gain = 50,
+        .dyn_idle_max_increase = 150,
         .ff_interpolate_sp = FF_INTERPOLATE_ON,
         .ff_max_rate_limit = 100,
         .ff_smooth_factor = 37,
@@ -209,6 +210,16 @@ void resetPidProfile(pidProfile_t *pidProfile)
         .dyn_lpf_curve_expo = 5,
         .level_race_mode = false,
         .vbat_sag_compensation = 0,
+        .simplified_pids_mode = PID_SIMPLIFIED_TUNING_OFF,
+        .simplified_master_multiplier = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_roll_pitch_ratio = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_i_gain = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_pd_ratio = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_pd_gain = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_dmin_ratio = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_ff_gain = SIMPLIFIED_TUNING_DEFAULT,
+        .simplified_dterm_filter = true,
+        .simplified_dterm_filter_multiplier = SIMPLIFIED_TUNING_DEFAULT,
     );
 #ifndef USE_D_MIN
     pidProfile->pid[PID_ROLL].D = 30;
@@ -1148,12 +1159,9 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
         float agBoostAttenuator = fabsf(currentPidSetpoint) / 50.0f;
         agBoostAttenuator = MAX(agBoostAttenuator, 1.0f);
         const float agBoost = 1.0f + (pidRuntime.antiGravityPBoost / agBoostAttenuator);
-        pidData[axis].P *= agBoost;
-        if (axis == FD_ROLL) {
-            DEBUG_SET(DEBUG_ANTI_GRAVITY, 2, lrintf(agBoost * 1000));
-        }
-        if (axis == FD_PITCH) {
-            DEBUG_SET(DEBUG_ANTI_GRAVITY, 3, lrintf(agBoost * 1000));
+        if (axis != FD_YAW) {
+            pidData[axis].P *= agBoost;
+            DEBUG_SET(DEBUG_ANTI_GRAVITY, axis + 2, lrintf(agBoost * 1000));
         }
 
         const float pidSum = pidData[axis].P + pidData[axis].I + pidData[axis].D + pidData[axis].F;

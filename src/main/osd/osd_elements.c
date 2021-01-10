@@ -984,6 +984,9 @@ static void osdElementLinkQuality(osdElementParms_t *element)
         osdLinkQuality = rxGetLinkQuality();
         const uint8_t osdRfMode = rxGetRfMode();
         tfp_sprintf(element->buff, "%c%1d:%2d", SYM_LINK_QUALITY, osdRfMode, osdLinkQuality);
+    } else if (linkQualitySource == LQ_SOURCE_RX_PROTOCOL_GHST) { // 0-100
+        osdLinkQuality = rxGetLinkQuality();
+        tfp_sprintf(element->buff, "%c%2d", SYM_LINK_QUALITY, osdLinkQuality);
     } else { // 0-9
         osdLinkQuality = rxGetLinkQuality() * 10 / LINK_QUALITY_MAX_VALUE;
         if (osdLinkQuality >= 10) {
@@ -1874,8 +1877,12 @@ static void osdDrawSingleElementBackground(displayPort_t *osdDisplayPort, uint8_
     }
 }
 
-void osdDrawActiveElements(displayPort_t *osdDisplayPort, timeUs_t currentTimeUs)
+#define OSD_BLINK_FREQUENCY_HZ 2.5f
+
+void osdDrawActiveElements(displayPort_t *osdDisplayPort)
 {
+    static unsigned blinkLoopCounter = 0;
+
 #ifdef USE_GPS
     static bool lastGpsSensorState;
     // Handle the case that the GPS_SENSOR may be delayed in activation
@@ -1887,7 +1894,11 @@ void osdDrawActiveElements(displayPort_t *osdDisplayPort, timeUs_t currentTimeUs
     }
 #endif // USE_GPS
 
-    blinkState = (currentTimeUs / 200000) % 2;
+    // synchronize the blinking with the OSD task loop
+    if (++blinkLoopCounter >= lrintf(osdConfig()->task_frequency / OSD_DRAW_FREQ_DENOM / (OSD_BLINK_FREQUENCY_HZ * 2))) {
+        blinkState = !blinkState;
+        blinkLoopCounter = 0;
+    }
 
     for (unsigned i = 0; i < activeOsdElementCount; i++) {
         if (!backgroundLayerSupported) {
