@@ -47,11 +47,11 @@ stages:
       displayName: 'Install the build toolchain'
     - script: sudo apt-get install -y libblocksruntime-dev
       displayName: 'Install extra packages'
-    - script: make  EXTRA_FLAGS=-Werror checks
+    - script: make checks
       displayName: 'Run sanity checks'
-    - script: make  EXTRA_FLAGS=-Werror test-all
+    - script: make test-all
       displayName: 'Run all unit tests'
-    - script: make  EXTRA_FLAGS=-Werror all
+    - script: make all
       displayName: 'Build all oficial targets'
     - script: mkdir release; cp obj/*.hex release/
       displayName: 'Copy artefacts'

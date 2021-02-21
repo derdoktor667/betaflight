@@ -78,7 +78,6 @@ extern const uint32_t baudRates[];
 
 // serial port identifiers are now fixed, these values are used by MSP commands.
 typedef enum {
-    SERIAL_PORT_ALL = -2,
     SERIAL_PORT_NONE = -1,
     SERIAL_PORT_USART1 = 0,
     SERIAL_PORT_USART2,
@@ -92,7 +91,7 @@ typedef enum {
     SERIAL_PORT_USB_VCP = 20,
     SERIAL_PORT_SOFTSERIAL1 = 30,
     SERIAL_PORT_SOFTSERIAL2,
-    SERIAL_PORT_IDENTIFIER_MAX = SERIAL_PORT_SOFTSERIAL2,
+    SERIAL_PORT_IDENTIFIER_MAX = SERIAL_PORT_SOFTSERIAL2
 } serialPortIdentifier_e;
 
 extern const serialPortIdentifier_e serialPortIdentifiers[SERIAL_PORT_COUNT];
@@ -117,7 +116,7 @@ serialPort_t *findSharedSerialPort(uint16_t functionMask, serialPortFunction_e s
 //
 typedef struct serialPortConfig_s {
     uint32_t functionMask;
-    int8_t identifier;
+    serialPortIdentifier_e identifier;
     uint8_t msp_baudrateIndex;
     uint8_t gps_baudrateIndex;
     uint8_t blackbox_baudrateIndex;

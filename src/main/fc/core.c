@@ -936,7 +936,7 @@ bool processRx(timeUs_t currentTimeUs)
         disarmAt = currentTimeUs + autoDisarmDelayUs;  // extend auto-disarm timer
     }
 
-    if (!(IS_RC_MODE_ACTIVE(BOXPARALYZE) && !ARMING_FLAG(ARMED))
+    if (!IS_RC_MODE_ACTIVE(BOXPARALYZE)
 #ifdef USE_CMS
         && !cmsInMenu
 #endif
@@ -957,7 +957,7 @@ bool processRx(timeUs_t currentTimeUs)
     }
 #endif
 
-    if (!cliMode && !(IS_RC_MODE_ACTIVE(BOXPARALYZE) && !ARMING_FLAG(ARMED))) {
+    if (!cliMode && !IS_RC_MODE_ACTIVE(BOXPARALYZE)) {
         processRcAdjustments(currentControlRateProfile);
     }
 
