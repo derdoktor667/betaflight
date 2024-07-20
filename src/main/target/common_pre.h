@@ -20,26 +20,31 @@
 
 #pragma once
 
+// Enable parameter groups
 #define USE_PARAMETER_GROUPS
-// type conversion warnings.
-// -Wconversion can be turned on to enable the process of eliminating these warnings
-//#pragma GCC diagnostic warning "-Wconversion"
+
+// Enable/disable type conversion warnings
+// #pragma GCC diagnostic warning "-Wconversion"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
-// -Wpadded can be turned on to check padding of structs
-//#pragma GCC diagnostic warning "-Wpadded"
 
-//#define SCHEDULER_DEBUG // define this to use scheduler debug[] values. Undefined by default for performance reasons
+// Enable/disable struct padding warnings
+// #pragma GCC diagnostic warning "-Wpadded"
 
+// Scheduler debug option
+// #define SCHEDULER_DEBUG // Uncomment to use scheduler debug[] values. Undefined by default for performance reasons
+
+// I2C overclock settings
 #define I2C1_OVERCLOCK true
 #define I2C2_OVERCLOCK true
 
+// STM32F1-specific settings
 #ifdef STM32F1
 #define MINIMAL_CLI
-// Using RX DMA disables the use of receive callbacks
 #define USE_UART1_RX_DMA
 #define USE_UART1_TX_DMA
 #endif
 
+// STM32F3-specific settings
 #ifdef STM32F3
 #define USE_DSHOT
 #define USE_GYRO_DATA_ANALYSE
@@ -75,25 +80,27 @@
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
 #define USE_RESOURCE_MGMT
-#define USE_RUNAWAY_TAKEOFF     // Runaway Takeoff Prevention (anti-taz)
+#define USE_RUNAWAY_TAKEOFF // Runaway Takeoff Prevention (anti-taz)
 #define USE_TELEMETRY
 #define USE_TELEMETRY_IBUS
 #define USE_PERSISTENT_OBJECTS
 #define USE_CUSTOM_DEFAULTS_ADDRESS
 
+// Ensure one of the protocols is defined
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
 #define USE_FRSKY
 #endif
 
+// Protocol-specific settings
 #if defined(USE_FRSKY)
-#define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
+#define USE_SERIALRX_SBUS // Frsky and Futaba receivers
 #define USE_TELEMETRY_FRSKY_HUB
 #define USE_TELEMETRY_SMARTPORT
 #endif
 
 #ifdef USE_SPEKTRUM
-#define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
-#define USE_SERIALRX_SUMD       // Graupner Hott protocol
+#define USE_SERIALRX_SPEKTRUM // SRXL, DSM2, and DSMX protocol
+#define USE_SERIALRX_SUMD // Graupner Hott protocol
 #define USE_TELEMETRY_SRXL
 #endif
 
@@ -104,12 +111,12 @@
 #endif
 
 #ifdef USE_CRSF
-#define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
+#define USE_SERIALRX_CRSF // Team Black Sheep Crossfire protocol
 #define USE_TELEMETRY_CRSF
 #endif
+#endif // STM32F3
 
-#endif
-
+// STM32F4-specific settings
 #ifdef STM32F4
 #if defined(STM32F40_41xxx)
 #define USE_FAST_DATA
@@ -138,9 +145,9 @@
 #if defined(STM32F40_41xxx) || defined(STM32F411xE)
 #define USE_OVERCLOCK
 #endif
-
 #endif // STM32F4
 
+// STM32F7-specific settings
 #ifdef STM32F7
 #define USE_ITCM_RAM
 #define USE_FAST_DATA
@@ -166,6 +173,7 @@
 #define USE_SPI_TRANSACTION
 #endif // STM32F7
 
+// STM32H7-specific settings
 #ifdef STM32H7
 #define USE_ITCM_RAM
 #define USE_FAST_DATA
@@ -189,8 +197,9 @@
 #define USE_PERSISTENT_MSC_RTC
 #define USE_DSHOT_CACHE_MGMT
 #define USE_LATE_TASK_STATISTICS
-#endif
+#endif // STM32H7
 
+// STM32G4-specific settings
 #ifdef STM32G4
 #define USE_FAST_RAM
 #define USE_DSHOT
@@ -209,47 +218,49 @@
 #define USE_MCO
 #define USE_DMA_SPEC
 #define USE_TIMER_MGMT
-#endif
+#endif // STM32G4
 
+// General settings
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
-#define TASK_GYROPID_DESIRED_PERIOD     125 // 125us = 8kHz
-#define SCHEDULER_DELAY_LIMIT           10
+#define TASK_GYROPID_DESIRED_PERIOD 125 // 125us = 8kHz
+#define SCHEDULER_DELAY_LIMIT 10
 #else
-#define TASK_GYROPID_DESIRED_PERIOD     1000 // 1000us = 1kHz
-#define SCHEDULER_DELAY_LIMIT           100
+#define TASK_GYROPID_DESIRED_PERIOD 1000 // 1000us = 1kHz
+#define SCHEDULER_DELAY_LIMIT 100
 #endif
 
 #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
-#define DEFAULT_AUX_CHANNEL_COUNT       MAX_AUX_CHANNEL_COUNT
+#define DEFAULT_AUX_CHANNEL_COUNT MAX_AUX_CHANNEL_COUNT
 #else
-#define DEFAULT_AUX_CHANNEL_COUNT       6
+#define DEFAULT_AUX_CHANNEL_COUNT 6
 #endif
 
+// Memory section attributes
 #ifdef USE_ITCM_RAM
-#define FAST_CODE                   __attribute__((section(".tcm_code")))
-#define FAST_CODE_NOINLINE          NOINLINE
+#define FAST_CODE __attribute__((section(".tcm_code")))
+#define FAST_CODE_NOINLINE NOINLINE
 #else
 #define FAST_CODE
 #define FAST_CODE_NOINLINE
 #endif // USE_ITCM_RAM
 
 #ifdef USE_CCM_CODE
-#define CCM_CODE              __attribute__((section(".ccm_code")))
+#define CCM_CODE __attribute__((section(".ccm_code")))
 #else
 #define CCM_CODE
 #endif
 
 #ifdef USE_FAST_DATA
-#define FAST_DATA_ZERO_INIT          __attribute__ ((section(".fastram_bss"), aligned(4)))
-#define FAST_DATA                    __attribute__ ((section(".fastram_data"), aligned(4)))
+#define FAST_DATA_ZERO_INIT __attribute__((section(".fastram_bss"), aligned(4)))
+#define FAST_DATA __attribute__((section(".fastram_data"), aligned(4)))
 #else
 #define FAST_DATA_ZERO_INIT
 #define FAST_DATA
 #endif // USE_FAST_DATA
 
-#if defined(STM32F4) || defined (STM32H7)
-// Data in RAM which is guaranteed to not be reset on hot reboot
-#define PERSISTENT                  __attribute__ ((section(".persistent_data"), aligned(4)))
+#if defined(STM32F4) || defined(STM32H7)
+// Data in RAM which is guaranteed not to reset on hot reboot
+#define PERSISTENT __attribute__((section(".persistent_data"), aligned(4)))
 #endif
 
 #ifdef USE_DMA_RAM
@@ -267,47 +278,45 @@
 #define DMA_RAM_R
 #define DMA_RAM_W
 #define DMA_RAM_RW
-#endif
+#endif // USE_DMA_RAM
 
+// Feature definitions
 #define USE_MOTOR
 #define USE_PWM_OUTPUT
 #define USE_DMA
 #define USE_TIMER
-
-#define USE_BRUSHED_ESC_AUTODETECT  // Detect if brushed motors are connected and set defaults appropriately to avoid motors spinning on boot
+#define USE_BRUSHED_ESC_AUTODETECT // Detect if brushed motors are connected and set defaults to avoid motors spinning on boot
 #define USE_SERIAL_PASSTHROUGH
-#define USE_GYRO_REGISTER_DUMP  // Adds gyroregisters command to cli to dump configured register values
+#define USE_GYRO_REGISTER_DUMP // Adds gyroregisters command to CLI to dump configured register values
 #define USE_PPM
-
-#define USE_SERIALRX_CRSF       // Team Black Sheep Crossfire protocol
-#define USE_SERIALRX_GHST       // ImmersionRC Ghost Protocol
-#define USE_SERIALRX_IBUS       // FlySky and Turnigy receivers
-#define USE_SERIALRX_SBUS       // Frsky and Futaba receivers
-// #define USE_SERIALRX_SPEKTRUM   // SRXL, DSM2 and DSMX protocol
-// #define USE_SERIALRX_SUMD       // Graupner Hott protocol
-
+#define USE_SERIALRX_CRSF // Team Black Sheep Crossfire protocol
+#define USE_SERIALRX_GHST // ImmersionRC Ghost Protocol
+#define USE_SERIALRX_IBUS // FlySky and Turnigy receivers
+#define USE_SERIALRX_SBUS // Frsky and Futaba receivers
+// #define USE_SERIALRX_SPEKTRUM // SRXL, DSM2, and DSMX protocol
+// #define USE_SERIALRX_SUMD // Graupner Hott protocol
 #define USE_CLI
 #define USE_TASK_STATISTICS
 #define USE_IMU_CALC
 #define USE_SERIAL_RX
 
+// Feature definitions based on flash size and feature cut levels
 #if (TARGET_FLASH_SIZE > 128)
 #define PID_PROFILE_COUNT 3
-#define CONTROL_RATE_PROFILE_COUNT  6
+#define CONTROL_RATE_PROFILE_COUNT 6
 #else
 #define PID_PROFILE_COUNT 2
-#define CONTROL_RATE_PROFILE_COUNT  3
+#define CONTROL_RATE_PROFILE_COUNT 3
 #endif
 
 #if ((FLASH_SIZE > 64) || (FEATURE_CUT_LEVEL < 12))
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
-
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
 #define USE_RESOURCE_MGMT
-#define USE_RUNAWAY_TAKEOFF     // Runaway Takeoff Prevention (anti-taz)
+#define USE_RUNAWAY_TAKEOFF // Runaway Takeoff Prevention (anti-taz)
 #define USE_TELEMETRY
 #endif
 
@@ -398,7 +407,7 @@
 #endif
 
 #if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 2))
-#define USE_SERIALRX_FPORT      // FrSky FPort
+#define USE_SERIALRX_FPORT // FrSky FPort
 #endif
 
 #if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
@@ -450,7 +459,7 @@
 #define USE_VTX_TABLE
 #define USE_PERSISTENT_STATS
 #define USE_PROFILE_NAMES
-// #define USE_SERIALRX_SRXL2     // Spektrum SRXL2 protocol
+// #define USE_SERIALRX_SRXL2 // Spektrum SRXL2 protocol
 #define USE_INTERPOLATED_SP
 // #define USE_CUSTOM_BOX_NAMES
 #define USE_BATTERY_VOLTAGE_SAG_COMPENSATION

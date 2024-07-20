@@ -1,12 +1,14 @@
+# Define the list of targets
 F3_TARGETS += $(TARGET)
 
+# Define the default features and target source files
 FEATURES    = ONBOARDFLASH
 TARGET_SRC  = drivers/accgyro/accgyro_mpu.c
 
-# Set FEATURE_CUT_LEVEL and TARGET_SRC based on TARGET
+# Set FEATURE_CUT_LEVEL and additional TARGET_SRC based on TARGET
 ifeq ($(TARGET), SPRF3)
-    TARGET_SRC += drivers/accgyro/accgyro_mpu6050.c
     FEATURE_CUT_LEVEL = 0
+    TARGET_SRC += drivers/accgyro/accgyro_mpu6050.c
 else
     FEATURE_CUT_LEVEL = 6
     TARGET_SRC += \
