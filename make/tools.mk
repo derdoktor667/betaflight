@@ -12,48 +12,56 @@
 # Check that environmental variables are sane
 #
 ##############################
+##############################
+#
+# Check that environmental variables are sane
+#
+##############################
 
 # Set up ARM (STM32) SDK
-ARM_SDK_DIR ?= $(TOOLS_DIR)/gcc-arm-none-eabi-9-2020-q2-update
+ARM_SDK_BASE_DIR ?= $(TOOLS_DIR)/arm-gnu-toolchain-13.2.Rel1
 # Checked below, Should match the output of $(shell arm-none-eabi-gcc -dumpversion)
-GCC_REQUIRED_VERSION ?= 14.1.0
-
-.PHONY: arm_sdk_version
-
-arm_sdk_version:
-	$(V1) $(ARM_SDK_PREFIX)gcc --version
+GCC_REQUIRED_VERSION ?= 13.2.1
 
 ## arm_sdk_install   : Install Arm SDK
 .PHONY: arm_sdk_install
 
-ARM_SDK_URL_BASE  := https://developer.arm.com/-/media/Files/downloads/gnu-rm/9-2020q2/gcc-arm-none-eabi-9-2020-q2-update
-
-# source: https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads
+# source: https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads
 ifeq ($(OSFAMILY), linux)
-  ARM_SDK_URL  := $(ARM_SDK_URL_BASE)-x86_64-linux.tar.bz2
+  ARM_SDK_URL := https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-x86_64-arm-none-eabi.tar.xz?rev=e434b9ea4afc4ed7998329566b764309&hash=CA590209F5774EE1C96E6450E14A3E26
+  ARM_SDK_DIR := $(ARM_SDK_BASE_DIR)-x86_64-arm-none-eabi
+  	ifeq ($(ARCH), aarch64)
+  		ARM_SDK_URL  := https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-aarch64-arm-none-eabi.tar.xz
+		ARM_SDK_DIR := $(ARM_SDK_BASE_DIR)-aarch64-arm-none-eabi
+  	endif
 endif
 
 ifeq ($(OSFAMILY), macosx)
-  ARM_SDK_URL  := $(ARM_SDK_URL_BASE)-mac.tar.bz2
+  ARM_SDK_URL := https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-darwin-x86_64-arm-none-eabi.tar.xz?rev=a3d8c87bb0af4c40b7d7e0e291f6541b&hash=D1BCDFFD19D3EE94A915B5347E3CDA5A
+  ARM_SDK_DIR := $(ARM_SDK_BASE_DIR)-darwin-x86_64-arm-none-eabi
 endif
 
 ifeq ($(OSFAMILY), windows)
-  ARM_SDK_URL  := $(ARM_SDK_URL_BASE)-win32.zip
+  ARM_SDK_URL := https://developer.arm.com/-/media/Files/downloads/gnu/13.2.rel1/binrel/arm-gnu-toolchain-13.2.rel1-mingw-w64-i686-arm-none-eabi.zip?rev=93fda279901c4c0299e03e5c4899b51f&hash=99EF910A1409E119125AF8FED325CF79
 endif
 
 ARM_SDK_FILE := $(notdir $(ARM_SDK_URL))
 
 SDK_INSTALL_MARKER := $(ARM_SDK_DIR)/bin/arm-none-eabi-gcc-$(GCC_REQUIRED_VERSION)
 
+.PHONY: arm_sdk_version
+
+arm_sdk_version: | $(ARM_SDK_DIR)
+	$(V1) $(ARM_SDK_DIR)/bin/arm-none-eabi-gcc --version
+
 # order-only prereq on directory existance:
 arm_sdk_install: | $(TOOLS_DIR)
-
 arm_sdk_install: arm_sdk_download $(SDK_INSTALL_MARKER)
 
 $(SDK_INSTALL_MARKER):
 ifneq ($(OSFAMILY), windows)
         # binary only release so just extract it
-	$(V1) tar -C $(TOOLS_DIR) -xjf "$(DL_DIR)/$(ARM_SDK_FILE)"
+	$(V1) tar -C $(TOOLS_DIR) -xf "$(DL_DIR)/$(ARM_SDK_FILE)"
 else
 	$(V1) unzip -q -d $(ARM_SDK_DIR) "$(DL_DIR)/$(ARM_SDK_FILE)"
 endif
@@ -62,9 +70,8 @@ endif
 arm_sdk_download: | $(DL_DIR)
 arm_sdk_download: $(DL_DIR)/$(ARM_SDK_FILE)
 $(DL_DIR)/$(ARM_SDK_FILE):
-        # download the source only if it's newer than what we already have
-	$(V1) curl -L -k -o "$(DL_DIR)/$(ARM_SDK_FILE)" -z "$(DL_DIR)/$(ARM_SDK_FILE)" "$(ARM_SDK_URL)"
-
+    # download the source only if it's newer than what we already have
+	$(V1) curl -L -k -o "$@" $(if $(wildcard $@), -z "$@",) "$(ARM_SDK_URL)"
 
 ## arm_sdk_clean     : Uninstall Arm SDK
 .PHONY: arm_sdk_clean
@@ -261,15 +268,15 @@ zip_clean:
 
 ifeq ($(shell [ -d "$(ARM_SDK_DIR)" ] && echo "exists"), exists)
   ARM_SDK_PREFIX := $(ARM_SDK_DIR)/bin/arm-none-eabi-
-else ifeq (,$(findstring _install,$(MAKECMDGOALS)))
+else ifeq (,$(filter %_install test% clean% %-print checks help configs, $(MAKECMDGOALS)))
   GCC_VERSION = $(shell arm-none-eabi-gcc -dumpversion)
   ifeq ($(GCC_VERSION),)
     $(error **ERROR** arm-none-eabi-gcc not in the PATH. Run 'make arm_sdk_install' to install automatically in the tools folder of this repo)
   else ifneq ($(GCC_VERSION), $(GCC_REQUIRED_VERSION))
-    $(error **ERROR** your arm-none-eabi-gcc is '$(GCC_VERSION)', but '$(GCC_REQUIRED_VERSION)' is expected. Override with 'GCC_REQUIRED_VERSION' in make/local.mk or run 'make arm_sdk_install' to install the right version automatically in the tools folder of this repo)
+    $(error **ERROR** your arm-none-eabi-gcc is '$(GCC_VERSION)', but '$(GCC_REQUIRED_VERSION)' is expected. Override with 'GCC_REQUIRED_VERSION' in mk/local.mk or run 'make arm_sdk_install' to install the right version automatically in the tools folder of this repo)
   endif
 
-  # ARM tookchain is in the path, and the version is what's required.
+  # ARM toolchain is in the path, and the version is what's required.
   ARM_SDK_PREFIX ?= arm-none-eabi-
 endif
 
