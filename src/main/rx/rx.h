@@ -34,8 +34,8 @@
 #define PWM_RANGE (PWM_RANGE_MAX - PWM_RANGE_MIN)
 #define PWM_RANGE_MIDDLE (PWM_RANGE_MIN + (PWM_RANGE / 2))
 
-#define PWM_PULSE_MIN   750       // minimum PWM pulse width which is considered valid
-#define PWM_PULSE_MAX   2250      // maximum PWM pulse width which is considered valid
+#define PWM_PULSE_MIN 750  // minimum PWM pulse width which is considered valid
+#define PWM_PULSE_MAX 2250 // maximum PWM pulse width which is considered valid
 
 #define RXFAIL_STEP_TO_CHANNEL_VALUE(step) (PWM_PULSE_MIN + 25 * step)
 #define CHANNEL_VALUE_TO_RXFAIL_STEP(channelValue) ((constrain(channelValue, PWM_PULSE_MIN, PWM_PULSE_MAX) - PWM_PULSE_MIN) / 25)
@@ -45,7 +45,8 @@
 #define DEFAULT_SERVO_MIDDLE 1500
 #define DEFAULT_SERVO_MAX 2000
 
-typedef enum {
+typedef enum
+{
     RX_FRAME_PENDING = 0,
     RX_FRAME_COMPLETE = (1 << 0),
     RX_FRAME_FAILSAFE = (1 << 1),
@@ -53,7 +54,8 @@ typedef enum {
     RX_FRAME_DROPPED = (1 << 3)
 } rxFrameState_e;
 
-typedef enum {
+typedef enum
+{
     SERIALRX_SPEKTRUM1024 = 0,
     SERIALRX_SPEKTRUM2048 = 1,
     SERIALRX_SBUS = 2,
@@ -71,9 +73,9 @@ typedef enum {
     SERIALRX_GHST = 14
 } SerialRXType;
 
-#define MAX_SUPPORTED_RC_PPM_CHANNEL_COUNT          12
-#define MAX_SUPPORTED_RC_PARALLEL_PWM_CHANNEL_COUNT  8
-#define MAX_SUPPORTED_RC_CHANNEL_COUNT              18
+#define MAX_SUPPORTED_RC_PPM_CHANNEL_COUNT 12
+#define MAX_SUPPORTED_RC_PARALLEL_PWM_CHANNEL_COUNT 8
+#define MAX_SUPPORTED_RC_CHANNEL_COUNT 18
 
 #define NON_AUX_CHANNEL_COUNT 4
 #define MAX_AUX_CHANNEL_COUNT (MAX_SUPPORTED_RC_CHANNEL_COUNT - NON_AUX_CHANNEL_COUNT)
@@ -86,14 +88,15 @@ typedef enum {
 
 extern const char rcChannelLetters[];
 
-extern int16_t rcData[MAX_SUPPORTED_RC_CHANNEL_COUNT];       // interval [1000;2000]
+extern int16_t rcData[MAX_SUPPORTED_RC_CHANNEL_COUNT]; // interval [1000;2000]
 
 #define RSSI_SCALE_MIN 1
 #define RSSI_SCALE_MAX 255
 
 #define RSSI_SCALE_DEFAULT 100
 
-typedef enum {
+typedef enum
+{
     RX_FAILSAFE_MODE_AUTO = 0,
     RX_FAILSAFE_MODE_HOLD,
     RX_FAILSAFE_MODE_SET,
@@ -102,21 +105,24 @@ typedef enum {
 
 #define RX_FAILSAFE_MODE_COUNT 3
 
-typedef enum {
+typedef enum
+{
     RX_FAILSAFE_TYPE_FLIGHT = 0,
     RX_FAILSAFE_TYPE_AUX
 } rxFailsafeChannelType_e;
 
 #define RX_FAILSAFE_TYPE_COUNT 2
 
-typedef struct rxFailsafeChannelConfig_s {
+typedef struct rxFailsafeChannelConfig_s
+{
     uint8_t mode; // See rxFailsafeChannelMode_e
     uint8_t step;
 } rxFailsafeChannelConfig_t;
 
 PG_DECLARE_ARRAY(rxFailsafeChannelConfig_t, MAX_SUPPORTED_RC_CHANNEL_COUNT, rxFailsafeChannelConfigs);
 
-typedef struct rxChannelRangeConfig_s {
+typedef struct rxChannelRangeConfig_s
+{
     uint16_t min;
     uint16_t max;
 } rxChannelRangeConfig_t;
@@ -127,9 +133,10 @@ struct rxRuntimeState_s;
 typedef uint16_t (*rcReadRawDataFnPtr)(const struct rxRuntimeState_s *rxRuntimeState, uint8_t chan); // used by receiver driver to return channel data
 typedef uint8_t (*rcFrameStatusFnPtr)(struct rxRuntimeState_s *rxRuntimeState);
 typedef bool (*rcProcessFrameFnPtr)(const struct rxRuntimeState_s *rxRuntimeState);
-typedef timeUs_t rcGetFrameTimeUsFn(void);  // used to retrieve the timestamp in microseconds for the last channel data frame
+typedef timeUs_t rcGetFrameTimeUsFn(void); // used to retrieve the timestamp in microseconds for the last channel data frame
 
-typedef enum {
+typedef enum
+{
     RX_PROVIDER_NONE = 0,
     RX_PROVIDER_PARALLEL_PWM,
     RX_PROVIDER_PPM,
@@ -138,20 +145,23 @@ typedef enum {
     RX_PROVIDER_SPI,
 } rxProvider_t;
 
-typedef struct rxRuntimeState_s {
-    rxProvider_t        rxProvider;
-    SerialRXType        serialrxProvider;
-    uint8_t             channelCount; // number of RC channels as reported by current input driver
-    uint16_t            rxRefreshRate;
-    rcReadRawDataFnPtr  rcReadRawFn;
-    rcFrameStatusFnPtr  rcFrameStatusFn;
+typedef struct rxRuntimeState_s
+{
+    rxProvider_t rxProvider;
+    SerialRXType serialrxProvider;
+    uint8_t channelCount; // number of RC channels as reported by current input driver
+    uint16_t rxRefreshRate;
+    rcReadRawDataFnPtr rcReadRawFn;
+    rcFrameStatusFnPtr rcFrameStatusFn;
     rcProcessFrameFnPtr rcProcessFrameFn;
     rcGetFrameTimeUsFn *rcFrameTimeUsFn;
-    uint16_t            *channelData;
-    void                *frameData;
+    uint16_t *channelData;
+    void *frameData;
+    timeUs_t lastRcFrameTimeUs;
 } rxRuntimeState_t;
 
-typedef enum {
+typedef enum
+{
     RSSI_SOURCE_NONE = 0,
     RSSI_SOURCE_ADC,
     RSSI_SOURCE_RX_CHANNEL,
@@ -163,7 +173,8 @@ typedef enum {
 
 extern rssiSource_e rssiSource;
 
-typedef enum {
+typedef enum
+{
     LQ_SOURCE_NONE = 0,
     LQ_SOURCE_RX_PROTOCOL_CRSF,
     LQ_SOURCE_RX_PROTOCOL_GHST,
@@ -214,3 +225,5 @@ void resumeRxPwmPpmSignal(void);
 uint16_t rxGetRefreshRate(void);
 
 timeDelta_t rxGetFrameDelta(timeDelta_t *frameAgeUs);
+
+timeUs_t rxFrameTimeUs(void);

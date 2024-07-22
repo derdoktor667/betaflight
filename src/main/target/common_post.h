@@ -120,6 +120,10 @@
 #if !defined(USE_SERIALRX_CRSF)
 #undef USE_TELEMETRY_CRSF
 #undef USE_CRSF_LINK_STATISTICS
+#undef USE_CRSF_V3
+#endif
+
+#if !defined(USE_RX_EXPRESSLRS) && !defined(USE_SERIALRX_CRSF)
 #undef USE_RX_RSSI_DBM
 #endif
 
@@ -253,6 +257,7 @@
 #undef USE_RX_LINK_QUALITY_INFO
 #undef USE_OSD_PROFILES
 #undef USE_OSD_STICK_OVERLAY
+#undef USE_RX_LINK_UPLINK_POWER
 #endif
 
 // GPS Rescue configuration
@@ -446,4 +451,7 @@ extern uint8_t __config_end;
 // RX Bind configuration
 #if defined(USE_RX_SPI) || defined(USE_SERIALRX_SRXL2)
 #define USE_RX_BIND
+#endif
+#ifndef USE_GPS
+#undef USE_GPS_PLUS_CODES
 #endif
