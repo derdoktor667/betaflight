@@ -279,12 +279,23 @@
 #endif
 
 #ifdef USE_DMA_RAM
+#if defined(STM32H7)
 #define DMA_RAM __attribute__((section(".DMA_RAM")))
 #define DMA_RW_AXI __attribute__((section(".DMA_RW_AXI")))
+extern uint8_t _dmaram_start__;
+extern uint8_t _dmaram_end__;
+#elif defined(STM32G4)
+#define DMA_RAM_R __attribute__((section(".DMA_RAM_R")))
+#define DMA_RAM_W __attribute__((section(".DMA_RAM_W")))
+#define DMA_RAM_RW __attribute__((section(".DMA_RAM_RW")))
+#endif
 #else
 #define DMA_RAM
 #define DMA_RW_AXI
-#endif
+#define DMA_RAM_R
+#define DMA_RAM_W
+#define DMA_RAM_RW
+#endif // USE_DMA_RAM
 
 // Feature definitions
 #define USE_MOTOR
@@ -308,8 +319,8 @@
 
 // Feature definitions based on flash size and feature cut levels
 #if (TARGET_FLASH_SIZE > 128)
-#define PID_PROFILE_COUNT 3
-#define CONTROL_RATE_PROFILE_COUNT 6
+#define PID_PROFILE_COUNT 2
+#define CONTROL_RATE_PROFILE_COUNT 3
 #else
 #define PID_PROFILE_COUNT 2
 #define CONTROL_RATE_PROFILE_COUNT 3

@@ -66,6 +66,17 @@
 
 #define MPU_INQUIRY_MASK   0x7E
 
+// 1 MHz max SPI frequency during device detection
+#define MPU_MAX_SPI_DETECT_CLK_HZ 1000000
+
+#define MPU_INQUIRY_MASK   0x7E
+
+// Allow 100ms before attempting to access SPI bus
+#define GYRO_SPI_STARTUP_MS 100
+
+// Need to see at least this many interrupts during initialisation to confirm EXTI connectivity
+#define GYRO_EXTI_DETECT_THRESHOLD 1000
+
 #ifdef USE_I2C_GYRO
 static void mpu6050FindRevision(gyroDev_t *gyro)
 {
