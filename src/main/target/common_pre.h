@@ -59,6 +59,7 @@
 #define USE_DMA
 #define USE_D_MIN
 #define USE_DSHOT
+#define USE_DSHOT_DMAR
 #define USE_DSHOT_TELEMETRY
 #define USE_DSHOT_TELEMETRY_STATS
 #define USE_DYN_IDLE
@@ -440,7 +441,7 @@ extern uint8_t _dmaram_end__;
 #if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
 #define USE_BOARD_INFO
 // #define USE_EXTENDED_CMS_MENUS
-#define USE_RTC_TIME
+// #define USE_RTC_TIME
 #define USE_RX_MSP
 #define USE_ESC_SENSOR_INFO
 // #define USE_CRSF_CMS_TELEMETRY
@@ -451,7 +452,7 @@ extern uint8_t _dmaram_end__;
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL == 0))
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
-#define USE_DASHBOARD
+// #define USE_DASHBOARD
 #define USE_DSHOT_DMAR
 // #define USE_GPS
 // #define USE_GPS_NMEA
