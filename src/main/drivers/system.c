@@ -32,7 +32,6 @@
 #include "drivers/resource.h"
 #include "drivers/sound_beeper.h"
 
-
 #include "system.h"
 
 #if defined(STM32F3) || defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
@@ -87,7 +86,8 @@ static volatile int sysTickPending = 0;
 
 void SysTick_Handler(void)
 {
-    ATOMIC_BLOCK(NVIC_PRIO_MAX) {
+    ATOMIC_BLOCK(NVIC_PRIO_MAX)
+    {
         sysTickUptime++;
         sysTickValStamp = SysTick->VAL;
         sysTickPending = 0;
@@ -105,10 +105,12 @@ uint32_t microsISR(void)
 {
     register uint32_t ms, pending, cycle_cnt;
 
-    ATOMIC_BLOCK(NVIC_PRIO_MAX) {
+    ATOMIC_BLOCK(NVIC_PRIO_MAX)
+    {
         cycle_cnt = SysTick->VAL;
 
-        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) {
+        if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
+        {
             // Update pending.
             // Record it for multiple calls within the same rollover period
             // (Will be cleared when serviced).
@@ -134,11 +136,13 @@ uint32_t micros(void)
 
     // Call microsISR() in interrupt and elevated (non-zero) BASEPRI context
 
-    if ((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) || (__get_BASEPRI())) {
+    if ((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) || (__get_BASEPRI()))
+    {
         return microsISR();
     }
 
-    do {
+    do
+    {
         ms = sysTickUptime;
         cycle_cnt = SysTick->VAL;
     } while (ms != sysTickUptime || cycle_cnt > sysTickValStamp);
@@ -166,7 +170,8 @@ uint32_t millis(void)
 void delayMicroseconds(uint32_t us)
 {
     uint32_t now = micros();
-    while (micros() - now < us);
+    while (micros() - now < us)
+        ;
 }
 #else
 void delayMicroseconds(uint32_t us)
@@ -174,7 +179,8 @@ void delayMicroseconds(uint32_t us)
     uint32_t elapsed = 0;
     uint32_t lastCount = SysTick->VAL;
 
-    for (;;) {
+    for (;;)
+    {
         register uint32_t current_count = SysTick->VAL;
         uint32_t elapsed_us;
 
@@ -204,11 +210,13 @@ void delay(uint32_t ms)
 
 void indicate(uint8_t count, uint16_t duration)
 {
-    if (count) {
+    if (count)
+    {
         LED1_ON;
         LED0_OFF;
 
-        while (count--) {
+        while (count--)
+        {
             LED1_TOGGLE;
             LED0_TOGGLE;
             BEEP_ON;
@@ -224,7 +232,8 @@ void indicate(uint8_t count, uint16_t duration)
 
 void indicateFailure(failureMode_e mode, int codeRepeatsRemaining)
 {
-    while (codeRepeatsRemaining--) {
+    while (codeRepeatsRemaining--)
+    {
         indicate(WARNING_FLASH_COUNT, WARNING_FLASH_DURATION_MS);
 
         delay(WARNING_PAUSE_DURATION_MS);
@@ -253,7 +262,7 @@ void initialiseMemorySections(void)
     extern uint8_t tcm_code_start;
     extern uint8_t tcm_code_end;
     extern uint8_t tcm_code;
-    memcpy(&tcm_code_start, &tcm_code, (size_t) (&tcm_code_end - &tcm_code_start));
+    memcpy(&tcm_code_start, &tcm_code, (size_t)(&tcm_code_end - &tcm_code_start));
 #endif
 
 #ifdef USE_CCM_CODE
@@ -261,7 +270,7 @@ void initialiseMemorySections(void)
     extern uint8_t ccm_code_start;
     extern uint8_t ccm_code_end;
     extern uint8_t ccm_code;
-    memcpy(&ccm_code_start, &ccm_code, (size_t) (&ccm_code_end - &ccm_code_start));
+    memcpy(&ccm_code_start, &ccm_code, (size_t)(&ccm_code_end - &ccm_code_start));
 #endif
 
 #ifdef USE_FAST_RAM
@@ -269,13 +278,14 @@ void initialiseMemorySections(void)
     extern uint8_t _sfastram_data;
     extern uint8_t _efastram_data;
     extern uint8_t _sfastram_idata;
-    memcpy(&_sfastram_data, &_sfastram_idata, (size_t) (&_efastram_data - &_sfastram_data));
+    memcpy(&_sfastram_data, &_sfastram_idata, (size_t)(&_efastram_data - &_sfastram_data));
 #endif
 }
 
 static void unusedPinInit(IO_t io)
 {
-    if (IOGetOwner(io) == OWNER_FREE) {
+    if (IOGetOwner(io) == OWNER_FREE)
+    {
         IOConfigGPIO(io, IOCFG_IPU);
     }
 }

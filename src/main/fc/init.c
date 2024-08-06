@@ -188,9 +188,11 @@ uint8_t systemState = SYSTEM_STATE_INITIALISING;
 void processLoopback(void)
 {
 #ifdef SOFTSERIAL_LOOPBACK
-    if (loopbackPort) {
+    if (loopbackPort)
+    {
         uint8_t bytesWaiting;
-        while ((bytesWaiting = serialRxBytesWaiting(loopbackPort))) {
+        while ((bytesWaiting = serialRxBytesWaiting(loopbackPort)))
+        {
             uint8_t b = serialRead(loopbackPort);
             serialWrite(loopbackPort, b);
         };
@@ -201,7 +203,7 @@ void processLoopback(void)
 #ifdef BUS_SWITCH_PIN
 void busSwitchInit(void)
 {
-static IO_t busSwitchResetPin        = IO_NONE;
+    static IO_t busSwitchResetPin = IO_NONE;
 
     busSwitchResetPin = IOGetByTag(IO_TAG(BUS_SWITCH_PIN));
     IOInit(busSwitchResetPin, OWNER_SYSTEM, 0);
@@ -219,12 +221,14 @@ bool requiresSpiLeadingEdge(SPIDevice device)
     UNUSED(device);
 #endif
 #if defined(SDCARD_SPI_INSTANCE)
-    if (device == spiDeviceByInstance(SDCARD_SPI_INSTANCE)) {
+    if (device == spiDeviceByInstance(SDCARD_SPI_INSTANCE))
+    {
         return true;
     }
 #endif
 #if defined(RX_SPI_INSTANCE)
-    if (device == spiDeviceByInstance(RX_SPI_INSTANCE)) {
+    if (device == spiDeviceByInstance(RX_SPI_INSTANCE))
+    {
         return true;
     }
 #endif
@@ -233,12 +237,14 @@ bool requiresSpiLeadingEdge(SPIDevice device)
     UNUSED(device);
 #endif
 #if defined(USE_SDCARD)
-    if (device == SPI_CFG_TO_DEV(sdcardConfig()->device)) {
+    if (device == SPI_CFG_TO_DEV(sdcardConfig()->device))
+    {
         return true;
     }
 #endif
 #if defined(USE_RX_SPI)
-    if (device == SPI_CFG_TO_DEV(rxSpiConfig()->spibus)) {
+    if (device == SPI_CFG_TO_DEV(rxSpiConfig()->spibus))
+    {
         return true;
     }
 #endif
@@ -298,11 +304,13 @@ static void sdCardAndFSInit()
 static void swdPinsInit(void)
 {
     IO_t io = IOGetByTag(DEFIO_TAG_E(PA13)); // SWDIO
-    if (IOGetOwner(io) == OWNER_FREE) {
+    if (IOGetOwner(io) == OWNER_FREE)
+    {
         IOInit(io, OWNER_SWD, 0);
     }
     io = IOGetByTag(DEFIO_TAG_E(PA14)); // SWCLK
-    if (IOGetOwner(io) == OWNER_FREE) {
+    if (IOGetOwner(io) == OWNER_FREE)
+    {
         IOInit(io, OWNER_SWD, 0);
     }
 }
@@ -327,18 +335,19 @@ void init(void)
     // We are doing this as with some boards, timing seems to be important, and the later detection will fail.
     ioTag_t motorIoTag = timerioTagGetByUsage(TIM_USE_MOTOR, 0);
 
-    if (motorIoTag) {
+    if (motorIoTag)
+    {
         detectBrushedESC(motorIoTag);
     }
 #endif
 
-    enum {
-        FLASH_INIT_ATTEMPTED            = (1 << 0),
-        SD_INIT_ATTEMPTED               = (1 << 1),
-        SPI_AND_QSPI_INIT_ATTEMPTED      = (1 << 2),
+    enum
+    {
+        FLASH_INIT_ATTEMPTED = (1 << 0),
+        SD_INIT_ATTEMPTED = (1 << 1),
+        SPI_AND_QSPI_INIT_ATTEMPTED = (1 << 2),
     };
     uint8_t initFlags = 0;
-
 
 #ifdef CONFIG_IN_SDCARD
 
@@ -379,14 +388,17 @@ void init(void)
     sdCardAndFSInit();
     initFlags |= SD_INIT_ATTEMPTED;
 
-    if (!sdcard_isInserted()) {
+    if (!sdcard_isInserted())
+    {
         failureMode(FAILURE_SDCARD_REQUIRED);
     }
 
-    while (afatfs_getFilesystemState() != AFATFS_FILESYSTEM_STATE_READY) {
+    while (afatfs_getFilesystemState() != AFATFS_FILESYSTEM_STATE_READY)
+    {
         afatfs_poll();
 
-        if (afatfs_getFilesystemState() == AFATFS_FILESYSTEM_STATE_FATAL) {
+        if (afatfs_getFilesystemState() == AFATFS_FILESYSTEM_STATE_FATAL)
+        {
             failureMode(FAILURE_SDCARD_INITIALISATION_FAILED);
         }
     }
@@ -421,14 +433,14 @@ void init(void)
     configureSPIAndQuadSPI();
     initFlags |= SPI_AND_QSPI_INIT_ATTEMPTED;
 
-
 #ifndef USE_FLASH_CHIP
 #error "CONFIG_IN_EXTERNAL_FLASH requires USE_FLASH_CHIP to be defined."
 #endif
 
     bool haveFlash = flashInit(flashConfig());
 
-    if (!haveFlash) {
+    if (!haveFlash)
+    {
         failureMode(FAILURE_EXTERNAL_FLASH_INIT_FAILED);
     }
     initFlags |= FLASH_INIT_ATTEMPTED;
@@ -445,7 +457,8 @@ void init(void)
     initBoardInformation();
 #endif
 
-    if (!readSuccess || !isEEPROMVersionValid() || strncasecmp(systemConfig()->boardIdentifier, TARGET_BOARD_IDENTIFIER, sizeof(TARGET_BOARD_IDENTIFIER))) {
+    if (!readSuccess || !isEEPROMVersionValid() || strncasecmp(systemConfig()->boardIdentifier, TARGET_BOARD_IDENTIFIER, sizeof(TARGET_BOARD_IDENTIFIER)))
+    {
         resetEEPROM(false);
     }
 
@@ -455,7 +468,8 @@ void init(void)
     // Now detect again with the actually configured pin for motor 1, if it is not the default pin.
     ioTag_t configuredMotorIoTag = motorConfig()->dev.ioTags[0];
 
-    if (configuredMotorIoTag && configuredMotorIoTag != motorIoTag) {
+    if (configuredMotorIoTag && configuredMotorIoTag != motorIoTag)
+    {
         detectBrushedESC(configuredMotorIoTag);
     }
 #endif
@@ -479,7 +493,7 @@ void init(void)
 
     buttonsInit();
 
-    delayMicroseconds(10);  // allow configuration to settle // XXX Could be removed, too?
+    delayMicroseconds(10); // allow configuration to settle // XXX Could be removed, too?
 
     // Allow EEPROM reset with two-button-press without power cycling in DEBUG build
 #ifdef DEBUG
@@ -488,15 +502,19 @@ void init(void)
 #define EEPROM_RESET_PRECONDITION (!isMPUSoftReset())
 #endif
 
-    if (EEPROM_RESET_PRECONDITION) {
+    if (EEPROM_RESET_PRECONDITION)
+    {
 #if defined(BUTTON_A_PIN) && defined(BUTTON_B_PIN)
         // two buttons required
         uint8_t secondsRemaining = 5;
         bool bothButtonsHeld;
-        do {
+        do
+        {
             bothButtonsHeld = buttonAPressed() && buttonBPressed();
-            if (bothButtonsHeld) {
-                if (--secondsRemaining == 0) {
+            if (bothButtonsHeld)
+            {
+                if (--secondsRemaining == 0)
+                {
                     resetEEPROM(false);
 #ifdef USE_PERSISTENT_OBJECTS
                     persistentObjectWrite(PERSISTENT_OBJECT_RESET_REASON, RESET_NONE);
@@ -521,8 +539,10 @@ void init(void)
     // the bind procedure.
 
 #if defined(USE_SPEKTRUM_BIND)
-    if (featureIsEnabled(FEATURE_RX_SERIAL)) {
-        switch (rxConfig()->serialrx_provider) {
+    if (featureIsEnabled(FEATURE_RX_SERIAL))
+    {
+        switch (rxConfig()->serialrx_provider)
+        {
         case SERIALRX_SPEKTRUM1024:
         case SERIALRX_SPEKTRUM2048:
         case SERIALRX_SRXL:
@@ -542,26 +562,32 @@ void init(void)
 
 #ifdef USE_OVERCLOCK
 #if defined(STM32F3) && defined(USE_VCP)
-    if (systemConfig()->cpu_overclock == OVERCLOCK_128MHZ) {
+    if (systemConfig()->cpu_overclock == OVERCLOCK_128MHZ)
+    {
         usbVcpOpen();
-        delayMicroseconds(1000000);
-        bool usbConnected = usbVcpIsConnected() != 0;
+        uint32_t us = micros();
+        bool usbConnected = false;
+        while (cmpTimeUs(micros(), us) < 1500000 && !usbConnected)
+        {
+            usbConnected = usbVcpIsConnected() != 0;
+        }
 
         /* void indicate(uint8_t count, uint16_t duration); */
         /* indicate((RCC->CFGR & (0xf << 18)) >> 18, 500); */
-        if (!usbConnected) {
+        if (!usbConnected)
+        {
             OverclockRebootIfNecessary(systemConfig()->cpu_overclock);
         }
-    } else 
-#endif    
-    OverclockRebootIfNecessary(systemConfig()->cpu_overclock);
+    }
+    else
+#endif
+        OverclockRebootIfNecessary(systemConfig()->cpu_overclock);
 #endif
 
-
-    // Configure MCO output after config is stable
+        // Configure MCO output after config is stable
 #ifdef USE_MCO
-    // Note that mcoConfigure must be augmented with an additional argument to
-    // indicate which device instance to configure when MCO and MCO2 are both supported
+        // Note that mcoConfigure must be augmented with an additional argument to
+        // indicate which device instance to configure when MCO and MCO2 are both supported
 
 #if defined(STM32F4) || defined(STM32F7)
     // F4 and F7 support MCO on PA8 and MCO2 on PC9, but only MCO2 is supported for now
@@ -575,7 +601,7 @@ void init(void)
 #endif // USE_MCO
 
 #ifdef USE_TIMER
-    timerInit();  // timer must be initialized before any channel is allocated
+    timerInit(); // timer must be initialized before any channel is allocated
 #endif
 
 #ifdef BUS_SWITCH_PIN
@@ -588,13 +614,13 @@ void init(void)
 
 #if defined(AVOID_UART1_FOR_PWM_PPM)
     serialInit(featureIsEnabled(FEATURE_SOFTSERIAL),
-            featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART1 : SERIAL_PORT_NONE);
+               featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART1 : SERIAL_PORT_NONE);
 #elif defined(AVOID_UART2_FOR_PWM_PPM)
     serialInit(featureIsEnabled(FEATURE_SOFTSERIAL),
-            featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART2 : SERIAL_PORT_NONE);
+               featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART2 : SERIAL_PORT_NONE);
 #elif defined(AVOID_UART3_FOR_PWM_PPM)
     serialInit(featureIsEnabled(FEATURE_SOFTSERIAL),
-            featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART3 : SERIAL_PORT_NONE);
+               featureIsEnabled(FEATURE_RX_PPM) || featureIsEnabled(FEATURE_RX_PARALLEL_PWM) ? SERIAL_PORT_USART3 : SERIAL_PORT_NONE);
 #else
     serialInit(featureIsEnabled(FEATURE_SOFTSERIAL), SERIAL_PORT_NONE);
 #endif
@@ -603,10 +629,12 @@ void init(void)
     mixerConfigureOutput();
 
     uint16_t idlePulse = motorConfig()->mincommand;
-    if (featureIsEnabled(FEATURE_3D)) {
+    if (featureIsEnabled(FEATURE_3D))
+    {
         idlePulse = flight3DConfig()->neutral3d;
     }
-    if (motorConfig()->dev.motorPwmProtocol == PWM_TYPE_BRUSHED) {
+    if (motorConfig()->dev.motorPwmProtocol == PWM_TYPE_BRUSHED)
+    {
         idlePulse = 0; // brushed motors
     }
 #ifdef USE_MOTOR
@@ -619,14 +647,18 @@ void init(void)
     UNUSED(idlePulse);
 #endif
 
-    if (0) {}
+    if (0)
+    {
+    }
 #if defined(USE_PPM)
-    else if (featureIsEnabled(FEATURE_RX_PPM)) {
+    else if (featureIsEnabled(FEATURE_RX_PPM))
+    {
         ppmRxInit(ppmConfig());
     }
 #endif
 #if defined(USE_PWM)
-    else if (featureIsEnabled(FEATURE_RX_PARALLEL_PWM)) {
+    else if (featureIsEnabled(FEATURE_RX_PARALLEL_PWM))
+    {
         pwmRxInit(pwmConfig());
     }
 #endif
@@ -639,36 +671,41 @@ void init(void)
     initInverters(serialPinConfig());
 #endif
 
-
 #ifdef TARGET_BUS_INIT
     targetBusInit();
 
 #else
 
     // Depending on compilation options SPI/QSPI initialisation may already be done.
-    if (!(initFlags & SPI_AND_QSPI_INIT_ATTEMPTED)) {
+    if (!(initFlags & SPI_AND_QSPI_INIT_ATTEMPTED))
+    {
         configureSPIAndQuadSPI();
         initFlags |= SPI_AND_QSPI_INIT_ATTEMPTED;
     }
 
 #ifdef USE_USB_MSC
-/* MSC mode will start after init, but will not allow scheduler to run,
- *  so there is no bottleneck in reading and writing data */
+    /* MSC mode will start after init, but will not allow scheduler to run,
+     *  so there is no bottleneck in reading and writing data */
     mscInit();
-    if (mscCheckBoot() || mscCheckButton()) {
+    if (mscCheckBoot() || mscCheckButton())
+    {
         ledInit(statusLedConfig());
 
 #if defined(USE_FLASHFS)
         // If the blackbox device is onboard flash, then initialize and scan
         // it to identify the log files *before* starting the USB device to
         // prevent timeouts of the mass storage device.
-        if (blackboxConfig()->device == BLACKBOX_DEVICE_FLASH) {
+        if (blackboxConfig()->device == BLACKBOX_DEVICE_FLASH)
+        {
             emfat_init_files();
         }
 #endif
-        if (mscStart() == 0) {
-             mscWaitForButton();
-        } else {
+        if (mscStart() == 0)
+        {
+            mscWaitForButton();
+        }
+        else
+        {
             systemResetFromMsc();
         }
     }
@@ -707,12 +744,12 @@ void init(void)
 #endif
 
 #if defined(STM32H7) && defined(USE_SDCARD_SDIO) // H7 only for now, likely should be applied to F4/F7 too
-    if (!(initFlags & SD_INIT_ATTEMPTED)) {
+    if (!(initFlags & SD_INIT_ATTEMPTED))
+    {
         sdioPinConfigure();
         SDIO_GPIO_Init();
     }
 #endif
-
 
 #ifdef USE_VTX_RTC6705
     bool useRTC6705 = rtc6705IOInit(vtxIOConfig());
@@ -725,13 +762,15 @@ void init(void)
 // XXX These kind of code should goto target/config.c?
 // XXX And these no longer work properly as FEATURE_RANGEFINDER does control HCSR04 runtime configuration.
 #if defined(RANGEFINDER_HCSR04_SOFTSERIAL2_EXCLUSIVE) && defined(USE_RANGEFINDER_HCSR04) && defined(USE_SOFTSERIAL2)
-    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL)) {
+    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL))
+    {
         serialRemovePort(SERIAL_PORT_SOFTSERIAL2);
     }
 #endif
 
 #if defined(RANGEFINDER_HCSR04_SOFTSERIAL1_EXCLUSIVE) && defined(USE_RANGEFINDER_HCSR04) && defined(USE_SOFTSERIAL1)
-    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL)) {
+    if (featureIsEnabled(FEATURE_RANGEFINDER) && featureIsEnabled(FEATURE_SOFTSERIAL))
+    {
         serialRemovePort(SERIAL_PORT_SOFTSERIAL1);
     }
 #endif
@@ -742,13 +781,15 @@ void init(void)
 
     initBoardAlignment(boardAlignment());
 
-    if (!sensorsAutodetect()) {
+    if (!sensorsAutodetect())
+    {
         // if gyro was not detected due to whatever reason, notify and don't arm.
         if (true
 #if defined(USE_UNIFIED_TARGET)
             && isSystemConfigured()
 #endif
-            ) {
+        )
+        {
             indicateFailure(FAILURE_MISSING_ACC, 2);
         }
         setArmingDisabled(ARMING_DISABLED_NO_GYRO);
@@ -777,8 +818,9 @@ void init(void)
 #ifdef USE_SERVOS
     servosInit();
     servoConfigureOutput();
-    if (isMixerUsingServos()) {
-        //pwm_params.useChannelForwarding = featureIsEnabled(FEATURE_CHANNEL_FORWARDING);
+    if (isMixerUsingServos())
+    {
+        // pwm_params.useChannelForwarding = featureIsEnabled(FEATURE_CHANNEL_FORWARDING);
         servoDevInit(&servoConfig()->dev);
     }
     servosFilterInit();
@@ -800,12 +842,14 @@ void init(void)
     LED0_OFF;
     LED2_OFF;
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 10; i++)
+    {
         LED1_TOGGLE;
         LED0_TOGGLE;
 #if defined(USE_BEEPER)
         delay(25);
-        if (!(beeperConfig()->beeper_off_flags & BEEPER_GET_FLAG(BEEPER_SYSTEM_INIT))) {
+        if (!(beeperConfig()->beeper_off_flags & BEEPER_GET_FLAG(BEEPER_SYSTEM_INIT)))
+        {
             BEEP_ON;
         }
         delay(25);
@@ -824,7 +868,8 @@ void init(void)
     rxInit();
 
 #ifdef USE_GPS
-    if (featureIsEnabled(FEATURE_GPS)) {
+    if (featureIsEnabled(FEATURE_GPS))
+    {
         gpsInit();
     }
 #endif
@@ -832,19 +877,22 @@ void init(void)
 #ifdef USE_LED_STRIP
     ledStripInit();
 
-    if (featureIsEnabled(FEATURE_LED_STRIP)) {
+    if (featureIsEnabled(FEATURE_LED_STRIP))
+    {
         ledStripEnable();
     }
 #endif
 
 #ifdef USE_TELEMETRY
-    if (featureIsEnabled(FEATURE_TELEMETRY)) {
+    if (featureIsEnabled(FEATURE_TELEMETRY))
+    {
         telemetryInit();
     }
 #endif
 
 #ifdef USE_ESC_SENSOR
-    if (featureIsEnabled(FEATURE_ESC_SENSOR)) {
+    if (featureIsEnabled(FEATURE_ESC_SENSOR))
+    {
         escSensorInit();
     }
 #endif
@@ -854,7 +902,8 @@ void init(void)
 #endif
 
 #ifdef USE_TRANSPONDER
-    if (featureIsEnabled(FEATURE_TRANSPONDER)) {
+    if (featureIsEnabled(FEATURE_TRANSPONDER))
+    {
         transponderInit();
         transponderStartRepeating();
         systemState |= SYSTEM_STATE_TRANSPONDER_ENABLED;
@@ -862,7 +911,8 @@ void init(void)
 #endif
 
 #ifdef USE_FLASH_CHIP
-    if (!(initFlags & FLASH_INIT_ATTEMPTED)) {
+    if (!(initFlags & FLASH_INIT_ATTEMPTED))
+    {
         flashInit(flashConfig());
         initFlags |= FLASH_INIT_ATTEMPTED;
     }
@@ -873,9 +923,12 @@ void init(void)
 
 #ifdef USE_BLACKBOX
 #ifdef USE_SDCARD
-    if (blackboxConfig()->device == BLACKBOX_DEVICE_SDCARD) {
-        if (sdcardConfig()->mode) {
-            if (!(initFlags & SD_INIT_ATTEMPTED)) {
+    if (blackboxConfig()->device == BLACKBOX_DEVICE_SDCARD)
+    {
+        if (sdcardConfig()->mode)
+        {
+            if (!(initFlags & SD_INIT_ATTEMPTED))
+            {
                 initFlags |= SD_INIT_ATTEMPTED;
                 sdCardAndFSInit();
             }
@@ -886,7 +939,8 @@ void init(void)
 #endif
 
 #ifdef USE_ACC
-    if (mixerConfig()->mixerMode == MIXER_GIMBAL) {
+    if (mixerConfig()->mixerMode == MIXER_GIMBAL)
+    {
         accStartCalibration();
     }
 #endif
@@ -915,7 +969,8 @@ void init(void)
 #endif
 
 #ifdef USE_VTX_RTC6705
-    if (!vtxCommonDevice() && useRTC6705) { // external VTX takes precedence when configured.
+    if (!vtxCommonDevice() && useRTC6705)
+    { // external VTX takes precedence when configured.
         vtxRTC6705Init();
     }
 #endif
@@ -930,8 +985,9 @@ void init(void)
 
 #ifdef SOFTSERIAL_LOOPBACK
     // FIXME this is a hack, perhaps add a FUNCTION_LOOPBACK to support it properly
-    loopbackPort = (serialPort_t*)&(softSerialPorts[0]);
-    if (!loopbackPort->vTable) {
+    loopbackPort = (serialPort_t *)&(softSerialPorts[0]);
+    if (!loopbackPort->vTable)
+    {
         loopbackPort = openSoftSerial(0, NULL, 19200, SERIAL_NOT_INVERTED);
     }
     serialPrint(loopbackPort, "LOOPBACK\r\n");
@@ -964,12 +1020,14 @@ void init(void)
 #endif
 
 #if defined(USE_OSD)
-    //The OSD need to be initialised after GYRO to avoid GYRO initialisation failure on some targets
+    // The OSD need to be initialised after GYRO to avoid GYRO initialisation failure on some targets
 
-    if (featureIsEnabled(FEATURE_OSD)) {
+    if (featureIsEnabled(FEATURE_OSD))
+    {
         osdDisplayPortDevice_e device = osdConfig()->displayPortDevice;
 
-        switch(device) {
+        switch (device)
+        {
 
         case OSD_DISPLAYPORT_DEVICE_AUTO:
             FALLTHROUGH;
@@ -980,7 +1038,8 @@ void init(void)
         // uart.
         case OSD_DISPLAYPORT_DEVICE_FRSKYOSD:
             osdDisplayPort = frskyOsdDisplayPortInit(vcdProfile()->video_system);
-            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_FRSKYOSD) {
+            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_FRSKYOSD)
+            {
                 osdDisplayPortDevice = OSD_DISPLAYPORT_DEVICE_FRSKYOSD;
                 break;
             }
@@ -991,7 +1050,8 @@ void init(void)
         case OSD_DISPLAYPORT_DEVICE_MAX7456:
             // If there is a max7456 chip for the OSD configured and detectd then use it.
             osdDisplayPort = max7456DisplayPortInit(vcdProfile());
-            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_MAX7456) {
+            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_MAX7456)
+            {
                 osdDisplayPortDevice = OSD_DISPLAYPORT_DEVICE_MAX7456;
                 break;
             }
@@ -1001,14 +1061,15 @@ void init(void)
 #if defined(USE_CMS) && defined(USE_MSP_DISPLAYPORT) && defined(USE_OSD_OVER_MSP_DISPLAYPORT)
         case OSD_DISPLAYPORT_DEVICE_MSP:
             osdDisplayPort = displayPortMspInit();
-            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_MSP) {
+            if (osdDisplayPort || device == OSD_DISPLAYPORT_DEVICE_MSP)
+            {
                 osdDisplayPortDevice = OSD_DISPLAYPORT_DEVICE_MSP;
                 break;
             }
             FALLTHROUGH;
 #endif
 
-        // Other device cases can be added here
+            // Other device cases can be added here
 
         case OSD_DISPLAYPORT_DEVICE_NONE:
         default:
@@ -1022,14 +1083,16 @@ void init(void)
 
 #if defined(USE_CMS) && defined(USE_MSP_DISPLAYPORT)
     // If BFOSD is not active, then register MSP_DISPLAYPORT as a CMS device.
-    if (!osdDisplayPort) {
+    if (!osdDisplayPort)
+    {
         cmsDisplayPortRegister(displayPortMspInit());
     }
 #endif
 
 #ifdef USE_DASHBOARD
     // Dashbord will register with CMS by itself.
-    if (featureIsEnabled(FEATURE_DASHBOARD)) {
+    if (featureIsEnabled(FEATURE_DASHBOARD))
+    {
         dashboardInit();
 #ifdef USE_OLED_GPS_DEBUG_PAGE_ONLY
         dashboardShowFixedPage(PAGE_GPS);

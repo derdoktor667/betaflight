@@ -103,7 +103,7 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
 
     if (gyro->mpuDetectionResult.sensor == MPU_60x0)
     {
-        gyro->mpuDividerDrops = 2;
+        gyro->mpuDividerDrops = 2; // ...gyro rate 2.67kHz maximum for I2C gyro
     }
     else
     {
