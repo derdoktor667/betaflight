@@ -66,17 +66,14 @@
 #define USE_INTERPOLATED_SP
 #define USE_ABSOLUTE_CONTROL
 #define USE_THROTTLE_BOOST
+#define USE_THRUST_LINEARIZATION
 #define USE_QUAD_MIXER_ONLY
 #define USE_ADC
-#define USE_ITERM_RELAX
-#define USE_RC_SMOOTHING_FILTER
-#define USE_TPA_MODE
 #define USE_GYRO_OVERFLOW_CHECK
 #define USE_YAW_SPIN_RECOVERY
-#define USE_DSHOT_DMAR
 #define USE_LED_STRIP
 #define USE_LED_STRIP_STATUS_MODE
-#define USE_VTX_TABLE
+// #define USE_VTX_TABLE
 #define USE_TIMER_MGMT
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
@@ -87,6 +84,17 @@
 #define USE_PERSISTENT_OBJECTS
 #define USE_CUSTOM_DEFAULTS_ADDRESS
 #define USE_SIMPLIFIED_TUNING
+#define USE_HUFFMAN
+#define USE_PINIO
+#define USE_PINIOBOX
+#define USE_AIRMODE_LPF
+#define USE_LAUNCH_CONTROL
+#define USE_PERSISTENT_STATS
+#define USE_PROFILE_NAMES
+#define USE_CUSTOM_BOX_NAMES
+#define USE_BATTERY_VOLTAGE_SAG_COMPENSATION
+#define USE_RX_MSP_OVERRIDE
+#define USE_INTEGRATED_YAW_CONTROL
 
 // Ensure one of the protocols is defined
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
@@ -223,17 +231,17 @@
 #endif // STM32G4
 
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
-#define TASK_GYROPID_DESIRED_PERIOD     125 // 125us = 8kHz
-#define SCHEDULER_DELAY_LIMIT           10
+#define TASK_GYROPID_DESIRED_PERIOD 125 // 125us = 8kHz
+#define SCHEDULER_DELAY_LIMIT 10
 #else
-#define TASK_GYROPID_DESIRED_PERIOD     1000 // 1000us = 1kHz
-#define SCHEDULER_DELAY_LIMIT           100
+#define TASK_GYROPID_DESIRED_PERIOD 1000 // 1000us = 1kHz
+#define SCHEDULER_DELAY_LIMIT 100
 #endif
 
 #if (__FPU_PRESENT == 1) && (__FPU_USED == 1)
-#define DEFAULT_AUX_CHANNEL_COUNT       MAX_AUX_CHANNEL_COUNT
+#define DEFAULT_AUX_CHANNEL_COUNT MAX_AUX_CHANNEL_COUNT
 #else
-#define DEFAULT_AUX_CHANNEL_COUNT       6
+#define DEFAULT_AUX_CHANNEL_COUNT 6
 #endif
 
 // Set the default cpu_overclock to the first level (108MHz) for F411
@@ -244,36 +252,35 @@
 #define DEFAULT_CPU_OVERCLOCK 0
 #endif
 
-
 #ifdef USE_ITCM_RAM
-#define FAST_CODE                   __attribute__((section(".tcm_code")))
-#define FAST_CODE_NOINLINE          NOINLINE
+#define FAST_CODE __attribute__((section(".tcm_code")))
+#define FAST_CODE_NOINLINE NOINLINE
 #else
 #define FAST_CODE
 #define FAST_CODE_NOINLINE
 #endif // USE_ITCM_RAM
 
 #ifdef USE_CCM_CODE
-#define CCM_CODE              __attribute__((section(".ccm_code")))
+#define CCM_CODE __attribute__((section(".ccm_code")))
 #else
 #define CCM_CODE
 #endif
 
 #ifdef USE_FAST_RAM
-#define FAST_RAM_ZERO_INIT             __attribute__ ((section(".fastram_bss"), aligned(4)))
-#define FAST_RAM                    __attribute__ ((section(".fastram_data"), aligned(4)))
+#define FAST_RAM_ZERO_INIT __attribute__((section(".fastram_bss"), aligned(4)))
+#define FAST_RAM __attribute__((section(".fastram_data"), aligned(4)))
 #else
 #define FAST_RAM_ZERO_INIT
 #define FAST_RAM
 #endif // USE_FAST_RAM
 
-#if defined(STM32F4) || defined (STM32H7)
+#if defined(STM32F4) || defined(STM32H7)
 // Data in RAM which is guaranteed to not be reset on hot reboot
-#define PERSISTENT                  __attribute__ ((section(".persistent_data"), aligned(4)))
+#define PERSISTENT __attribute__((section(".persistent_data"), aligned(4)))
 #endif
 
 #ifdef USE_SRAM2
-#define SRAM2                       __attribute__ ((section(".sram2"), aligned(4)))
+#define SRAM2 __attribute__((section(".sram2"), aligned(4)))
 #else
 #define SRAM2
 #endif

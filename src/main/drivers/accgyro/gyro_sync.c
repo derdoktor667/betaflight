@@ -62,8 +62,8 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         accSampleRateHz = 800;
         break;
     case MPU_60x0:
-        gyro->gyroRateKHz = GYRO_RATE_2_kHz;
-        gyroSampleRateHz = 2000;
+        gyro->gyroRateKHz = GYRO_RATE_8_kHz;
+        gyroSampleRateHz = 2667;
         accSampleRateHz = 1000;
         break;
     case BMI_270_SPI:
@@ -101,7 +101,14 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         break;
     }
 
-    gyro->mpuDividerDrops = 0; // we no longer use the gyro's sample divider
+    if (gyro->mpuDetectionResult.sensor == MPU_60x0)
+    {
+        gyro->mpuDividerDrops = 2;
+    }
+    else
+    {
+        gyro->mpuDividerDrops = 0; // we no longer use the gyro's sample divider
+    }
     gyro->accSampleRateHz = accSampleRateHz;
     return gyroSampleRateHz;
 }

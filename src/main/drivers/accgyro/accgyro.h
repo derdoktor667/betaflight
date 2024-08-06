@@ -86,7 +86,8 @@ typedef enum
     GYRO_RATE_32_kHz,
 } gyroRateKHz_e;
 
-typedef enum {
+typedef enum
+{
     GYRO_EXTI_INIT = 0,
     GYRO_EXTI_INT_DMA,
     GYRO_EXTI_INT,
@@ -113,9 +114,9 @@ typedef struct gyroDev_s
     sensor_align_e gyroAlign;
     gyroRateKHz_e gyroRateKHz;
     gyroModeSPI_e gyroModeSPI;
-    uint32_t detectedEXTI;
-    uint32_t gyroLastEXTI;
-    uint32_t gyroSyncEXTI;
+    // uint32_t detectedEXTI;
+    // uint32_t gyroLastEXTI;
+    // uint32_t gyroSyncEXTI;
     int32_t gyroShortPeriod;
     int32_t gyroDmaMaxDuration;
     volatile bool dataReady;
