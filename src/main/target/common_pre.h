@@ -37,58 +37,176 @@
 #define I2C1_OVERCLOCK true
 #define I2C2_OVERCLOCK true
 
-// Standard features for all modern MCUs (F4, F7, H7, G4)
-#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+// STM32F1-specific settings
+#ifdef STM32F1
+#define MINIMAL_CLI
+#define USE_UART1_RX_DMA
+#define USE_UART1_TX_DMA
+#endif
+
+// STM32F3-specific settings
+#ifdef STM32F3
+#define USE_ABSOLUTE_CONTROL
 #define USE_ADC
-#define USE_ADC_INTERNAL
-#define USE_DMA_SPEC
+#define USE_AIRMODE_LPF
+#define USE_BATTERY_VOLTAGE_SAG_COMPENSATION
+#define USE_BLACKBOX
+#define USE_CCM_CODE
+#define USE_CLI
+#define USE_CLI_BATCH
+#define USE_CUSTOM_BOX_NAMES
+#define USE_CUSTOM_DEFAULTS_ADDRESS
+#define USE_DMA
+#define USE_D_MIN
 #define USE_DSHOT
-#define USE_DSHOT_BITBANG
+#define USE_DSHOT_DMAR
 #define USE_DSHOT_TELEMETRY
 #define USE_DSHOT_TELEMETRY_STATS
 #define USE_DYN_IDLE
+#define USE_DYN_LPF
+#define USE_FLYSKY
 #define USE_GYRO_DATA_ANALYSE
-#define USE_MCO
+#define USE_GYRO_LPF2
+#define USE_GYRO_OVERFLOW_CHECK
+#define USE_HUFFMAN
+#define USE_INTEGRATED_YAW_CONTROL
+#define USE_INTERPOLATED_SP
+#define USE_ITERM_RELAX
+#define USE_LAUNCH_CONTROL
+#define USE_LED_STRIP
+#define USE_LED_STRIP_STATUS_MODE
+#define USE_OVERCLOCK
 #define USE_PERSISTENT_OBJECTS
+#define USE_PERSISTENT_STATS
+#define USE_PINIO
+#define USE_PINIOBOX
+#define USE_PROFILE_NAMES
+// #define USE_QUAD_MIXER_ONLY
+#define USE_RC_SMOOTHING_FILTER
+#define USE_RESOURCE_MGMT
 #define USE_RPM_FILTER
-#define USE_SPI_TRANSACTION
+#define USE_RUNAWAY_TAKEOFF // Runaway Takeoff Prevention (anti-taz)
+#define USE_RX_MSP_OVERRIDE
+#define USE_SIGNATURE
+#define USE_SIMPLIFIED_TUNING
+#define USE_TELEMETRY
+#define USE_TELEMETRY_IBUS
+#define USE_THROTTLE_BOOST
+#define USE_THRUST_LINEARIZATION
 #define USE_TIMER_MGMT
-#define USE_USB_CDC_HID
+#define USE_TPA_MODE
+#define USE_UNCOMMON_MIXERS
 #define USE_USB_MSC
-#define USE_CUSTOM_DEFAULTS_ADDRESS
+// #define USE_VTX_TABLE
+#define USE_YAW_SPIN_RECOVERY
+
+// Ensure one of the protocols is defined
+#if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
+#define USE_FRSKY
 #endif
+
+// Protocol-specific settings
+#if defined(USE_FRSKY)
+#define USE_SERIALRX_SBUS // Frsky and Futaba receivers
+#define USE_TELEMETRY_FRSKY_HUB
+#define USE_TELEMETRY_SMARTPORT
+#endif
+
+#ifdef USE_SPEKTRUM
+#define USE_SERIALRX_SPEKTRUM // SRXL, DSM2, and DSMX protocol
+#define USE_SERIALRX_SUMD     // Graupner Hott protocol
+#define USE_TELEMETRY_SRXL
+#endif
+
+#ifdef USE_FLYSKY
+#define USE_SERIALRX_IBUS
+#define USE_TELEMETRY_IBUS
+#define USE_TELEMETRY_IBUS_EXTENDED
+#endif
+
+#ifdef USE_CRSF
+#define USE_SERIALRX_CRSF // Team Black Sheep Crossfire protocol
+#define USE_TELEMETRY_CRSF
+#endif
+#endif // STM32F3
 
 // STM32F4-specific settings
 #ifdef STM32F4
 #if defined(STM32F40_41xxx)
 #define USE_FAST_DATA
-#define USE_OVERCLOCK
 #endif
-#if defined(STM32F411xE)
-#define USE_OVERCLOCK
-#endif
+#define USE_DSHOT
+#define USE_DSHOT_BITBANG
+#define USE_DSHOT_TELEMETRY
+#define USE_DSHOT_TELEMETRY_STATS
+#define USE_RPM_FILTER
 #define USE_THROTTLE_BOOST
+#define USE_DYN_IDLE
 #define I2C3_OVERCLOCK true
+#define USE_GYRO_DATA_ANALYSE
+#define USE_ADC
+#define USE_ADC_INTERNAL
+#define USE_USB_CDC_HID
+#define USE_USB_MSC
 #define USE_PERSISTENT_MSC_RTC
+#define USE_MCO
+#define USE_DMA_SPEC
+#define USE_TIMER_MGMT
+#define USE_PERSISTENT_OBJECTS
+#define USE_CUSTOM_DEFAULTS_ADDRESS
+#define USE_SPI_TRANSACTION
+
+#if defined(STM32F40_41xxx) || defined(STM32F411xE)
+#define USE_OVERCLOCK
+#endif
 #endif // STM32F4
 
 // STM32F7-specific settings
 #ifdef STM32F7
 #define USE_ITCM_RAM
 #define USE_FAST_DATA
+#define USE_DSHOT
+#define USE_DSHOT_BITBANG
+#define USE_DSHOT_TELEMETRY
+#define USE_DSHOT_TELEMETRY_STATS
+#define USE_RPM_FILTER
+#define USE_DYN_IDLE
 #define I2C3_OVERCLOCK true
 #define I2C4_OVERCLOCK true
+#define USE_GYRO_DATA_ANALYSE
 #define USE_OVERCLOCK
+#define USE_ADC_INTERNAL
+#define USE_USB_CDC_HID
+#define USE_USB_MSC
 #define USE_PERSISTENT_MSC_RTC
+#define USE_MCO
+#define USE_DMA_SPEC
+#define USE_TIMER_MGMT
+#define USE_PERSISTENT_OBJECTS
+#define USE_CUSTOM_DEFAULTS_ADDRESS
+#define USE_SPI_TRANSACTION
 #endif // STM32F7
 
 // STM32H7-specific settings
 #ifdef STM32H7
 #define USE_ITCM_RAM
 #define USE_FAST_DATA
+#define USE_DSHOT
+#define USE_DSHOT_BITBANG
+#define USE_DSHOT_TELEMETRY
+#define USE_DSHOT_TELEMETRY_STATS
+#define USE_RPM_FILTER
+#define USE_DYN_IDLE
 #define I2C3_OVERCLOCK true
 #define I2C4_OVERCLOCK true
+#define USE_GYRO_DATA_ANALYSE
+#define USE_ADC_INTERNAL
+#define USE_USB_CDC_HID
+#define USE_DMA_SPEC
+#define USE_TIMER_MGMT
+#define USE_PERSISTENT_OBJECTS
 #define USE_DMA_RAM
+#define USE_USB_MSC
 #define USE_RTC_TIME
 #define USE_PERSISTENT_MSC_RTC
 #define USE_DSHOT_CACHE_MGMT
@@ -98,9 +216,22 @@
 // STM32G4-specific settings
 #ifdef STM32G4
 #define USE_FAST_RAM
+#define USE_DSHOT
+#define USE_DSHOT_BITBANG
+#define USE_DSHOT_TELEMETRY
+#define USE_DSHOT_TELEMETRY_STATS
+#define USE_RPM_FILTER
+#define USE_DYN_IDLE
 #define I2C3_OVERCLOCK true
 #define I2C4_OVERCLOCK true
 #define USE_OVERCLOCK
+#define USE_GYRO_DATA_ANALYSE
+#define USE_ADC_INTERNAL
+#define USE_USB_MSC
+#define USE_USB_CDC_HID
+#define USE_MCO
+#define USE_DMA_SPEC
+#define USE_TIMER_MGMT
 #endif // STM32G4
 
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
@@ -217,13 +348,16 @@ extern uint8_t _dmaram_end__;
 #define USE_TELEMETRY
 #endif
 
-#if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
+#if ((TARGET_FLASH_SIZE > 128) || (FEATURE_CUT_LEVEL < 12))
 #define USE_GYRO_OVERFLOW_CHECK
 #define USE_YAW_SPIN_RECOVERY
 #define USE_DSHOT_DMAR
 // #define USE_TELEMETRY_CRSF
 // #define USE_TELEMETRY_GHST
 // #define USE_TELEMETRY_SRXL
+#endif
+
+#if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
 // #define USE_CMS
 // #define USE_MSP_DISPLAYPORT
 // #define USE_MSP_OVER_TELEMETRY
@@ -236,7 +370,6 @@ extern uint8_t _dmaram_end__;
 #define USE_RC_SMOOTHING_FILTER
 #define USE_TPA_MODE
 #endif
-
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 11))
 // #define USE_VTX_COMMON
