@@ -11,6 +11,12 @@ Betaflight is flight controller software (firmware) used to fly multi-rotor craf
 
 This fork differs from Baseflight and Cleanflight in that it focuses on flight performance, leading-edge feature additions, and wide target support.
 
+### 🚀 Special F3 Edition: RPM Filtering Support on STM32F3!
+
+Unlike the official Betaflight releases starting from version 4.1 which dropped support for F3 flight controllers, **this customized version of Betaflight supports bidirectional DShot and RPM Filtering on STM32F3 based flight controllers (such as the SPRacingF3)!**
+
+By removing bulky, unused features (such as Barometer, Magnetometer, and Rangefinder) from the firmware build, we have freed up enough flash space to fit high-performance flight dynamics and full RPM filtering capabilities onto F3 boards. See the section below on [Building for SPRacingF3 (SPRF3)](#building-for-spracingf3-sprf3) for more details.
+
 ## Events
 
 | Date  | Event |
@@ -63,7 +69,19 @@ Betaflight has the following features:
 * VTX support for Unify Pro and IRC Tramp
 * and MUCH, MUCH more.
 
-## Installation & Documentation
+<a name="building-for-spracingf3-sprf3"></a>
+## Building for SPRacingF3 (SPRF3)
+
+To build this version for the SPRacingF3 target, use the following command in the root directory:
+
+```bash
+make TARGET=SPRF3
+```
+
+This will produce the firmware hex file in the `obj` directory.
+
+---
+
 
 See: https://github.com/betaflight/betaflight/wiki
 

@@ -130,109 +130,40 @@
 #endif
 #endif // STM32F3
 
-// STM32F4-specific settings
-#ifdef STM32F4
-#if defined(STM32F40_41xxx)
-#define USE_FAST_DATA
-#endif
+// STM32F4/F7/H7/G4-specific settings (High-Performance MCUs)
+#if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
 #define USE_DSHOT
 #define USE_DSHOT_BITBANG
 #define USE_DSHOT_TELEMETRY
 #define USE_DSHOT_TELEMETRY_STATS
 #define USE_RPM_FILTER
-#define USE_THROTTLE_BOOST
 #define USE_DYN_IDLE
-#define I2C3_OVERCLOCK true
 #define USE_GYRO_DATA_ANALYSE
-#define USE_ADC
 #define USE_ADC_INTERNAL
 #define USE_USB_CDC_HID
 #define USE_USB_MSC
-#define USE_PERSISTENT_MSC_RTC
 #define USE_MCO
 #define USE_DMA_SPEC
 #define USE_TIMER_MGMT
 #define USE_PERSISTENT_OBJECTS
 #define USE_CUSTOM_DEFAULTS_ADDRESS
 #define USE_SPI_TRANSACTION
+#define I2C3_OVERCLOCK true
+
+#if !defined(STM32G4)
+#define USE_FAST_DATA
+#endif
+
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#define USE_OVERCLOCK
+#endif
 
 #if defined(STM32F40_41xxx) || defined(STM32F411xE)
 #define USE_OVERCLOCK
 #endif
-#endif // STM32F4
 
-// STM32F7-specific settings
-#ifdef STM32F7
-#define USE_ITCM_RAM
-#define USE_FAST_DATA
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define I2C3_OVERCLOCK true
-#define I2C4_OVERCLOCK true
-#define USE_GYRO_DATA_ANALYSE
-#define USE_OVERCLOCK
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID
-#define USE_USB_MSC
-#define USE_PERSISTENT_MSC_RTC
-#define USE_MCO
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_PERSISTENT_OBJECTS
-#define USE_CUSTOM_DEFAULTS_ADDRESS
-#define USE_SPI_TRANSACTION
-#endif // STM32F7
+#endif // High-Performance MCUs
 
-// STM32H7-specific settings
-#ifdef STM32H7
-#define USE_ITCM_RAM
-#define USE_FAST_DATA
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define I2C3_OVERCLOCK true
-#define I2C4_OVERCLOCK true
-#define USE_GYRO_DATA_ANALYSE
-#define USE_ADC_INTERNAL
-#define USE_USB_CDC_HID
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#define USE_PERSISTENT_OBJECTS
-#define USE_DMA_RAM
-#define USE_USB_MSC
-#define USE_RTC_TIME
-#define USE_PERSISTENT_MSC_RTC
-#define USE_DSHOT_CACHE_MGMT
-#define USE_LATE_TASK_STATISTICS
-#endif // STM32H7
-
-// STM32G4-specific settings
-#ifdef STM32G4
-#define USE_FAST_RAM
-#define USE_DSHOT
-#define USE_DSHOT_BITBANG
-#define USE_DSHOT_TELEMETRY
-#define USE_DSHOT_TELEMETRY_STATS
-#define USE_RPM_FILTER
-#define USE_DYN_IDLE
-#define I2C3_OVERCLOCK true
-#define I2C4_OVERCLOCK true
-#define USE_OVERCLOCK
-#define USE_GYRO_DATA_ANALYSE
-#define USE_ADC_INTERNAL
-#define USE_USB_MSC
-#define USE_USB_CDC_HID
-#define USE_MCO
-#define USE_DMA_SPEC
-#define USE_TIMER_MGMT
-#endif // STM32G4
 
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
 #define TASK_GYROPID_DESIRED_PERIOD 125 // 125us = 8kHz
