@@ -12,6 +12,7 @@ ifeq ($(TARGET), SPRF3)
 else
     FEATURE_CUT_LEVEL = 6
     TARGET_SRC += \
+        drivers/accgyro/accgyro_mpu6050.c \
         drivers/barometer/barometer_ms5611.c \
         drivers/barometer/barometer_bmp085.c \
         drivers/barometer/barometer_bmp280.c \
