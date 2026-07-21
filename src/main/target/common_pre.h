@@ -20,31 +20,25 @@
 
 #pragma once
 
-// Enable parameter groups
+/* ========================================================================= */
+/* 1. Global Compiler & Debug Settings                                       */
+/* ========================================================================= */
 #define USE_PARAMETER_GROUPS
-
-// Enable/disable type conversion warnings
-// #pragma GCC diagnostic warning "-Wconversion"
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 
-// Enable/disable struct padding warnings
-// #pragma GCC diagnostic warning "-Wpadded"
-
-// Scheduler debug option
-// #define SCHEDULER_DEBUG // Uncomment to use scheduler debug[] values. Undefined by default for performance reasons
-
-// I2C overclock settings
 #define I2C1_OVERCLOCK true
 #define I2C2_OVERCLOCK true
 
-// STM32F1-specific settings
+/* ========================================================================= */
+/* 2. MCU-Specific Basic Configuration                                       */
+/* ========================================================================= */
+
 #ifdef STM32F1
 #define MINIMAL_CLI
 #define USE_UART1_RX_DMA
 #define USE_UART1_TX_DMA
 #endif
 
-// STM32F3-specific settings
 #ifdef STM32F3
 #define USE_ABSOLUTE_CONTROL
 #define USE_ADC
@@ -85,7 +79,7 @@
 #define USE_RC_SMOOTHING_FILTER
 #define USE_RESOURCE_MGMT
 #define USE_RPM_FILTER
-#define USE_RUNAWAY_TAKEOFF // Runaway Takeoff Prevention (anti-taz)
+#define USE_RUNAWAY_TAKEOFF
 #define USE_RX_MSP_OVERRIDE
 #define USE_SIGNATURE
 #define USE_SIMPLIFIED_TUNING
@@ -95,26 +89,23 @@
 #define USE_THRUST_LINEARIZATION
 #define USE_TIMER_MGMT
 #define USE_TPA_MODE
-// #define USE_UNCOMMON_MIXERS
 #define USE_USB_MSC
 #define USE_VTX_TABLE
 #define USE_YAW_SPIN_RECOVERY
 
-// Ensure one of the protocols is defined
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
 #define USE_FRSKY
 #endif
 
-// Protocol-specific settings
 #if defined(USE_FRSKY)
-#define USE_SERIALRX_SBUS // Frsky and Futaba receivers
+#define USE_SERIALRX_SBUS
 #define USE_TELEMETRY_FRSKY_HUB
 #define USE_TELEMETRY_SMARTPORT
 #endif
 
 #ifdef USE_SPEKTRUM
-#define USE_SERIALRX_SPEKTRUM // SRXL, DSM2, and DSMX protocol
-#define USE_SERIALRX_SUMD     // Graupner Hott protocol
+#define USE_SERIALRX_SPEKTRUM
+#define USE_SERIALRX_SUMD
 #define USE_TELEMETRY_SRXL
 #endif
 
@@ -125,12 +116,11 @@
 #endif
 
 #ifdef USE_CRSF
-#define USE_SERIALRX_CRSF // Team Black Sheep Crossfire protocol
+#define USE_SERIALRX_CRSF
 #define USE_TELEMETRY_CRSF
 #endif
 #endif // STM32F3
 
-// STM32F4/F7/H7/G4-specific settings (High-Performance MCUs)
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
 #define USE_DSHOT
 #define USE_DSHOT_BITBANG
@@ -154,22 +144,16 @@
 #define USE_FAST_DATA
 #endif
 
-#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
+#if defined(STM32F7) || defined(STM32H7) || defined(STM32G4) || defined(STM32F40_41xxx) || defined(STM32F411xE)
 #define USE_OVERCLOCK
 #endif
-
-#if defined(STM32F40_41xxx) || defined(STM32F411xE)
-#define USE_OVERCLOCK
-#endif
-
 #endif // High-Performance MCUs
 
-
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
-#define TASK_GYROPID_DESIRED_PERIOD 125 // 125us = 8kHz
+#define TASK_GYROPID_DESIRED_PERIOD 125
 #define SCHEDULER_DELAY_LIMIT 10
 #else
-#define TASK_GYROPID_DESIRED_PERIOD 1000 // 1000us = 1kHz
+#define TASK_GYROPID_DESIRED_PERIOD 1000
 #define SCHEDULER_DELAY_LIMIT 100
 #endif
 
@@ -179,13 +163,15 @@
 #define DEFAULT_AUX_CHANNEL_COUNT 6
 #endif
 
-// Set the default cpu_overclock to the first level (108MHz) for F411
-// Helps with looptime stability as the CPU is borderline when running native gyro sampling
 #if defined(USE_OVERCLOCK) && defined(STM32F411xE)
 #define DEFAULT_CPU_OVERCLOCK 1
 #else
 #define DEFAULT_CPU_OVERCLOCK 0
 #endif
+
+/* ========================================================================= */
+/* 3. Memory & RAM Utility Macros                                            */
+/* ========================================================================= */
 
 #ifdef USE_ITCM_RAM
 #define FAST_CODE __attribute__((section(".tcm_code")))
@@ -193,7 +179,7 @@
 #else
 #define FAST_CODE
 #define FAST_CODE_NOINLINE
-#endif // USE_ITCM_RAM
+#endif
 
 #ifdef USE_CCM_CODE
 #define CCM_CODE __attribute__((section(".ccm_code")))
@@ -207,10 +193,9 @@
 #else
 #define FAST_RAM_ZERO_INIT
 #define FAST_RAM
-#endif // USE_FAST_RAM
+#endif
 
 #if defined(STM32F4) || defined(STM32H7)
-// Data in RAM which is guaranteed to not be reset on hot reboot
 #define PERSISTENT __attribute__((section(".persistent_data"), aligned(4)))
 #endif
 
@@ -237,29 +222,26 @@ extern uint8_t _dmaram_end__;
 #define DMA_RAM_R
 #define DMA_RAM_W
 #define DMA_RAM_RW
-#endif // USE_DMA_RAM
+#endif
 
-// Feature definitions
+/* ========================================================================= */
+/* 4. Feature Set Definitions                                                */
+/* ========================================================================= */
+
 #define USE_MOTOR
 #define USE_PWM_OUTPUT
 #define USE_DMA
 #define USE_TIMER
-#define USE_BRUSHED_ESC_AUTODETECT // Detect if brushed motors are connected and set defaults to avoid motors spinning on boot
+#define USE_BRUSHED_ESC_AUTODETECT
 #define USE_SERIAL_PASSTHROUGH
-#define USE_GYRO_REGISTER_DUMP // Adds gyroregisters command to CLI to dump configured register values
+#define USE_GYRO_REGISTER_DUMP
 #define USE_PPM
-// #define USE_SERIALRX_CRSF // Team Black Sheep Crossfire protocol
-// #define USE_SERIALRX_GHST // ImmersionRC Ghost Protocol
-#define USE_SERIALRX_IBUS // FlySky and Turnigy receivers
-// #define USE_SERIALRX_SBUS // Frsky and Futaba receivers
-// #define USE_SERIALRX_SPEKTRUM // SRXL, DSM2, and DSMX protocol
-// #define USE_SERIALRX_SUMD // Graupner Hott protocol
+#define USE_SERIALRX_IBUS
 #define USE_CLI
 #define USE_TASK_STATISTICS
 #define USE_IMU_CALC
 #define USE_SERIAL_RX
 
-// Feature definitions based on flash size and feature cut levels
 #if (TARGET_FLASH_SIZE > 128)
 #define PID_PROFILE_COUNT 2
 #define CONTROL_RATE_PROFILE_COUNT 3
@@ -275,7 +257,7 @@ extern uint8_t _dmaram_end__;
 #define USE_BLACKBOX
 #define USE_CLI_BATCH
 #define USE_RESOURCE_MGMT
-#define USE_RUNAWAY_TAKEOFF // Runaway Takeoff Prevention (anti-taz)
+#define USE_RUNAWAY_TAKEOFF
 #define USE_TELEMETRY
 #endif
 
@@ -283,15 +265,9 @@ extern uint8_t _dmaram_end__;
 #define USE_GYRO_OVERFLOW_CHECK
 #define USE_YAW_SPIN_RECOVERY
 #define USE_DSHOT_DMAR
-// #define USE_TELEMETRY_CRSF
-// #define USE_TELEMETRY_GHST
-// #define USE_TELEMETRY_SRXL
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 12))
-// #define USE_CMS
-// #define USE_MSP_DISPLAYPORT
-// #define USE_MSP_OVER_TELEMETRY
 #define USE_LED_STRIP
 #define USE_GYRO_LPF2
 #define USE_DYN_LPF
@@ -302,16 +278,8 @@ extern uint8_t _dmaram_end__;
 #define USE_TPA_MODE
 #endif
 
-#if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 11))
-// #define USE_VTX_COMMON
-// #define USE_VTX_CONTROL
-// #define USE_VTX_SMARTAUDIO
-// #define USE_VTX_TRAMP
-#endif
-
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 10))
 #define USE_VIRTUAL_CURRENT_METER
-// #define USE_CAMERA_CONTROL
 #define USE_SERIAL_4WAY_BLHELI_BOOTLOADER
 #define USE_RCDEVICE
 #endif
@@ -365,60 +333,36 @@ extern uint8_t _dmaram_end__;
 #endif
 #endif
 
-#if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 2))
-// #define USE_SERIALRX_FPORT // FrSky FPort
-#endif
-
 #if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
 #define USE_BOARD_INFO
-// #define USE_EXTENDED_CMS_MENUS
-// #define USE_RTC_TIME
 #define USE_RX_MSP
 #define USE_ESC_SENSOR_INFO
-// #define USE_CRSF_CMS_TELEMETRY
-// #define USE_CRSF_LINK_STATISTICS
 #define USE_RX_RSSI_DBM
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL == 0))
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
-// #define USE_DASHBOARD
 #define USE_DSHOT_DMAR
-// #define USE_GPS
-// #define USE_GPS_NMEA
-// #define USE_GPS_UBLOX
-// #define USE_GPS_RESCUE
-// #define USE_GYRO_DLPF_EXPERIMENTAL
 #define USE_OSD
 #define USE_OSD_OVER_MSP_DISPLAYPORT
-// #define USE_MULTI_GYRO
 #define USE_OSD_ADJUSTMENTS
 #define USE_SENSOR_NAMES
-// #define USE_SERIALRX_JETIEXBUS
 #define USE_TELEMETRY_IBUS
 #define USE_TELEMETRY_IBUS_EXTENDED
-// #define USE_TELEMETRY_JETIEXBUS
-// #define USE_TELEMETRY_MAVLINK
-// #define USE_UNCOMMON_MIXERS
 #define USE_SIGNATURE
 #define USE_ABSOLUTE_CONTROL
-// #define USE_HOTT_TEXTMODE
 #define USE_LED_STRIP_STATUS_MODE
-// #define USE_VARIO
 #define USE_RX_LINK_QUALITY_INFO
 #define USE_ESC_SENSOR_TELEMETRY
 #define USE_OSD_PROFILES
 #define USE_OSD_STICK_OVERLAY
 #define USE_ESCSERIAL_SIMONK
 #define USE_SERIAL_4WAY_SK_BOOTLOADER
-// #define USE_CMS_FAILSAFE_MENU
-// #define USE_CMS_GPS_RESCUE_MENU
 #define USE_TELEMETRY_SENSORS_DISABLED_DETAILS
 #define USE_VTX_TABLE
 #define USE_PERSISTENT_STATS
 #define USE_PROFILE_NAMES
-// #define USE_SERIALRX_SRXL2 // Spektrum SRXL2 protocol
 #define USE_INTERPOLATED_SP
 #define USE_CUSTOM_BOX_NAMES
 #define USE_BATTERY_VOLTAGE_SAG_COMPENSATION

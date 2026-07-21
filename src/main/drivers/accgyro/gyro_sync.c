@@ -63,7 +63,7 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         break;
     case MPU_60x0:
         gyro->gyroRateKHz = GYRO_RATE_8_kHz;
-        gyroSampleRateHz = 2667;
+        gyroSampleRateHz = 4000;
         accSampleRateHz = 1000;
         break;
     case BMI_270_SPI:
@@ -101,14 +101,16 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         break;
     }
 
-    if (gyro->mpuDetectionResult.sensor == MPU_60x0)
-    {
-        gyro->mpuDividerDrops = 2; // ...gyro rate 2.67kHz maximum for I2C gyro
-    }
-    else
-    {
-        gyro->mpuDividerDrops = 0; // we no longer use the gyro's sample divider
-    }
+    // if (gyro->mpuDetectionResult.sensor == MPU_60x0)
+    // {
+    //     gyro->mpuDividerDrops = 2; // ...gyro rate 2.67kHz maximum for I2C gyro
+    // }
+    // else
+    // {
+    //     gyro->mpuDividerDrops = 0; // we no longer use the gyro's sample divider
+    // }
+
+    gyro->mpuDividerDrops = 0; // we no longer use the gyro's sample divider
     gyro->accSampleRateHz = accSampleRateHz;
     return gyroSampleRateHz;
 }
