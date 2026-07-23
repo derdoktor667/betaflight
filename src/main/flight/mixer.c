@@ -295,6 +295,10 @@ static FAST_RAM_ZERO_INIT float idleMaxIncrease;
 static FAST_RAM_ZERO_INIT float idleThrottleOffset;
 static FAST_RAM_ZERO_INIT float idleMinMotorRps;
 static FAST_RAM_ZERO_INIT float idleP;
+static FAST_RAM_ZERO_INIT float idleI;
+static FAST_RAM_ZERO_INIT float idleD;
+static FAST_RAM_ZERO_INIT float idleI_accumulator;
+static FAST_RAM_ZERO_INIT float idle_min_rps_filtered; // Filtered RPM for D-term
 #endif
 #if defined(USE_BATTERY_VOLTAGE_SAG_COMPENSATION)
 static FAST_RAM_ZERO_INIT float vbatSagCompensationFactor;
@@ -355,9 +359,13 @@ void initEscEndpoints(void)
 void mixerInitProfile(void)
 {
 #ifdef USE_DYN_IDLE
-    idleMinMotorRps = currentPidProfile->idle_min_rpm * 100.0f / 60.0f;
-    idleMaxIncrease = currentPidProfile->idle_max_increase * 0.001f;
-    idleP = currentPidProfile->idle_p * 0.0001f;
+    idleMinMotorRps = currentPidProfile->dyn_idle_min_rpm * 100.0f / 60.0f;
+    idleMaxIncrease = currentPidProfile->dyn_idle_max_increase * 0.001f;
+    idleP = currentPidProfile->dyn_idle_p_gain * 0.0001f;
+    idleI = currentPidProfile->dyn_idle_i_gain * 0.0001f;
+    idleD = currentPidProfile->dyn_idle_d_gain * 0.0001f;
+    idleI_accumulator = 0.0f;
+    idle_min_rps_filtered = 0.0f;
 #endif
 
 #if defined(USE_BATTERY_VOLTAGE_SAG_COMPENSATION)
@@ -513,7 +521,6 @@ static void calculateThrottleAndCurrentMotorEndpoints(timeUs_t currentTimeUs)
     static timeUs_t reversalTimeUs = 0; // time when motors last reversed in 3D mode
     static float motorRangeMinIncrease = 0;
 #ifdef USE_DYN_IDLE
-    static float oldMinRps;
 #endif
     float currentThrottleInputRange = 0;
 
@@ -624,22 +631,29 @@ static void calculateThrottleAndCurrentMotorEndpoints(timeUs_t currentTimeUs)
 #ifdef USE_DYN_IDLE
         if (idleMinMotorRps > 0.0f) {
             appliedMotorOutputLow = DSHOT_MIN_THROTTLE;
-            const float maxIncrease = isAirmodeActivated() ? idleMaxIncrease : 0.04f;
-            const float minRps = rpmMinMotorFrequency();
-            const float targetRpsChangeRate = (idleMinMotorRps - minRps) * currentPidProfile->idle_adjustment_speed;
-            const float error = targetRpsChangeRate - (minRps - oldMinRps) * pidGetPidFrequency();
-            const float pidSum = constrainf(idleP * error, -currentPidProfile->idle_pid_limit, currentPidProfile->idle_pid_limit);
-            motorRangeMinIncrease = constrainf(motorRangeMinIncrease + pidSum * pidGetDT(), 0.0f, maxIncrease);
-            oldMinRps = minRps;
-            throttle += idleThrottleOffset * rcCommandThrottleRange;
+            const float maxIncrease = isAirmodeActivated() ? idleMaxIncrease : 0.05f;
+            float minRps = rpmMinMotorFrequency();
 
-            DEBUG_SET(DEBUG_DYN_IDLE, 0, motorRangeMinIncrease * 1000);
-            DEBUG_SET(DEBUG_DYN_IDLE, 1, targetRpsChangeRate);
-            DEBUG_SET(DEBUG_DYN_IDLE, 2, error);
-            DEBUG_SET(DEBUG_DYN_IDLE, 3, minRps);
+            float rpsError = idleMinMotorRps - minRps;
+
+            // D-term calculation (PT1 type delay/smoothing)
+            float dynIdleD = (idle_min_rps_filtered - minRps) * idleD;
+            idle_min_rps_filtered = minRps; // In 4.3 this is the "prevMinRps"
+
+            // P-term
+            float dynIdleP = rpsError * idleP;
+
+            // Asymmetric I-term
+            rpsError = MAX(-0.1f, rpsError);
+            idleI_accumulator += rpsError * idleI;
+            idleI_accumulator = constrainf(idleI_accumulator, 0.0f, maxIncrease);
+
+            motorRangeMinIncrease = constrainf((dynIdleP + idleI_accumulator + dynIdleD), 0.0f, maxIncrease);
+            throttle += idleThrottleOffset * rcCommandThrottleRange;
         } else {
             motorRangeMinIncrease = 0;
-            oldMinRps = 0;
+            idleI_accumulator = 0;
+            idle_min_rps_filtered = 0;
         }
 #endif
 

@@ -180,11 +180,11 @@ typedef struct pidProfile_s {
     uint8_t ff_boost;                       // amount of high-pass filtered FF to add to FF, 100 means 100% added
     char profileName[MAX_PROFILE_NAME_LENGTH + 1]; // Descriptive name for profile
 
-    uint8_t idle_min_rpm;                   // minimum motor speed enforced by integrating p controller
-    uint8_t idle_adjustment_speed;          // how quickly the integrating p controller tries to correct
-    uint8_t idle_p;                         // kP
-    uint8_t idle_pid_limit;                 // max P
-    uint8_t idle_max_increase;              // max integrated correction
+    uint8_t dyn_idle_min_rpm;                   // minimum motor speed enforced by integrating p controller
+    uint8_t dyn_idle_p_gain;                    // P gain during active control of rpm
+    uint8_t dyn_idle_i_gain;                    // I gain during active control of rpm
+    uint8_t dyn_idle_d_gain;                    // D gain for corrections around rapid changes in rpm
+    uint8_t dyn_idle_max_increase;              // limit on maximum possible increase in motor idle drive during active control
 
     uint8_t ff_interpolate_sp;              // Calculate FF from interpolated setpoint
     uint8_t ff_max_rate_limit;              // Maximum setpoint rate percentage for FF
@@ -222,6 +222,7 @@ extern const char pidNames[];
 
 extern pidAxisData_t pidData[3];
 
+extern float dynIdleIncrease;
 extern uint32_t targetPidLooptime;
 
 extern float throttleBoost;
