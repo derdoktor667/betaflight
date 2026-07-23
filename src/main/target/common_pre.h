@@ -23,6 +23,7 @@
 /* ========================================================================= */
 /* 1. Global Compiler & Debug Settings                                       */
 /* ========================================================================= */
+
 #define USE_PARAMETER_GROUPS
 #pragma GCC diagnostic ignored "-Wsign-conversion"
 
@@ -33,12 +34,14 @@
 /* 2. MCU-Specific Basic Configuration                                       */
 /* ========================================================================= */
 
+// --- STM32F1 ---
 #ifdef STM32F1
 #define MINIMAL_CLI
 #define USE_UART1_RX_DMA
 #define USE_UART1_TX_DMA
 #endif
 
+// --- STM32F3 ---
 #ifdef STM32F3
 #define USE_ABSOLUTE_CONTROL
 #define USE_ADC
@@ -58,6 +61,8 @@
 #define USE_DSHOT_TELEMETRY_STATS
 #define USE_DYN_IDLE
 #define USE_DYN_LPF
+#define USE_DYN_NOTCH_FILTER
+#define USE_FEEDFORWARD
 #define USE_FLYSKY
 #define USE_GYRO_DATA_ANALYSE
 #define USE_GYRO_LPF2
@@ -121,6 +126,7 @@
 #endif
 #endif // STM32F3
 
+// --- High-Performance MCUs (F4, F7, H7, G4) ---
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7) || defined(STM32G4)
 #define USE_DSHOT
 #define USE_DSHOT_BITBANG
@@ -149,6 +155,10 @@
 #endif
 #endif // High-Performance MCUs
 
+/* ========================================================================= */
+/* 3. System-Wide Configuration & Defaults                                   */
+/* ========================================================================= */
+
 #if defined(STM32F4) || defined(STM32F7) || defined(STM32H7)
 #define TASK_GYROPID_DESIRED_PERIOD 125
 #define SCHEDULER_DELAY_LIMIT 10
@@ -170,7 +180,7 @@
 #endif
 
 /* ========================================================================= */
-/* 3. Memory & RAM Utility Macros                                            */
+/* 4. Memory & RAM Utility Macros                                            */
 /* ========================================================================= */
 
 #ifdef USE_ITCM_RAM
@@ -225,7 +235,7 @@ extern uint8_t _dmaram_end__;
 #endif
 
 /* ========================================================================= */
-/* 4. Feature Set Definitions                                                */
+/* 5. Feature Set Definitions                                                */
 /* ========================================================================= */
 
 #define USE_MOTOR

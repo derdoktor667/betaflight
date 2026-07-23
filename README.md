@@ -18,10 +18,17 @@ By removing bulky, unused features (such as Barometer, Magnetometer, and Rangefi
 We have further optimized this build specifically for **SPRF3** and **SPRACINGF3** targets to resolve hardware incompatibilities and maximize RAM/Flash headroom:
 
 - **Functional SPI Bus:** Fixed legacy STM32F3 SPI driver compatibility issues (implemented F3-specific SPI clock calculations, resolved signature conflicts on `spiInitDevice`, and replaced stream-based DMA logic with F3-compatible channel mappings).
+- **Performance Enhancements:**
+  - **Overclocking Support:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock speed for better flight controller loop performance.
+  - **Bidirectional DShot & RPM Filtering:** Fully supported, allowing for advanced noise filtering.
+  - **Dynamic Idle Management:** Enabled, utilizing RPM telemetry for improved motor performance and flight characteristics.
 - **RAM & Flash Memory Safety:**
   - **OSD disabled** (`#undef USE_OSD`)
   - **Barometer disabled** (`#undef USE_BARO`)
   - **Magnetometer disabled** (`#undef USE_MAG`)
+  - **Telemetry disabled** (`#undef USE_TELEMETRY_FRSKY_HUB`, `#undef USE_TELEMETRY_SMARTPORT`, `#undef USE_TELEMETRY_CRSF`)
+  - **VTX Control disabled** (`#undef USE_VTX_SMARTAUDIO`, `#undef USE_VTX_TRAMP`)
+  - **CMS & SoftSerial disabled**
   - These strategic feature cuts dropped RAM usage from a critical **99.9%** to a stable **80.7%**, preventing run-time stack overflows.
 - **Optimized FEATURE_CUT_LEVEL:** Increased feature cut level to `12` in `target.mk` to automatically prune non-essential software blocks.
 - **Sensor Drivers:** Correctly included and linked the `mpu6050` gyro/acc drivers into the build.

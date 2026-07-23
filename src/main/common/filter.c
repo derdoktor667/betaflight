@@ -42,6 +42,54 @@ FAST_CODE float nullFilterApply(filter_t *filter, float input)
 }
 
 
+// PT2 Low Pass filter
+
+float pt2FilterGain(float f_cut, float dT)
+{
+    // Cutoff correction for 2nd order: 1 / sqrt(2^(1/2) - 1) = 1 / sqrt(0.414) = 1.5537
+    const float RC = 1.5537f / (2 * M_PI_FLOAT * f_cut);
+    return dT / (RC + dT);
+}
+
+void pt2FilterInit(pt2Filter_t *filter, float k)
+{
+    filter->state1 = 0.0f;
+    filter->state2 = 0.0f;
+    filter->k = k;
+}
+
+FAST_CODE float pt2FilterApply(pt2Filter_t *filter, float input)
+{
+    filter->state1 = filter->state1 + filter->k * (input - filter->state1);
+    filter->state2 = filter->state2 + filter->k * (filter->state1 - filter->state2);
+    return filter->state2;
+}
+
+// PT3 Low Pass filter
+
+float pt3FilterGain(float f_cut, float dT)
+{
+    // Cutoff correction for 3rd order: 1 / sqrt(2^(1/3) - 1) = 1 / sqrt(0.2599) = 1.961
+    const float RC = 1.961f / (2 * M_PI_FLOAT * f_cut);
+    return dT / (RC + dT);
+}
+
+void pt3FilterInit(pt3Filter_t *filter, float k)
+{
+    filter->state1 = 0.0f;
+    filter->state2 = 0.0f;
+    filter->state3 = 0.0f;
+    filter->k = k;
+}
+
+FAST_CODE float pt3FilterApply(pt3Filter_t *filter, float input)
+{
+    filter->state1 = filter->state1 + filter->k * (input - filter->state1);
+    filter->state2 = filter->state2 + filter->k * (filter->state1 - filter->state2);
+    filter->state3 = filter->state3 + filter->k * (filter->state2 - filter->state3);
+    return filter->state3;
+}
+
 // PT1 Low Pass filter
 
 float pt1FilterGain(float f_cut, float dT)

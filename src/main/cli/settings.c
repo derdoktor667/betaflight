@@ -291,11 +291,15 @@ static const char * const lookupTableRcInterpolationChannels[] = {
 
 static const char * const lookupTableLowpassType[] = {
     "PT1",
+    "PT2",
+    "PT3",
     "BIQUAD",
 };
 
 static const char * const lookupTableDtermLowpassType[] = {
     "PT1",
+    "PT2",
+    "PT3",
     "BIQUAD",
 };
 

@@ -45,6 +45,8 @@
 
 typedef union gyroLowpassFilter_u {
     pt1Filter_t pt1FilterState;
+    pt2Filter_t pt2FilterState;
+    pt3Filter_t pt3FilterState;
     biquadFilter_t biquadFilterState;
 } gyroLowpassFilter_t;
 

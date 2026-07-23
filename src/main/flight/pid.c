@@ -274,6 +274,8 @@ const angle_index_t rcAliasToAngleIndexMap[] = { AI_ROLL, AI_PITCH };
 
 typedef union dtermLowpass_u {
     pt1Filter_t pt1Filter;
+    pt2Filter_t pt2Filter;
+    pt3Filter_t pt3Filter;
     biquadFilter_t biquadFilter;
 } dtermLowpass_t;
 
@@ -398,6 +400,18 @@ void pidInitFilters(const pidProfile_t *pidProfile)
                 pt1FilterInit(&dtermLowpass[axis].pt1Filter, pt1FilterGain(dterm_lowpass_hz, dT));
             }
             break;
+        case FILTER_PT2:
+            dtermLowpassApplyFn = (filterApplyFnPtr)pt2FilterApply;
+            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+                pt2FilterInit(&dtermLowpass[axis].pt2Filter, pt2FilterGain(dterm_lowpass_hz, dT));
+            }
+            break;
+        case FILTER_PT3:
+            dtermLowpassApplyFn = (filterApplyFnPtr)pt3FilterApply;
+            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+                pt3FilterInit(&dtermLowpass[axis].pt3Filter, pt3FilterGain(dterm_lowpass_hz, dT));
+            }
+            break;
         case FILTER_BIQUAD:
 #ifdef USE_DYN_LPF
             dtermLowpassApplyFn = (filterApplyFnPtr)biquadFilterApplyDF1;
@@ -425,6 +439,18 @@ void pidInitFilters(const pidProfile_t *pidProfile)
             dtermLowpass2ApplyFn = (filterApplyFnPtr)pt1FilterApply;
             for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
                 pt1FilterInit(&dtermLowpass2[axis].pt1Filter, pt1FilterGain(pidProfile->dterm_lowpass2_hz, dT));
+            }
+            break;
+        case FILTER_PT2:
+            dtermLowpass2ApplyFn = (filterApplyFnPtr)pt2FilterApply;
+            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+                pt2FilterInit(&dtermLowpass2[axis].pt2Filter, pt2FilterGain(pidProfile->dterm_lowpass2_hz, dT));
+            }
+            break;
+        case FILTER_PT3:
+            dtermLowpass2ApplyFn = (filterApplyFnPtr)pt3FilterApply;
+            for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
+                pt3FilterInit(&dtermLowpass2[axis].pt3Filter, pt3FilterGain(pidProfile->dterm_lowpass2_hz, dT));
             }
             break;
         case FILTER_BIQUAD:
