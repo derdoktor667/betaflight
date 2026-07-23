@@ -155,7 +155,12 @@ void biquadFilterInit(biquadFilter_t *filter, float filterFreq, uint32_t refresh
     filter->y1 = filter->y2 = 0;
 }
 
-FAST_CODE void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType)
+void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType)
+{
+    biquadFilterUpdateWeighted(filter, filterFreq, refreshRate, Q, filterType, 1.0f);
+}
+
+void biquadFilterUpdateWeighted(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType, float weight)
 {
     // backup state
     float x1 = filter->x1;
@@ -165,6 +170,16 @@ FAST_CODE void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint
 
     biquadFilterInit(filter, filterFreq, refreshRate, Q, filterType);
 
+    if (weight < 1.0f) {
+        // Interpolate between filter (notch) and pass-through
+        // b0=1, b1=0, b2=0, a0=1, a1=0, a2=0
+        filter->b0 = (1.0f - weight) * 1.0f + weight * filter->b0;
+        filter->b1 = (1.0f - weight) * 0.0f + weight * filter->b1;
+        filter->b2 = (1.0f - weight) * 0.0f + weight * filter->b2;
+        filter->a1 = (1.0f - weight) * 0.0f + weight * filter->a1;
+        filter->a2 = (1.0f - weight) * 0.0f + weight * filter->a2;
+    }
+
     // restore state
     filter->x1 = x1;
     filter->x2 = x2;
@@ -172,7 +187,7 @@ FAST_CODE void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint
     filter->y2 = y2;
 }
 
-FAST_CODE void biquadFilterUpdateLPF(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate)
+void biquadFilterUpdateLPF(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate)
 {
     biquadFilterUpdate(filter, filterFreq, refreshRate, BIQUAD_Q, FILTER_LPF);
 }

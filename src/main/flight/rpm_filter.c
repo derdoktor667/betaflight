@@ -94,6 +94,8 @@ void pgResetFn_rpmFilterConfig(rpmFilterConfig_t *config)
     config->dterm_rpm_notch_q = 500;
 
     config->rpm_lpf = 150;
+    config->rpm_filter_fade_range_hz = 50;
+    config->rpm_filter_lpf_hz = 100;
 }
 
 static void rpmNotchFilterInit(rpmNotchFilter_t* filter, int harmonics, int minHz, int q, float looptime)
@@ -187,24 +189,35 @@ FAST_CODE_NOINLINE void rpmFilterUpdate()
         return;
     }
 
+    const float rpm_lpf_factor = pt1FilterGain(rpmFilterConfig()->rpm_filter_lpf_hz, pidLooptime * 1e-6f);
     for (int motor = 0; motor < getMotorCount(); motor++) {
-        filteredMotorErpm[motor] = pt1FilterApply(&rpmFilters[motor], getDshotTelemetry(motor));
+        // Apply LPF to RPM signal (V2 Feature)
+        float rawErpm = getDshotTelemetry(motor);
+        filteredMotorErpm[motor] += rpm_lpf_factor * (rawErpm - filteredMotorErpm[motor]);
+        
         if (motor < 4) {
             DEBUG_SET(DEBUG_RPM_FILTER, motor, motorFrequency[motor]);
         }
     }
 
+    const float fade_range_hz = rpmFilterConfig()->rpm_filter_fade_range_hz;
+
     for (int i = 0; i < filterUpdatesPerIteration; i++) {
         float frequency = constrainf(
             (currentHarmonic + 1) * motorFrequency[currentMotor], currentFilter->minHz, currentFilter->maxHz);
+
+        float weight = 1.0f;
+        if (fade_range_hz > 0.0f) {
+            weight = constrainf((frequency - currentFilter->minHz) / fade_range_hz, 0.0f, 1.0f);
+        }
+
         biquadFilter_t* template = &currentFilter->notch[0][currentMotor][currentHarmonic];
-        // uncomment below to debug filter stepping. Need to also comment out motor rpm DEBUG_SET above
-        /* DEBUG_SET(DEBUG_RPM_FILTER, 0, harmonic); */
-        /* DEBUG_SET(DEBUG_RPM_FILTER, 1, motor); */
-        /* DEBUG_SET(DEBUG_RPM_FILTER, 2, currentFilter == &gyroFilter); */
-        /* DEBUG_SET(DEBUG_RPM_FILTER, 3, frequency) */
-        biquadFilterUpdate(
-            template, frequency, currentFilter->loopTime, currentFilter->q, FILTER_NOTCH);
+        
+        // V2: Weighted biquad update (requires biquadFilterUpdateWeighted to be available)
+        biquadFilterUpdateWeighted(
+            template, frequency, currentFilter->loopTime, currentFilter->q, FILTER_NOTCH, weight);
+
+        // V2: Coefficient Cloning
         for (int axis = 1; axis < XYZ_AXIS_COUNT; axis++) {
             biquadFilter_t* clone = &currentFilter->notch[axis][currentMotor][currentHarmonic];
             clone->b0 = template->b0;
@@ -226,7 +239,6 @@ FAST_CODE_NOINLINE void rpmFilterUpdate()
             }
             currentFilter = &filters[currentFilterNumber];
         }
-
     }
 }
 
