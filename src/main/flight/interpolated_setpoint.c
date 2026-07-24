@@ -51,8 +51,8 @@ static float ffMaxRateLimit[XYZ_AXIS_COUNT];
 static float ffMaxRate[XYZ_AXIS_COUNT];
 
 void interpolatedSpInit(const pidProfile_t *pidProfile) {
-    const float ffMaxRateScale = pidProfile->ff_max_rate_limit * 0.01f;
-    averagingCount = pidProfile->ff_interpolate_sp;
+    const float ffMaxRateScale = pidProfile->feedforward_max_rate_limit * 0.01f;
+    averagingCount = pidProfile->feedforward_averaging;
     for (int i = 0; i < XYZ_AXIS_COUNT; i++) {
         ffMaxRate[i] = applyCurve(i, 1.0f);
         ffMaxRateLimit[i] = ffMaxRate[i] * ffMaxRateScale;

@@ -16,11 +16,11 @@ We have further optimized this build specifically for **SPRF3** and **SPRACINGF3
 - **Functional SPI Bus:** Fixed legacy STM32F3 SPI driver compatibility issues (implemented F3-specific SPI clock calculations, resolved signature conflicts on `spiInitDevice`, and replaced stream-based DMA logic with F3-compatible channel mappings).
 
 - **Performance Enhancements:**
-  - **Overclocking Support:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock speed for better flight controller loop performance.
-  - **PT2 & PT3 Filtering:** Supported for improved noise reduction on both Gyro and DTerm.
-  - **Bidirectional DShot & RPM Filtering (V2):** Fully supported, allowing for advanced noise filtering.
-  - **Dynamic Idle Management:** Enabled, utilizing RPM telemetry for improved motor performance and flight characteristics.
-  
+- **Overclocking Support:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock speed for better flight controller loop performance.
+- **PT2 & PT3 Filtering:** Supported for improved noise reduction on both Gyro and DTerm.
+- **Feedforward V2:** Implemented for improved setpoint tracking and smoother flight dynamics.
+- **Bidirectional DShot & RPM Filtering (V2):** Fully supported, allowing for advanced noise filtering.
+- **Dynamic Idle Management:** Enabled, utilizing RPM telemetry for improved motor performance and flight characteristics.
 - **RAM & Flash Memory Safety:**
   - **OSD disabled** (`#undef USE_OSD`)
   - **Barometer disabled** (`#undef USE_BARO`)

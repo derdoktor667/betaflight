@@ -221,11 +221,11 @@ void resetPidProfile(pidProfile_t *pidProfile)
         .dyn_idle_i_gain = 50,
         .dyn_idle_d_gain = 50,
         .dyn_idle_max_increase = 150,
-        .ff_interpolate_sp = FF_INTERPOLATE_AVG2,
-        .ff_spike_limit = 60,
-        .ff_max_rate_limit = 100,
-        .ff_smooth_factor = 37,
-        .ff_boost = 15,
+        .feedforward_averaging = FEEDFORWARD_AVERAGING_OFF,
+        .feedforward_max_rate_limit = 100,
+        .feedforward_jitter_factor = 60,
+        .feedforward_smooth_factor = 37,
+        .feedforward_boost = 15,
         .dyn_lpf_curve_expo = 5,
         .level_race_mode = false,
         .vbat_sag_compensation = 0,
@@ -509,8 +509,8 @@ void pidInitFilters(const pidProfile_t *pidProfile)
 
     pt1FilterInit(&antiGravityThrottleLpf, pt1FilterGain(ANTI_GRAVITY_THROTTLE_FILTER_CUTOFF, dT));
 
-    ffBoostFactor = (float)pidProfile->ff_boost / 10.0f;
-    ffSpikeLimitInverse = pidProfile->ff_spike_limit ? 1.0f / ((float)pidProfile->ff_spike_limit / 10.0f) : 0.0f;
+    ffBoostFactor = (float)pidProfile->feedforward_boost / 10.0f;
+    ffSpikeLimitInverse = pidProfile->feedforward_jitter_factor ? 1.0f / ((float)pidProfile->feedforward_jitter_factor / 10.0f) : 0.0f;
 }
 
 #ifdef USE_RC_SMOOTHING_FILTER
@@ -783,8 +783,8 @@ void pidInitConfig(const pidProfile_t *pidProfile)
     airmodeThrottleOffsetLimit = pidProfile->transient_throttle_limit / 100.0f;
 #endif
 #ifdef USE_INTERPOLATED_SP
-    ffFromInterpolatedSetpoint = pidProfile->ff_interpolate_sp;
-    ffSmoothFactor = 1.0f - ((float)pidProfile->ff_smooth_factor) / 100.0f;
+    ffFromInterpolatedSetpoint = pidProfile->feedforward_averaging;
+    ffSmoothFactor = 1.0f - ((float)pidProfile->feedforward_smooth_factor) / 100.0f;
     interpolatedSpInit(pidProfile);
 #endif
 
