@@ -41,7 +41,8 @@ typedef enum {
 
 typedef enum {
     TPA_MODE_PD,
-    TPA_MODE_D
+    TPA_MODE_D,
+    TPA_MODE_P
 } tpaMode_e;
 
 #define MAX_RATE_PROFILE_NAME_LENGTH 8u

@@ -1318,9 +1318,23 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
 #endif
 
 #ifdef USE_TPA_MODE
-    const float tpaFactorKp = (currentControlRateProfile->tpaMode == TPA_MODE_PD) ? tpaFactor : 1.0f;
+    float tpaFactorKp = 1.0f;
+    float tpaFactorKd = 1.0f;
+    switch (currentControlRateProfile->tpaMode) {
+        case TPA_MODE_PD:
+            tpaFactorKp = tpaFactor;
+            tpaFactorKd = tpaFactor;
+            break;
+        case TPA_MODE_D:
+            tpaFactorKd = tpaFactor;
+            break;
+        case TPA_MODE_P:
+            tpaFactorKp = tpaFactor;
+            break;
+    }
 #else
     const float tpaFactorKp = tpaFactor;
+    const float tpaFactorKd = tpaFactor;
 #endif
 
 #ifdef USE_YAW_SPIN_RECOVERY
@@ -1554,7 +1568,7 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
                 }
             }
 #endif
-            pidData[axis].D = pidCoefficient[axis].Kd * delta * tpaFactor * dMinFactor;
+            pidData[axis].D = pidCoefficient[axis].Kd * delta * tpaFactorKd * dMinFactor;
         } else {
             pidData[axis].D = 0;
         }
