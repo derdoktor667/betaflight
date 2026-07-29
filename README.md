@@ -18,6 +18,7 @@ We have further optimized this build specifically for **SPRF3** and **SPRACINGF3
 - **Performance Enhancements:**
 - **Overclocking Support:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock speed for better flight controller loop performance.
 - **TPA-Split:** Implemented for independent application of TPA attenuation to P and D terms.
+- **Loop Frequency:** Fixed at 2kHz (PID process denominator = 1) to ensure stability and reduce CPU load on STM32F3.
 - **PT2 & PT3 Filtering:** Supported for improved noise reduction on both Gyro and DTerm.
 - **Feedforward V2:** Implemented for improved setpoint tracking and smoother flight dynamics.
 - **Bidirectional DShot & RPM Filtering (V2):** Fully supported, allowing for advanced noise filtering.

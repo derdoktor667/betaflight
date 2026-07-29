@@ -63,7 +63,7 @@ uint16_t gyroSetSampleRate(gyroDev_t *gyro)
         break;
     case MPU_60x0:
         gyro->gyroRateKHz = GYRO_RATE_8_kHz;
-        gyroSampleRateHz = 2667;
+        gyroSampleRateHz = 2000;
         accSampleRateHz = 1000;
         break;
     case BMI_270_SPI:
