@@ -140,6 +140,9 @@ typedef enum {
 #ifdef USE_OSD
     TABLE_OSD_LOGO_ON_ARMING,
 #endif
+#ifdef USE_SIMPLIFIED_TUNING
+    TABLE_SIMPLIFIED_TUNING_PIDS_MODE,
+#endif
 
     LOOKUP_TABLE_COUNT
 } lookupTableIndex_e;

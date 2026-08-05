@@ -51,7 +51,7 @@
 #define USE_CCM_CODE
 #define USE_CLI
 #define USE_CLI_BATCH
-#define USE_CUSTOM_BOX_NAMES
+// #define USE_CUSTOM_BOX_NAMES
 #define USE_CUSTOM_DEFAULTS_ADDRESS
 #define USE_DMA
 #define USE_D_MIN
@@ -77,15 +77,15 @@
 #define USE_OVERCLOCK
 #define USE_PERSISTENT_OBJECTS
 #define USE_PERSISTENT_STATS
-#define USE_PINIO
-#define USE_PINIOBOX
+// #define USE_PINIO
+// #define USE_PINIOBOX
 #define USE_PROFILE_NAMES
 #define USE_QUAD_MIXER_ONLY
 #define USE_RC_SMOOTHING_FILTER
 #define USE_RESOURCE_MGMT
 #define USE_RPM_FILTER
 #define USE_RUNAWAY_TAKEOFF
-#define USE_RX_MSP_OVERRIDE
+// #define USE_RX_MSP_OVERRIDE
 #define USE_SIGNATURE
 #define USE_SIMPLIFIED_TUNING
 #define USE_TELEMETRY
@@ -94,8 +94,8 @@
 #define USE_THRUST_LINEARIZATION
 #define USE_TIMER_MGMT
 #define USE_TPA_MODE
-#define USE_USB_MSC
-#define USE_VTX_TABLE
+// #define USE_USB_MSC
+// #define USE_VTX_TABLE
 #define USE_YAW_SPIN_RECOVERY
 
 #if !defined(USE_FRSKY) && !defined(USE_FLYSKY) && !defined(USE_SPEKTRUM) && !defined(USE_CRSF)
@@ -291,7 +291,7 @@ extern uint8_t _dmaram_end__;
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 10))
 #define USE_VIRTUAL_CURRENT_METER
 #define USE_SERIAL_4WAY_BLHELI_BOOTLOADER
-#define USE_RCDEVICE
+// #define USE_RCDEVICE
 #endif
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 9))
@@ -324,8 +324,8 @@ extern uint8_t _dmaram_end__;
 
 #if ((TARGET_FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 4))
 #define USE_HUFFMAN
-#define USE_PINIO
-#define USE_PINIOBOX
+// #define USE_PINIO
+// #define USE_PINIOBOX
 #define USE_LAUNCH_CONTROL
 #endif
 
@@ -345,7 +345,7 @@ extern uint8_t _dmaram_end__;
 
 #if ((FLASH_SIZE > 256) || (FEATURE_CUT_LEVEL < 1))
 #define USE_BOARD_INFO
-#define USE_RX_MSP
+// #define USE_RX_MSP
 #define USE_ESC_SENSOR_INFO
 #define USE_RX_RSSI_DBM
 #endif
@@ -354,10 +354,10 @@ extern uint8_t _dmaram_end__;
 #define USE_AIRMODE_LPF
 #define USE_CANVAS
 #define USE_DSHOT_DMAR
-#define USE_OSD
-#define USE_OSD_OVER_MSP_DISPLAYPORT
-#define USE_OSD_ADJUSTMENTS
-#define USE_SENSOR_NAMES
+// #define USE_OSD
+// #define USE_OSD_OVER_MSP_DISPLAYPORT
+// #define USE_OSD_ADJUSTMENTS
+// #define USE_SENSOR_NAMES
 #define USE_TELEMETRY_IBUS
 #define USE_TELEMETRY_IBUS_EXTENDED
 #define USE_SIGNATURE
@@ -365,17 +365,17 @@ extern uint8_t _dmaram_end__;
 #define USE_LED_STRIP_STATUS_MODE
 #define USE_RX_LINK_QUALITY_INFO
 #define USE_ESC_SENSOR_TELEMETRY
-#define USE_OSD_PROFILES
-#define USE_OSD_STICK_OVERLAY
-#define USE_ESCSERIAL_SIMONK
-#define USE_SERIAL_4WAY_SK_BOOTLOADER
+// #define USE_OSD_PROFILES
+// #define USE_OSD_STICK_OVERLAY
+// #define USE_ESCSERIAL_SIMONK
+// #define USE_SERIAL_4WAY_SK_BOOTLOADER
 #define USE_TELEMETRY_SENSORS_DISABLED_DETAILS
-#define USE_VTX_TABLE
+// #define USE_VTX_TABLE
 #define USE_PERSISTENT_STATS
 #define USE_PROFILE_NAMES
 #define USE_INTERPOLATED_SP
-#define USE_CUSTOM_BOX_NAMES
+// #define USE_CUSTOM_BOX_NAMES
 #define USE_BATTERY_VOLTAGE_SAG_COMPENSATION
-#define USE_RX_MSP_OVERRIDE
+// #define USE_RX_MSP_OVERRIDE
 #define USE_SIMPLIFIED_TUNING
 #endif

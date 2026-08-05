@@ -616,8 +616,10 @@ static void writeIntraframe(void)
     }
 
     if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_TRICOPTER)) {
+#if MAX_SUPPORTED_SERVOS > 5
         //Assume the tail spends most of its time around the center
-        blackboxWriteSignedVB(blackboxCurrent->servo[5] - 1500);
+        blackboxWriteSignedVB(blackboxCurrent->servo[SERVO_RUDDER] - 1500);
+#endif
     }
 
     //Rotate our history buffers:
@@ -747,7 +749,9 @@ static void writeInterframe(void)
     blackboxWriteMainStateArrayUsingAveragePredictor(offsetof(blackboxMainState_t, motor),     getMotorCount());
 
     if (testBlackboxCondition(FLIGHT_LOG_FIELD_CONDITION_TRICOPTER)) {
-        blackboxWriteSignedVB(blackboxCurrent->servo[5] - blackboxLast->servo[5]);
+#if MAX_SUPPORTED_SERVOS > 5
+        blackboxWriteSignedVB(blackboxCurrent->servo[SERVO_RUDDER] - blackboxLast->servo[SERVO_RUDDER]);
+#endif
     }
 
     //Rotate our history buffers
@@ -1064,8 +1068,10 @@ static void loadMainState(timeUs_t currentTimeUs)
     blackboxCurrent->rssi = getRssi();
 
 #ifdef USE_SERVOS
+#if MAX_SUPPORTED_SERVOS > 5
     //Tail servo for tricopters
-    blackboxCurrent->servo[5] = servo[5];
+    blackboxCurrent->servo[SERVO_RUDDER] = servo[SERVO_RUDDER];
+#endif
 #endif
 #else
     UNUSED(currentTimeUs);

@@ -34,6 +34,10 @@
 
 #include "config/config_reset.h"
 
+#ifdef USE_SIMPLIFIED_TUNING
+#include "config/simplified_tuning.h"
+#endif
+
 #include "drivers/dshot_command.h"
 #include "drivers/pwm_output.h"
 #include "drivers/sound_beeper.h"
@@ -141,6 +145,23 @@ static FAST_RAM_ZERO_INIT float airmodeThrottleOffsetLimit;
 
 PG_REGISTER_ARRAY_WITH_RESET_FN(pidProfile_t, PID_PROFILE_COUNT, pidProfiles, PG_PID_PROFILE, 15);
 
+#ifdef USE_SIMPLIFIED_TUNING
+#define PID_PROFILE_SIMPLIFIED_DEFAULTS \
+        .simplified_pids_mode = PID_SIMPLIFIED_TUNING_OFF, \
+        .simplified_master_multiplier = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_roll_pitch_ratio = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_i_gain = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_d_gain = SIMPLIFIED_TUNING_D_DEFAULT, \
+        .simplified_pi_gain = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_dmin_ratio = SIMPLIFIED_TUNING_D_DEFAULT, \
+        .simplified_feedforward_gain = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_pitch_pi_gain = SIMPLIFIED_TUNING_DEFAULT, \
+        .simplified_dterm_filter = 0, \
+        .simplified_dterm_filter_multiplier = SIMPLIFIED_TUNING_DEFAULT,
+#else
+#define PID_PROFILE_SIMPLIFIED_DEFAULTS
+#endif
+
 void resetPidProfile(pidProfile_t *pidProfile)
 {
     RESET_CONFIG(pidProfile_t, pidProfile,
@@ -229,13 +250,13 @@ void resetPidProfile(pidProfile_t *pidProfile)
         .dyn_lpf_curve_expo = 5,
         .level_race_mode = false,
         .vbat_sag_compensation = 0,
+        PID_PROFILE_SIMPLIFIED_DEFAULTS
     );
-#ifndef USE_D_MIN
+    #ifndef USE_D_MIN
     pidProfile->pid[PID_ROLL].D = 30;
     pidProfile->pid[PID_PITCH].D = 32;
-#endif
+    #endif
 }
-
 void pgResetFn_pidProfiles(pidProfile_t *pidProfiles)
 {
     for (int i = 0; i < PID_PROFILE_COUNT; i++) {

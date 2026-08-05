@@ -35,6 +35,9 @@
 
 #include "config/config_eeprom.h"
 #include "config/feature.h"
+#ifdef USE_SIMPLIFIED_TUNING
+#include "config/simplified_tuning.h"
+#endif
 
 #include "drivers/dshot_command.h"
 #include "drivers/motor.h"
@@ -266,6 +269,10 @@ static void validateAndFixConfig(void)
                 pidProfilesMutable(i)->d_min[axis] = 0;
             }
         }
+
+#ifdef USE_SIMPLIFIED_TUNING
+        applySimplifiedTuning(pidProfilesMutable(i), gyroConfigMutable());
+#endif
 
 #if defined(USE_BATTERY_VOLTAGE_SAG_COMPENSATION)
         if (batteryConfig()->voltageMeterSource != VOLTAGE_METER_ADC) {

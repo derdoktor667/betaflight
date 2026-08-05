@@ -340,11 +340,11 @@ static void flashConfigurePartitions(void)
 #endif
 }
 
-flashPartition_t *flashPartitionFindByType(uint8_t type)
+flashPartition_t *flashPartitionFindByType(flashPartitionType_e type)
 {
     for (int index = 0; index < FLASH_MAX_PARTITIONS; index++) {
         flashPartition_t *candidate = &flashPartitionTable.partitions[index];
-        if (candidate->type == type) {
+        if (candidate->type == (uint8_t)type) {
             return candidate;
         }
     }

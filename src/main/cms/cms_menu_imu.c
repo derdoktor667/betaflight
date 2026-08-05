@@ -396,7 +396,7 @@ static const void *cmsx_profileOtherOnEnter(displayPort_t *pDisp)
     const pidProfile_t *pidProfile = pidProfiles(pidProfileIndex);
 
     cmsx_feedForwardTransition  = pidProfile->feedForwardTransition;
-    cmsx_ff_boost = pidProfile->ff_boost;
+    cmsx_ff_boost = pidProfile->feedforward_boost;
 
     cmsx_angleStrength =     pidProfile->pid[PID_LEVEL].P;
     cmsx_horizonStrength =   pidProfile->pid[PID_LEVEL].I;
@@ -424,8 +424,8 @@ static const void *cmsx_profileOtherOnEnter(displayPort_t *pDisp)
 #endif
 
 #ifdef USE_INTERPOLATED_SP
-    cmsx_ff_interpolate_sp = pidProfile->ff_interpolate_sp;
-    cmsx_ff_smooth_factor = pidProfile->ff_smooth_factor;
+    cmsx_ff_interpolate_sp = pidProfile->feedforward_averaging;
+    cmsx_ff_smooth_factor = pidProfile->feedforward_smooth_factor;
 #endif
 
     return NULL;
@@ -439,7 +439,7 @@ static const void *cmsx_profileOtherOnExit(displayPort_t *pDisp, const OSD_Entry
     pidProfile_t *pidProfile = pidProfilesMutable(pidProfileIndex);
     pidProfile->feedForwardTransition = cmsx_feedForwardTransition;
     pidInitConfig(currentPidProfile);
-    pidProfile->ff_boost = cmsx_ff_boost;
+    pidProfile->feedforward_boost = cmsx_ff_boost;
 
     pidProfile->pid[PID_LEVEL].P = cmsx_angleStrength;
     pidProfile->pid[PID_LEVEL].I = cmsx_horizonStrength;
@@ -467,8 +467,8 @@ static const void *cmsx_profileOtherOnExit(displayPort_t *pDisp, const OSD_Entry
 #endif
 
 #ifdef USE_INTERPOLATED_SP
-    pidProfile->ff_interpolate_sp = cmsx_ff_interpolate_sp;
-    pidProfile->ff_smooth_factor = cmsx_ff_smooth_factor;
+    pidProfile->feedforward_averaging = cmsx_ff_interpolate_sp;
+    pidProfile->feedforward_smooth_factor = cmsx_ff_smooth_factor;
 #endif
 
     initEscEndpoints();

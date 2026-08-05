@@ -28,6 +28,21 @@
 
 #define FEEDFORWARD_AVERAGING_OFF 0
 
+// Default PID values (used by simplified tuning as reference)
+#define PID_ROLL_DEFAULT  { 42, 85, 35,  90 }
+#define PID_PITCH_DEFAULT { 46, 90, 38,  95 }
+#define PID_YAW_DEFAULT   { 45, 90,  0,  90 }
+#define D_MIN_DEFAULT     { 23, 25,  0 }
+#define PID_GAIN_MAX 250
+#define F_GAIN_MAX   1000
+
+// Dterm filter defaults (used by simplified tuning)
+#define DTERM_LPF1_DYN_MIN_HZ_DEFAULT  70
+#define DTERM_LPF1_DYN_MAX_HZ_DEFAULT 170
+#define DTERM_LPF2_HZ_DEFAULT         150
+#define DYN_LPF_MAX_HZ 1000
+#define LPF_MAX_HZ     1000
+
 
 #include <stdbool.h>
 #include "common/time.h"
@@ -202,6 +217,20 @@ typedef struct pidProfile_s {
     uint8_t dyn_lpf_curve_expo;             // set the curve for dynamic dterm lowpass filter
     uint8_t level_race_mode;                // NFE race mode - when true pitch setpoint calcualtion is gyro based in level mode
     uint8_t vbat_sag_compensation;          // Reduce motor output by this percentage of the maximum compensation amount
+
+#ifdef USE_SIMPLIFIED_TUNING
+    uint8_t simplified_pids_mode;           // Simplified tuning mode: off, RP, RPY
+    uint8_t simplified_master_multiplier;   // Master PID multiplier (100 = 1.0x)
+    uint8_t simplified_roll_pitch_ratio;    // D ratio between roll and pitch (100 = 1.0x)
+    uint8_t simplified_i_gain;             // I gain multiplier (100 = 1.0x)
+    uint8_t simplified_d_gain;             // D gain multiplier (100 = 1.0x)
+    uint8_t simplified_pi_gain;            // P and I gain multiplier (100 = 1.0x)
+    uint8_t simplified_dmin_ratio;         // D_min ratio multiplier (100 = 1.0x)
+    uint8_t simplified_feedforward_gain;    // Feedforward gain multiplier (100 = 1.0x)
+    uint8_t simplified_pitch_pi_gain;      // Additional pitch PI gain ratio (100 = 1.0x)
+    uint8_t simplified_dterm_filter;       // Enable simplified dterm filter tuning
+    uint8_t simplified_dterm_filter_multiplier; // Dterm filter multiplier (100 = 1.0x)
+#endif
 } pidProfile_t;
 
 PG_DECLARE_ARRAY(pidProfile_t, PID_PROFILE_COUNT, pidProfiles);

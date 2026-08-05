@@ -60,8 +60,8 @@ void pt2FilterInit(pt2Filter_t *filter, float k)
 
 FAST_CODE float pt2FilterApply(pt2Filter_t *filter, float input)
 {
-    filter->state1 = filter->state1 + filter->k * (input - filter->state1);
-    filter->state2 = filter->state2 + filter->k * (filter->state1 - filter->state2);
+    filter->state1 += filter->k * (input - filter->state1);
+    filter->state2 += filter->k * (filter->state1 - filter->state2);
     return filter->state2;
 }
 
@@ -84,9 +84,9 @@ void pt3FilterInit(pt3Filter_t *filter, float k)
 
 FAST_CODE float pt3FilterApply(pt3Filter_t *filter, float input)
 {
-    filter->state1 = filter->state1 + filter->k * (input - filter->state1);
-    filter->state2 = filter->state2 + filter->k * (filter->state1 - filter->state2);
-    filter->state3 = filter->state3 + filter->k * (filter->state2 - filter->state3);
+    filter->state1 += filter->k * (input - filter->state1);
+    filter->state2 += filter->k * (filter->state1 - filter->state2);
+    filter->state3 += filter->k * (filter->state2 - filter->state3);
     return filter->state3;
 }
 
@@ -111,7 +111,7 @@ void pt1FilterUpdateCutoff(pt1Filter_t *filter, float k)
 
 FAST_CODE float pt1FilterApply(pt1Filter_t *filter, float input)
 {
-    filter->state = filter->state + filter->k * (input - filter->state);
+    filter->state += filter->k * (input - filter->state);
     return filter->state;
 }
 
@@ -192,11 +192,12 @@ void biquadFilterInit(biquadFilter_t *filter, float filterFreq, uint32_t refresh
     }
 
     // precompute the coefficients
-    filter->b0 = b0 / a0;
-    filter->b1 = b1 / a0;
-    filter->b2 = b2 / a0;
-    filter->a1 = a1 / a0;
-    filter->a2 = a2 / a0;
+    const float a0Recip = 1.0f / a0;
+    filter->b0 = b0 * a0Recip;
+    filter->b1 = b1 * a0Recip;
+    filter->b2 = b2 * a0Recip;
+    filter->a1 = a1 * a0Recip;
+    filter->a2 = a2 * a0Recip;
 
     // zero initial samples
     filter->x1 = filter->x2 = 0;

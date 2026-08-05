@@ -38,15 +38,19 @@ PG_REGISTER_WITH_RESET_FN(boardConfig_t, boardConfig, PG_BOARD_CONFIG, 0);
 void pgResetFn_boardConfig(boardConfig_t *boardConfig)
 {
     if (boardInformationIsSet()) {
-        strncpy(boardConfig->manufacturerId, getManufacturerId(), MAX_MANUFACTURER_ID_LENGTH + 1);
-        strncpy(boardConfig->boardName, getBoardName(), MAX_BOARD_NAME_LENGTH + 1);
+        strncpy(boardConfig->manufacturerId, getManufacturerId(), MAX_MANUFACTURER_ID_LENGTH);
+        boardConfig->manufacturerId[MAX_MANUFACTURER_ID_LENGTH] = '\0';
+        strncpy(boardConfig->boardName, getBoardName(), MAX_BOARD_NAME_LENGTH);
+        boardConfig->boardName[MAX_BOARD_NAME_LENGTH] = '\0';
         boardConfig->boardInformationSet = true;
     } else {
 #if !defined(USE_UNIFIED_TARGET)
-        strncpy(boardConfig->boardName, targetName, MAX_BOARD_NAME_LENGTH + 1);
+        strncpy(boardConfig->boardName, targetName, MAX_BOARD_NAME_LENGTH);
+        boardConfig->boardName[MAX_BOARD_NAME_LENGTH] = '\0';
 
 #if defined(TARGET_MANUFACTURER_IDENTIFIER)
-        strncpy(boardConfig->manufacturerId, TARGET_MANUFACTURER_IDENTIFIER, MAX_MANUFACTURER_ID_LENGTH + 1);
+        strncpy(boardConfig->manufacturerId, TARGET_MANUFACTURER_IDENTIFIER, MAX_MANUFACTURER_ID_LENGTH);
+        boardConfig->manufacturerId[MAX_MANUFACTURER_ID_LENGTH] = '\0';
 #endif
         boardConfig->boardInformationSet = true;
 #else

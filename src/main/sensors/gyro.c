@@ -132,6 +132,10 @@ void pgResetFn_gyroConfig(gyroConfig_t *gyroConfig)
     gyroConfig->dyn_notch_q = 120;
     gyroConfig->dyn_notch_min_hz = 150;
     gyroConfig->gyro_filter_debug_axis = FD_ROLL;
+#ifdef USE_SIMPLIFIED_TUNING
+    gyroConfig->simplified_gyro_filter = 0;
+    gyroConfig->simplified_gyro_filter_multiplier = 100; // SIMPLIFIED_TUNING_DEFAULT
+#endif
 }
 
 #ifdef USE_GYRO_DATA_ANALYSE

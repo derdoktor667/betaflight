@@ -238,9 +238,9 @@ void spiBusSetInstance(busDevice_t *bus, SPI_TypeDef *instance)
     bus->busdev_u.spi.instance = instance;
 }
 
-void spiBusSetDivisor(busDevice_t *bus, uint16_t divisor)
+void spiBusSetDivisor(busDevice_t *bus, SPIClockDivider_e divisor)
 {
-    spiSetDivisor(bus->busdev_u.spi.instance, divisor);
+    spiSetDivisor(bus->busdev_u.spi.instance, (uint16_t)divisor);
     // bus->busdev_u.spi.modeCache = bus->busdev_u.spi.instance->CR1;
 }
 

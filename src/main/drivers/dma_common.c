@@ -26,13 +26,23 @@
 
 #include "dma.h"
 
+static const resourceOwner_t freeResourceOwner = { .owner = OWNER_FREE, .resourceIndex = 0 };
+
 dmaIdentifier_e dmaAllocate(dmaIdentifier_e identifier, resourceOwner_e owner, uint8_t resourceIndex)
 {
-    if (dmaGetOwner(identifier)->owner != OWNER_FREE) {
+    if (identifier == DMA_NONE) {
         return DMA_NONE;
     }
 
     const int index = DMA_IDENTIFIER_TO_INDEX(identifier);
+    if (index < 0 || index >= DMA_LAST_HANDLER) {
+        return DMA_NONE;
+    }
+
+    if (dmaDescriptors[index].owner.owner != OWNER_FREE) {
+        return DMA_NONE;
+    }
+
     dmaDescriptors[index].owner.owner = owner;
     dmaDescriptors[index].owner.resourceIndex = resourceIndex;
 
@@ -41,7 +51,16 @@ dmaIdentifier_e dmaAllocate(dmaIdentifier_e identifier, resourceOwner_e owner, u
 
 const resourceOwner_t *dmaGetOwner(dmaIdentifier_e identifier)
 {
-    return &dmaDescriptors[DMA_IDENTIFIER_TO_INDEX(identifier)].owner;
+    if (identifier == DMA_NONE) {
+        return &freeResourceOwner;
+    }
+
+    const int index = DMA_IDENTIFIER_TO_INDEX(identifier);
+    if (index < 0 || index >= DMA_LAST_HANDLER) {
+        return &freeResourceOwner;
+    }
+
+    return &dmaDescriptors[index].owner;
 }
 
 dmaIdentifier_e dmaGetIdentifier(const dmaResource_t* channel)

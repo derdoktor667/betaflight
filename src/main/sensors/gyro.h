@@ -20,6 +20,11 @@
 
 #pragma once
 
+// Gyro filter defaults (used by simplified tuning)
+#define GYRO_LPF1_DYN_MIN_HZ_DEFAULT 200
+#define GYRO_LPF1_DYN_MAX_HZ_DEFAULT 500
+#define GYRO_LPF2_HZ_DEFAULT         250
+
 #include "common/axis.h"
 #include "common/filter.h"
 #include "common/time.h"
@@ -199,6 +204,11 @@ typedef struct gyroConfig_s {
     uint8_t  gyro_filter_debug_axis;
 
     uint8_t gyrosDetected; // What gyros should detection be attempted for on startup. Automatically set on first startup.
+
+#ifdef USE_SIMPLIFIED_TUNING
+    uint8_t simplified_gyro_filter;             // Enable simplified gyro filter tuning
+    uint8_t simplified_gyro_filter_multiplier;  // Gyro filter multiplier (100 = 1.0x)
+#endif
 } gyroConfig_t;
 
 PG_DECLARE(gyroConfig_t, gyroConfig);
