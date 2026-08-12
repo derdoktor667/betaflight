@@ -364,8 +364,9 @@ void SetSysClock(void)
 
   if (HSEStatus == (uint32_t)0x01)
   {
-    /* Enable Prefetch Buffer and set Flash Latency */
-      FLASH->ACR = FLASH_ACR_PRFTBE | (uint32_t)(FLASH_ACR_LATENCY_1);
+    /* Enable Prefetch Buffer and set Flash Latency based on overclocking level */
+    uint32_t latency = (overClock > 4) ? FLASH_Latency_2 : FLASH_Latency_1;
+    FLASH->ACR = FLASH_ACR_PRFTBE | latency;
 
      /* HCLK = SYSCLK / 1 */
      RCC->CFGR |= (uint32_t)RCC_CFGR_HPRE_DIV1;

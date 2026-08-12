@@ -1,36 +1,55 @@
+# 🚀 Betaflight Custom SPRF3 Edition
 
-![Betaflight](docs/assets/images/bf_logo.png)
+[![Betaflight](docs/assets/images/bf_logo.png)](https://betaflight.com/)
 
-Betaflight is flight controller software (firmware) used to fly multi-rotor craft and fixed wing craft.
+---
 
-###  Special F3 Edition: RPM Filtering Support on STM32F3!
+### 🏁 F3 Flight Controller - Reborn!
 
-Unlike the official Betaflight releases starting from version 4.1 which dropped support for F3 flight controllers, **this customized version of Betaflight supports bidirectional DShot and RPM Filtering on STM32F3 based flight controllers (such as the SPRacingF3)!**
+Official Betaflight development dropped support for F3 flight controllers. **This optimized, custom version brings them back to life!**
 
-By removing bulky, unused features (such as Barometer, Magnetometer, and Rangefinder) from the firmware build, we have freed up enough flash space to fit high-performance flight dynamics and full RPM filtering capabilities onto F3 boards. See the section below on [Building for SPRacingF3 (SPRF3)](#building-for-spracingf3-sprf3) for more details.
+We have equipped classic F3 flight controllers (such as the **SPRacingF3**) with cutting-edge features that were originally reserved for F4/F7 boards, pushing the limits of the STM32F3 hardware.
 
-### 🛠️ Custom SPRF3 / SPRACINGF3 SPI-Edition
+---
 
-We have further optimized this build specifically for **SPRF3** and **SPRACINGF3** targets to resolve hardware incompatibilities and maximize RAM/Flash headroom:
+## 🔥 Key Features
 
-- **Functional SPI Bus:** Fixed legacy STM32F3 SPI driver compatibility issues (implemented F3-specific SPI clock calculations, resolved signature conflicts on `spiInitDevice`, and replaced stream-based DMA logic with F3-compatible channel mappings).
+| Feature | Status | Benefit |
+| :--- | :---: | :--- |
+| **Bidirectional DShot** | ✅ | Real-time motor feedback |
+| **RPM Filtering** | ✅ | Ultra-smooth flight performance |
+| **Dynamic Notch Filter** | ✅ | Resonant noise elimination |
+| **Overclocking** | ⚡ | More CPU power for F3 |
 
-- **Performance Enhancements:**
-- **Overclocking Support:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock speed for better flight controller loop performance.
-- **TPA-Split:** Implemented for independent application of TPA attenuation to P and D terms.
-- **Loop Frequency:** Fixed at 2kHz (PID process denominator = 1) to ensure stability and reduce CPU load on STM32F3.
-- **PT2 & PT3 Filtering:** Supported for improved noise reduction on both Gyro and DTerm.
-- **Feedforward V2:** Implemented for improved setpoint tracking and smoother flight dynamics.
-- **Bidirectional DShot & RPM Filtering (V2):** Fully supported, allowing for advanced noise filtering.
-- **Dynamic Idle Management:** Enabled, utilizing RPM telemetry for improved motor performance and flight characteristics.
-- **RAM & Flash Memory Safety:**
-  - **OSD disabled** (`#undef USE_OSD`)
-  - **Barometer disabled** (`#undef USE_BARO`)
-  - **Magnetometer disabled** (`#undef USE_MAG`)
-  - **Telemetry disabled** (`#undef USE_TELEMETRY_FRSKY_HUB`, `#undef USE_TELEMETRY_SMARTPORT`, `#undef USE_TELEMETRY_CRSF`)
-  - **VTX Control disabled** (`#undef USE_VTX_SMARTAUDIO`, `#undef USE_VTX_TRAMP`)
-  - **CMS & SoftSerial disabled**
-  - These strategic feature cuts dropped RAM usage from a critical **99.9%** to a stable **80.7%**, preventing run-time stack overflows.
-- **Optimized FEATURE_CUT_LEVEL:** Increased feature cut level to `0` in `target.mk`.
-- **Sensor Drivers:** Correctly included and linked the `mpu6050` gyro/acc drivers into the build.
+---
 
+## 🛠️ High-Performance Technical Optimizations
+
+We have optimized this firmware down to the byte level to achieve maximum performance within the tight constraints of the STM32F3 memory:
+
+### ⚙️ RAM & Flash Memory Management
+- **Aggressive Feature Cuts:** Removed unnecessary drivers (Barometer, Magnetometer, GPS-Rescue, OSD, etc.) to free up space.
+- **Memory-optimized Filters:** Implemented specialized **`biquadDF2_t`** structures for static filters to save RAM, complementing the standard `biquadDF1_t` for dynamic applications.
+- **Stability:** Successfully reduced critical RAM utilization from **99.9%** to a stable **~84%**.
+
+### ⚡ Overclocking & Stability
+- **Dynamic Overclocking:** Enabled (`USE_OVERCLOCK`) to push the STM32F3 clock frequency beyond standard limits for better PID loop performance.
+- **Dynamic Flash Latency:** Implemented dynamic adjustment of Flash access times (**Wait States**) based on the overclocking level to prevent crashes and ensure system stability.
+
+### 🔌 Hardware Fixes
+- **Functional SPI Bus:** Implemented F3-specific SPI clock calculations and resolved DMA channel mappings to ensure robust communication with modern sensors.
+
+---
+
+## 🚀 Building for SPRacingF3 (SPRF3)
+
+```bash
+# Build firmware
+make TARGET=SPRF3
+
+# Clean
+make clean TARGET=SPRF3
+```
+
+---
+*Disclaimer: This firmware is a highly specialized version. Use at your own risk!*
