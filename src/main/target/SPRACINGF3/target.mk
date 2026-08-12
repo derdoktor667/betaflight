@@ -2,7 +2,7 @@
 F3_TARGETS += $(TARGET)
 
 # Define the default features and target source files
-FEATURES    = ONBOARDFLASH
+FEATURES    = ONBOARDFLASH RPM_FILTER
 TARGET_SRC  = drivers/accgyro/accgyro_mpu.c
 
 # Set FEATURE_CUT_LEVEL and additional TARGET_SRC based on TARGET
@@ -10,7 +10,7 @@ ifeq ($(TARGET), SPRF3)
     FEATURE_CUT_LEVEL = 0
     TARGET_SRC += drivers/accgyro/accgyro_mpu6050.c
 else
-    FEATURE_CUT_LEVEL = 6
+    FEATURE_CUT_LEVEL = 0
     TARGET_SRC += \
         drivers/accgyro/accgyro_mpu6050.c \
         drivers/barometer/barometer_ms5611.c \
