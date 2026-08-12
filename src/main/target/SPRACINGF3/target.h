@@ -245,7 +245,9 @@
     #define USE_DSHOT_TELEMETRY
     #define USE_GYRO_DATA_ANALYSE
     #define USE_RPM_FILTER
-    // #define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
+    #define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
+
+    // #define DEFAULT_FEATURES   ( FEATURE_TELEMETRY | FEATURE_DYNAMIC_FILTER)
 #endif
 
 /* ------------------------------------------------------------------------
