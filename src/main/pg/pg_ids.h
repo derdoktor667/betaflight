@@ -141,16 +141,18 @@
 #define PG_RX_SPEKTRUM_SPI_CONFIG 542
 #define PG_SERIAL_UART_CONFIG 543
 #define PG_RPM_FILTER_CONFIG 544
-#define PG_LED_STRIP_STATUS_MODE_CONFIG 545 // Used to hold the configuration for the LED_STRIP status mode (not built on targets with limited flash)
-#define PG_VTX_TABLE_CONFIG 546
-#define PG_STATS_CONFIG 547
-#define PG_QUADSPI_CONFIG 548
-#define PG_TIMER_UP_CONFIG 549 // used to store dmaopt for TIMx_UP channel
-#define PG_SDIO_PIN_CONFIG 550
-#define PG_PULLUP_CONFIG 551
-#define PG_PULLDOWN_CONFIG 552
-#define PG_MODE_ACTIVATION_CONFIG 553
-#define PG_BETAFLIGHT_END 553
+#define PG_DYN_NOTCH_CONFIG 545 // Added dyn notch config
+#define PG_SCHEDULER_CONFIG 546 // Added scheduler config
+#define PG_LED_STRIP_STATUS_MODE_CONFIG 547 // Used to hold the configuration for the LED_STRIP status mode (not built on targets with limited flash)
+#define PG_VTX_TABLE_CONFIG 548
+#define PG_STATS_CONFIG 549
+#define PG_QUADSPI_CONFIG 550
+#define PG_TIMER_UP_CONFIG 551 // used to store dmaopt for TIMx_UP channel
+#define PG_SDIO_PIN_CONFIG 552
+#define PG_PULLUP_CONFIG 553
+#define PG_PULLDOWN_CONFIG 554
+#define PG_MODE_ACTIVATION_CONFIG 555
+#define PG_BETAFLIGHT_END 555
 
 
 // OSD configuration (subject to change)

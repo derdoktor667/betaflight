@@ -20,29 +20,20 @@
 
 #pragma once
 
-#include "common/axis.h"
+#include <stdint.h>
+
 #include "pg/pg.h"
 
-typedef struct rpmFilterConfig_s
+typedef struct dynNotchConfig_s
 {
-    uint8_t  rpm_filter_harmonics;     // how many harmonics should be covered with notches? 0 means filter off
-    uint8_t  rpm_filter_min_hz;        // minimum frequency of the notches
-    uint16_t rpm_filter_q;             // q of the notches
+    uint16_t dyn_notch_min_hz;
+    uint16_t dyn_notch_max_hz;
+    uint16_t dyn_notch_q;
+    uint8_t  dyn_notch_count;
 
-    uint8_t  dterm_rpm_notch_harmonics;
-    uint8_t  dterm_rpm_notch_min;
-    uint16_t dterm_rpm_notch_q;
+} dynNotchConfig_t;
 
-    uint16_t rpm_lpf;
-    uint16_t rpm_filter_fade_range_hz;
-    uint16_t rpm_filter_lpf_hz;
-} rpmFilterConfig_t;
-
-PG_DECLARE(rpmFilterConfig_t, rpmFilterConfig);
-
-void  rpmFilterInit(const rpmFilterConfig_t *config);
-float rpmFilterGyro(int axis, float values);
-float rpmFilterDterm(int axis, float values);
-void  rpmFilterUpdate();
-bool isRpmFilterEnabled(void);
-float rpmMinMotorFrequency();
+// extern dynNotchConfig_t dynNotchConfig_System; 
+// PG_DECLARE(dynNotchConfig_t, dynNotchConfig); 
+extern dynNotchConfig_t dynNotchConfig_System; 
+const dynNotchConfig_t* dynNotchConfig(void); 

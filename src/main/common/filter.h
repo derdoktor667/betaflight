@@ -20,6 +20,7 @@
 
 #pragma once
 #include <stdbool.h>
+#include <stdint.h>
 
 struct filter_s;
 typedef struct filter_s filter_t;
@@ -30,15 +31,15 @@ typedef struct pt1Filter_s {
 } pt1Filter_t;
 
 typedef struct pt2Filter_s {
+    float state;
     float state1;
-    float state2;
     float k;
 } pt2Filter_t;
 
 typedef struct pt3Filter_s {
+    float state;
     float state1;
     float state2;
-    float state3;
     float k;
 } pt3Filter_t;
 
@@ -52,6 +53,7 @@ typedef struct slewFilter_s {
 typedef struct biquadFilter_s {
     float b0, b1, b2, a1, a2;
     float x1, x2, y1, y2;
+    float weight;
 } biquadFilter_t;
 
 typedef struct laggedMovingAverage_s {
@@ -64,9 +66,9 @@ typedef struct laggedMovingAverage_s {
 
 typedef enum {
     FILTER_PT1 = 0,
+    FILTER_BIQUAD,
     FILTER_PT2,
     FILTER_PT3,
-    FILTER_BIQUAD,
 } lowpassFilterType_e;
 
 typedef enum {
@@ -80,12 +82,12 @@ typedef float (*filterApplyFnPtr)(filter_t *filter, float input);
 float nullFilterApply(filter_t *filter, float input);
 
 void biquadFilterInitLPF(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate);
-void biquadFilterInit(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType);
-void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType);
-void biquadFilterUpdateWeighted(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType, float weight);
+void biquadFilterInit(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType, float weight);
+void biquadFilterUpdate(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate, float Q, biquadFilterType_e filterType, float weight);
 void biquadFilterUpdateLPF(biquadFilter_t *filter, float filterFreq, uint32_t refreshRate);
 
 float biquadFilterApplyDF1(biquadFilter_t *filter, float input);
+float biquadFilterApplyDF1Weighted(biquadFilter_t *filter, float input);
 float biquadFilterApply(biquadFilter_t *filter, float input);
 float filterGetNotchQ(float centerFreq, float cutoffFreq);
 
@@ -99,11 +101,22 @@ float pt1FilterApply(pt1Filter_t *filter, float input);
 
 float pt2FilterGain(float f_cut, float dT);
 void pt2FilterInit(pt2Filter_t *filter, float k);
+void pt2FilterUpdateCutoff(pt2Filter_t *filter, float k);
 float pt2FilterApply(pt2Filter_t *filter, float input);
 
 float pt3FilterGain(float f_cut, float dT);
 void pt3FilterInit(pt3Filter_t *filter, float k);
+void pt3FilterUpdateCutoff(pt3Filter_t *filter, float k);
 float pt3FilterApply(pt3Filter_t *filter, float input);
 
 void slewFilterInit(slewFilter_t *filter, float slewLimit, float threshold);
 float slewFilterApply(slewFilter_t *filter, float input);
+
+typedef struct simpleLowpassFilter_s {
+    int32_t fp;
+    int32_t beta;
+    int32_t fpShift;
+} simpleLowpassFilter_t;
+
+int32_t simpleLPFilterUpdate(simpleLowpassFilter_t *filter, int32_t newVal);
+void simpleLPFilterInit(simpleLowpassFilter_t *filter, int32_t beta, int32_t fpShift);

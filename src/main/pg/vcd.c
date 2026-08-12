@@ -25,5 +25,9 @@
 
 #include "vcd.h"
 
-// no template required since defaults are zero
-PG_REGISTER(vcdProfile_t, vcdProfile, PG_VCD_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(vcdProfile_t, vcdProfile, PG_VCD_CONFIG, 0);
+PG_RESET_TEMPLATE(vcdProfile_t, vcdProfile,
+    .video_system = 0,
+    .h_offset = 0,
+    .v_offset = 0,
+);

@@ -1382,7 +1382,7 @@ static bool blackboxWriteSysinfo(void)
                                                                             gyroConfig()->gyro_soft_notch_hz_2);
         BLACKBOX_PRINT_HEADER_LINE("gyro_notch_cutoff", "%d,%d",            gyroConfig()->gyro_soft_notch_cutoff_1,
                                                                             gyroConfig()->gyro_soft_notch_cutoff_2);
-#ifdef USE_GYRO_DATA_ANALYSE
+#ifdef USE_DYN_NOTCH_FILTER
         BLACKBOX_PRINT_HEADER_LINE("dyn_notch_max_hz", "%d",                gyroConfig()->dyn_notch_max_hz);
         BLACKBOX_PRINT_HEADER_LINE("dyn_notch_width_percent", "%d",         gyroConfig()->dyn_notch_width_percent);
         BLACKBOX_PRINT_HEADER_LINE("dyn_notch_q", "%d",                     gyroConfig()->dyn_notch_q);
@@ -1392,13 +1392,11 @@ static bool blackboxWriteSysinfo(void)
         BLACKBOX_PRINT_HEADER_LINE("dshot_bidir", "%d",                     motorConfig()->dev.useDshotTelemetry);
 #endif
 #ifdef USE_RPM_FILTER
-        BLACKBOX_PRINT_HEADER_LINE("gyro_rpm_notch_harmonics", "%d",        rpmFilterConfig()->gyro_rpm_notch_harmonics);
-        BLACKBOX_PRINT_HEADER_LINE("gyro_rpm_notch_q", "%d",                rpmFilterConfig()->gyro_rpm_notch_q);
-        BLACKBOX_PRINT_HEADER_LINE("gyro_rpm_notch_min", "%d",              rpmFilterConfig()->gyro_rpm_notch_min);
-        BLACKBOX_PRINT_HEADER_LINE("dterm_rpm_notch_harmonics", "%d",       rpmFilterConfig()->dterm_rpm_notch_harmonics);
-        BLACKBOX_PRINT_HEADER_LINE("dterm_rpm_notch_q", "%d",               rpmFilterConfig()->dterm_rpm_notch_q);
-        BLACKBOX_PRINT_HEADER_LINE("dterm_rpm_notch_min", "%d",             rpmFilterConfig()->dterm_rpm_notch_min);
-        BLACKBOX_PRINT_HEADER_LINE("rpm_notch_lpf", "%d",                   rpmFilterConfig()->rpm_lpf);
+        BLACKBOX_PRINT_HEADER_LINE("rpm_filter_harmonics", "%d",        rpmFilterConfig()->rpm_filter_harmonics);
+        BLACKBOX_PRINT_HEADER_LINE("rpm_filter_min_hz", "%d",           rpmFilterConfig()->rpm_filter_min_hz);
+        BLACKBOX_PRINT_HEADER_LINE("rpm_filter_fade_range_hz", "%d",    rpmFilterConfig()->rpm_filter_fade_range_hz);
+        BLACKBOX_PRINT_HEADER_LINE("rpm_filter_q", "%d",                rpmFilterConfig()->rpm_filter_q);
+        BLACKBOX_PRINT_HEADER_LINE("rpm_filter_lpf_hz", "%d",           rpmFilterConfig()->rpm_filter_lpf_hz);
 #endif
 #if defined(USE_ACC)
         BLACKBOX_PRINT_HEADER_LINE("acc_lpf_hz", "%d",                 (int)(accelerometerConfig()->acc_lpf_hz * 100.0f));

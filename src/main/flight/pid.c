@@ -65,6 +65,7 @@
 #include "sensors/gyro.h"
 
 #include "pid.h"
+#include "pid_defaults_sprf3.h"
 
 typedef enum {
     LEVEL_MODE_OFF = 0,
@@ -166,90 +167,87 @@ void resetPidProfile(pidProfile_t *pidProfile)
 {
     RESET_CONFIG(pidProfile_t, pidProfile,
         .pid = {
-            [PID_ROLL] =  { 42, 85, 35, 90 },
-            [PID_PITCH] = { 46, 90, 38, 95 },
-            [PID_YAW] =   { 45, 90, 0, 90 },
-            [PID_LEVEL] = { 50, 50, 75, 0 },
-            [PID_MAG] =   { 40, 0, 0, 0 },
+            [PID_ROLL] =  SPRF3_PID_ROLL,
+            [PID_PITCH] = SPRF3_PID_PITCH,
+            [PID_YAW] =   SPRF3_PID_YAW,
+            [PID_LEVEL] = SPRF3_PID_LEVEL,
+            [PID_MAG] =   SPRF3_PID_MAG,
         },
-        .pidSumLimit = PIDSUM_LIMIT,
-        .pidSumLimitYaw = PIDSUM_LIMIT_YAW,
-        .yaw_lowpass_hz = 0,
-        .dterm_notch_hz = 0,
-        .dterm_notch_cutoff = 0,
-        .itermWindupPointPercent = 100,
-        .vbatPidCompensation = 0,
-        .pidAtMinThrottle = PID_STABILISATION_ON,
-        .levelAngleLimit = 55,
-        .feedForwardTransition = 0,
-        .yawRateAccelLimit = 0,
-        .rateAccelLimit = 0,
-        .itermThrottleThreshold = 250,
-        .itermAcceleratorGain = 3500,
-        .crash_time = 500,          // ms
-        .crash_delay = 0,           // ms
-        .crash_recovery_angle = 10, // degrees
-        .crash_recovery_rate = 100, // degrees/second
-        .crash_dthreshold = 50,     // degrees/second/second
-        .crash_gthreshold = 400,    // degrees/second
-        .crash_setpoint_threshold = 350, // degrees/second
-        .crash_recovery = PID_CRASH_RECOVERY_OFF, // off by default
-        .horizon_tilt_effect = 75,
-        .horizon_tilt_expert_mode = false,
-        .crash_limit_yaw = 200,
-        .itermLimit = 400,
-        .throttle_boost = 5,
-        .throttle_boost_cutoff = 15,
-        .iterm_rotation = false,
-        .iterm_relax = ITERM_RELAX_RP,
-        .iterm_relax_cutoff = ITERM_RELAX_CUTOFF_DEFAULT,
-        .iterm_relax_type = ITERM_RELAX_SETPOINT,
-        .acro_trainer_angle_limit = 20,
-        .acro_trainer_lookahead_ms = 50,
-        .acro_trainer_debug_axis = FD_ROLL,
-        .acro_trainer_gain = 75,
-        .abs_control_gain = 0,
-        .abs_control_limit = 90,
-        .abs_control_error_limit = 20,
-        .abs_control_cutoff = 11,
-        .antiGravityMode = ANTI_GRAVITY_SMOOTH,
-        .dterm_lowpass_hz = 150,    // NOTE: dynamic lpf is enabled by default so this setting is actually
-                                    // overridden and the static lowpass 1 is disabled. We can't set this
-                                    // value to 0 otherwise Configurator versions 10.4 and earlier will also
-                                    // reset the lowpass filter type to PT1 overriding the desired BIQUAD setting.
-        .dterm_lowpass2_hz = 150,   // second Dterm LPF ON by default
-        .dterm_filter_type = FILTER_PT1,
-        .dterm_filter2_type = FILTER_PT1,
-        .dyn_lpf_dterm_min_hz = 70,
-        .dyn_lpf_dterm_max_hz = 170,
-        .launchControlMode = LAUNCH_CONTROL_MODE_NORMAL,
-        .launchControlThrottlePercent = 20,
-        .launchControlAngleLimit = 0,
-        .launchControlGain = 40,
-        .launchControlAllowTriggerReset = true,
-        .use_integrated_yaw = false,
-        .integrated_yaw_relax = 200,
-        .thrustLinearization = 0,
-        .d_min = { 23, 25, 0 },      // roll, pitch, yaw
-        .d_min_gain = 37,
-        .d_min_advance = 20,
-        .motor_output_limit = 100,
-        .auto_profile_cell_count = AUTO_PROFILE_CELL_COUNT_STAY,
-        .transient_throttle_limit = 0,
+        .pidSumLimit = SPRF3_PIDSUM_LIMIT,
+        .pidSumLimitYaw = SPRF3_PIDSUM_LIMIT_YAW,
+        .yaw_lowpass_hz = SPRF3_YAW_LOWPASS_HZ,
+        .dterm_notch_hz = SPRF3_DTERM_NOTCH_HZ,
+        .dterm_notch_cutoff = SPRF3_DTERM_NOTCH_CUTOFF,
+        .itermWindupPointPercent = SPRF3_ITERM_WINDUP_POINT_PERCENT,
+        .vbatPidCompensation = SPRF3_VBAT_PID_COMPENSATION,
+        .pidAtMinThrottle = SPRF3_PID_AT_MIN_THROTTLE,
+        .levelAngleLimit = SPRF3_LEVEL_ANGLE_LIMIT,
+        .feedForwardTransition = SPRF3_FEEDFORWARD_TRANSITION,
+        .yawRateAccelLimit = SPRF3_YAW_RATE_ACCEL_LIMIT,
+        .rateAccelLimit = SPRF3_RATE_ACCEL_LIMIT,
+        .itermThrottleThreshold = SPRF3_ITERM_THROTTLE_THRESHOLD,
+        .itermAcceleratorGain = SPRF3_ITERM_ACCELERATOR_GAIN,
+        .crash_time = SPRF3_CRASH_TIME,
+        .crash_delay = SPRF3_CRASH_DELAY,
+        .crash_recovery_angle = SPRF3_CRASH_RECOVERY_ANGLE,
+        .crash_recovery_rate = SPRF3_CRASH_RECOVERY_RATE,
+        .crash_dthreshold = SPRF3_CRASH_DTHRESHOLD,
+        .crash_gthreshold = SPRF3_CRASH_GTHRESHOLD,
+        .crash_setpoint_threshold = SPRF3_CRASH_SETPOINT_THRESHOLD,
+        .crash_recovery = SPRF3_CRASH_RECOVERY,
+        .horizon_tilt_effect = SPRF3_HORIZON_TILT_EFFECT,
+        .horizon_tilt_expert_mode = SPRF3_HORIZON_TILT_EXPERT_MODE,
+        .crash_limit_yaw = SPRF3_CRASH_LIMIT_YAW,
+        .itermLimit = SPRF3_ITERM_LIMIT,
+        .throttle_boost = SPRF3_THROTTLE_BOOST,
+        .throttle_boost_cutoff = SPRF3_THROTTLE_BOOST_CUTOFF,
+        .iterm_rotation = SPRF3_ITERM_ROTATION,
+        .iterm_relax = SPRF3_ITERM_RELAX,
+        .iterm_relax_cutoff = SPRF3_ITERM_RELAX_CUTOFF,
+        .iterm_relax_type = SPRF3_ITERM_RELAX_TYPE,
+        .acro_trainer_angle_limit = SPRF3_ACRO_TRAINER_ANGLE_LIMIT,
+        .acro_trainer_lookahead_ms = SPRF3_ACRO_TRAINER_LOOKAHEAD_MS,
+        .acro_trainer_debug_axis = SPRF3_ACRO_TRAINER_DEBUG_AXIS,
+        .acro_trainer_gain = SPRF3_ACRO_TRAINER_GAIN,
+        .abs_control_gain = SPRF3_ABS_CONTROL_GAIN,
+        .abs_control_limit = SPRF3_ABS_CONTROL_LIMIT,
+        .abs_control_error_limit = SPRF3_ABS_CONTROL_ERROR_LIMIT,
+        .abs_control_cutoff = SPRF3_ABS_CONTROL_CUTOFF,
+        .antiGravityMode = SPRF3_ANTI_GRAVITY_MODE,
+        .dterm_lowpass_hz = SPRF3_DTERM_LOWPASS_HZ,
+        .dterm_lowpass2_hz = SPRF3_DTERM_LOWPASS2_HZ,
+        .dterm_filter_type = SPRF3_DTERM_FILTER_TYPE,
+        .dterm_filter2_type = SPRF3_DTERM_FILTER2_TYPE,
+        .dyn_lpf_dterm_min_hz = SPRF3_DYN_LPF_DTERM_MIN_HZ,
+        .dyn_lpf_dterm_max_hz = SPRF3_DYN_LPF_DTERM_MAX_HZ,
+        .launchControlMode = SPRF3_LAUNCH_CONTROL_MODE,
+        .launchControlThrottlePercent = SPRF3_LAUNCH_CONTROL_THROTTLE_PERCENT,
+        .launchControlAngleLimit = SPRF3_LAUNCH_CONTROL_ANGLE_LIMIT,
+        .launchControlGain = SPRF3_LAUNCH_CONTROL_GAIN,
+        .launchControlAllowTriggerReset = SPRF3_LAUNCH_CONTROL_ALLOW_TRIGGER_RESET,
+        .use_integrated_yaw = SPRF3_USE_INTEGRATED_YAW,
+        .integrated_yaw_relax = SPRF3_INTEGRATED_YAW_RELAX,
+        .thrustLinearization = SPRF3_THRUST_LINEARIZATION,
+        .d_min = SPRF3_D_MIN,
+        .d_min_gain = SPRF3_D_MIN_GAIN,
+        .d_min_advance = SPRF3_D_MIN_ADVANCE,
+        .motor_output_limit = SPRF3_MOTOR_OUTPUT_LIMIT,
+        .auto_profile_cell_count = SPRF3_AUTO_PROFILE_CELL_COUNT,
+        .transient_throttle_limit = SPRF3_TRANSIENT_THROTTLE_LIMIT,
         .profileName = { 0 },
-        .dyn_idle_min_rpm = 0,
-        .dyn_idle_p_gain = 50,
-        .dyn_idle_i_gain = 50,
-        .dyn_idle_d_gain = 50,
-        .dyn_idle_max_increase = 150,
-        .feedforward_averaging = FEEDFORWARD_AVERAGING_OFF,
-        .feedforward_max_rate_limit = 100,
-        .feedforward_jitter_factor = 60,
-        .feedforward_smooth_factor = 37,
-        .feedforward_boost = 15,
-        .dyn_lpf_curve_expo = 5,
-        .level_race_mode = false,
-        .vbat_sag_compensation = 0,
+        .dyn_idle_min_rpm = SPRF3_DYN_IDLE_MIN_RPM,
+        .dyn_idle_p_gain = SPRF3_DYN_IDLE_P_GAIN,
+        .dyn_idle_i_gain = SPRF3_DYN_IDLE_I_GAIN,
+        .dyn_idle_d_gain = SPRF3_DYN_IDLE_D_GAIN,
+        .dyn_idle_max_increase = SPRF3_DYN_IDLE_MAX_INCREASE,
+        .feedforward_averaging = SPRF3_FEEDFORWARD_AVERAGING,
+        .feedforward_max_rate_limit = SPRF3_FEEDFORWARD_MAX_RATE_LIMIT,
+        .feedforward_jitter_factor = SPRF3_FEEDFORWARD_JITTER_FACTOR,
+        .feedforward_smooth_factor = SPRF3_FEEDFORWARD_SMOOTH_FACTOR,
+        .feedforward_boost = SPRF3_FEEDFORWARD_BOOST,
+        .dyn_lpf_curve_expo = SPRF3_DYN_LPF_CURVE_EXPO,
+        .level_race_mode = SPRF3_LEVEL_RACE_MODE,
+        .vbat_sag_compensation = SPRF3_VBAT_SAG_COMPENSATION,
         PID_PROFILE_SIMPLIFIED_DEFAULTS
     );
     #ifndef USE_D_MIN
@@ -398,7 +396,7 @@ void pidInitFilters(const pidProfile_t *pidProfile)
         dtermNotchApplyFn = (filterApplyFnPtr)biquadFilterApply;
         const float notchQ = filterGetNotchQ(dTermNotchHz, pidProfile->dterm_notch_cutoff);
         for (int axis = FD_ROLL; axis <= FD_YAW; axis++) {
-            biquadFilterInit(&dtermNotch[axis], dTermNotchHz, targetPidLooptime, notchQ, FILTER_NOTCH);
+            biquadFilterInit(&dtermNotch[axis], dTermNotchHz, targetPidLooptime, notchQ, FILTER_NOTCH, 1.0f);
         }
     } else {
         dtermNotchApplyFn = nullFilterApply;
@@ -1409,9 +1407,6 @@ void FAST_CODE pidController(const pidProfile_t *pidProfile, timeUs_t currentTim
     float gyroRateDterm[XYZ_AXIS_COUNT];
     for (int axis = FD_ROLL; axis <= FD_YAW; ++axis) {
         gyroRateDterm[axis] = gyro.gyroADCf[axis];
-#ifdef USE_RPM_FILTER
-        gyroRateDterm[axis] = rpmFilterDterm(axis,gyroRateDterm[axis]);
-#endif
         gyroRateDterm[axis] = dtermNotchApplyFn((filter_t *) &dtermNotch[axis], gyroRateDterm[axis]);
         gyroRateDterm[axis] = dtermLowpassApplyFn((filter_t *) &dtermLowpass[axis], gyroRateDterm[axis]);
         gyroRateDterm[axis] = dtermLowpass2ApplyFn((filter_t *) &dtermLowpass2[axis], gyroRateDterm[axis]);

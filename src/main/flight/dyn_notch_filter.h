@@ -18,26 +18,20 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include <stdbool.h>
-#include <stdint.h>
 
-#include "platform.h"
+#include "common/time.h"
 
-#ifdef USE_MCO
+#include "pg/dyn_notch.h"
 
-#include "drivers/io.h"
-#include "pg/pg.h"
-#include "pg/pg_ids.h"
-#include "pg/mco.h"
+#define DYN_NOTCH_COUNT_MAX 5
 
-PG_REGISTER_ARRAY_WITH_RESET_FN(mcoConfig_t, 2, mcoConfig, PG_MCO_CONFIG, 0);
-
-void pgResetFn_mcoConfig(mcoConfig_t *mcoConfig)
-{
-    for (int i = 0; i < 2; i++) {
-        mcoConfig[i].enabled = 0;
-        mcoConfig[i].source = 0;
-        mcoConfig[i].divider = 0;
-    }
-}
-#endif // USE_MCO
+void dynNotchInit(const dynNotchConfig_t *config, const timeUs_t targetLooptimeUs);
+void dynNotchPush(const int axis, const float sample);
+void dynNotchUpdate(void);
+float dynNotchFilter(const int axis, float value);
+bool isDynNotchActive(void);
+int getMaxFFT(void);
+void resetMaxFFT(void);

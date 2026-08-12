@@ -88,8 +88,10 @@ void pgResetFn_servoParams(servoParam_t *instance)
     }
 }
 
-// no template required since default is zero
-PG_REGISTER(gimbalConfig_t, gimbalConfig, PG_GIMBAL_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(gimbalConfig_t, gimbalConfig, PG_GIMBAL_CONFIG, 0);
+PG_RESET_TEMPLATE(gimbalConfig_t, gimbalConfig,
+    .mode = GIMBAL_MODE_NORMAL,
+);
 
 int16_t servo[MAX_SUPPORTED_SERVOS];
 

@@ -33,8 +33,8 @@
 #include "drivers/bus.h"
 #include "drivers/sensor.h"
 
-#ifdef USE_GYRO_DATA_ANALYSE
-#include "flight/gyroanalyse.h"
+#ifdef USE_DYN_NOTCH_FILTER
+
 #endif
 
 #include "flight/pid.h"
@@ -113,10 +113,6 @@ typedef struct gyro_s {
     filterApplyFnPtr notchFilterDynApplyFn2;
     biquadFilter_t notchFilterDyn[XYZ_AXIS_COUNT];
     biquadFilter_t notchFilterDyn2[XYZ_AXIS_COUNT];
-
-#ifdef USE_GYRO_DATA_ANALYSE
-    gyroAnalyseState_t gyroAnalyseState;
-#endif
 
     uint16_t accSampleRateHz;
     uint8_t gyroToUse;
@@ -231,6 +227,6 @@ void dynLpfGyroUpdate(float throttle);
 #ifdef USE_YAW_SPIN_RECOVERY
 void initYawSpinRecovery(int maxYawRate);
 #endif
-#ifdef USE_GYRO_DATA_ANALYSE
-bool isDynamicFilterActive(void);
+#ifdef USE_DYN_NOTCH_FILTER
+bool isDynNotchActive(void);
 #endif

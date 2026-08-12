@@ -106,7 +106,11 @@ PG_RESET_TEMPLATE(currentSensorADCConfig_t, currentSensorADCConfig,
 );
 
 #ifdef USE_VIRTUAL_CURRENT_METER
-PG_REGISTER(currentSensorVirtualConfig_t, currentSensorVirtualConfig, PG_CURRENT_SENSOR_VIRTUAL_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(currentSensorVirtualConfig_t, currentSensorVirtualConfig, PG_CURRENT_SENSOR_VIRTUAL_CONFIG, 0);
+PG_RESET_TEMPLATE(currentSensorVirtualConfig_t, currentSensorVirtualConfig,
+    .scale = 0,
+    .offset = 0,
+);
 #endif
 
 static int32_t currentMeterADCToCentiamps(const uint16_t src)

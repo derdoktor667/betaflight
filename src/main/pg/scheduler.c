@@ -18,26 +18,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "platform.h"
 
-#ifdef USE_MCO
-
-#include "drivers/io.h"
-#include "pg/pg.h"
 #include "pg/pg_ids.h"
-#include "pg/mco.h"
+#include "pg/scheduler.h"
 
-PG_REGISTER_ARRAY_WITH_RESET_FN(mcoConfig_t, 2, mcoConfig, PG_MCO_CONFIG, 0);
+PG_REGISTER_WITH_RESET_TEMPLATE(schedulerConfig_t, schedulerConfig, PG_SCHEDULER_CONFIG, 0);
 
-void pgResetFn_mcoConfig(mcoConfig_t *mcoConfig)
-{
-    for (int i = 0; i < 2; i++) {
-        mcoConfig[i].enabled = 0;
-        mcoConfig[i].source = 0;
-        mcoConfig[i].divider = 0;
-    }
-}
-#endif // USE_MCO
+PG_RESET_TEMPLATE(schedulerConfig_t, schedulerConfig,
+    .rxRelaxDeterminism = SCHEDULER_RELAX_RX,
+    .osdRelaxDeterminism = SCHEDULER_RELAX_OSD,
+);

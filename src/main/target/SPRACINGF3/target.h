@@ -226,21 +226,22 @@
  *  because they're defined in a shared/common config included earlier.)
  * ------------------------------------------------------------------------ */
 #if defined(SPRF3)
-    #undef USE_OSD
-    #undef USE_OSD_HD
-    #undef USE_OSD_SD
-    #undef USE_MAX7456
-    #undef USE_CMS
-    #undef USE_DISPLAY
-    #undef USE_DASHBOARD
-    #undef USE_SOFTSERIAL
-    #undef USE_TELEMETRY_FRSKY_HUB
-    #undef USE_TELEMETRY_SMARTPORT
-    #undef USE_TELEMETRY_CRSF
-    #undef USE_VTX_SMARTAUDIO
-    #undef USE_VTX_TRAMP
+    // #undef USE_OSD
+    // #undef USE_OSD_HD
+    // #undef USE_OSD_SD
+    // #undef USE_MAX7456
+    // #undef USE_CMS
+    // #undef USE_DISPLAY
+    // #undef USE_DASHBOARD
+    // #undef USE_SOFTSERIAL
+    // #undef USE_TELEMETRY_FRSKY_HUB
+    // #undef USE_TELEMETRY_SMARTPORT
+    // #undef USE_TELEMETRY_CRSF
+    // #undef USE_VTX_SMARTAUDIO
+    // #undef USE_VTX_TRAMP
 
     #define USE_DSHOT
+    #define USE_DYN_NOTCH_FILTER
     // #define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
 #endif
 

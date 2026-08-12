@@ -62,8 +62,8 @@
 
 #include "fc/runtime_config.h"
 
-#ifdef USE_GYRO_DATA_ANALYSE
-#include "flight/gyroanalyse.h"
+#ifdef USE_DYN_NOTCH_FILTER
+#include "flight/dyn_notch_filter.h"
 #endif
 
 #include "pg/gyrodev.h"
@@ -71,7 +71,7 @@
 #include "sensors/gyro.h"
 #include "sensors/sensors.h"
 
-#ifdef USE_GYRO_DATA_ANALYSE
+#ifdef USE_DYN_NOTCH_FILTER
 #define DYNAMIC_NOTCH_DEFAULT_CENTER_HZ 350
 #define DYNAMIC_NOTCH_DEFAULT_CUTOFF_HZ 300
 #endif
@@ -108,7 +108,7 @@ static void gyroInitFilterNotch1(uint16_t notchHz, uint16_t notchCutoffHz)
         gyro.notchFilter1ApplyFn = (filterApplyFnPtr)biquadFilterApply;
         const float notchQ = filterGetNotchQ(notchHz, notchCutoffHz);
         for (int axis = 0; axis < XYZ_AXIS_COUNT; axis++) {
-            biquadFilterInit(&gyro.notchFilter1[axis], notchHz, gyro.targetLooptime, notchQ, FILTER_NOTCH);
+            biquadFilterInit(&gyro.notchFilter1[axis], notchHz, gyro.targetLooptime, notchQ, FILTER_NOTCH, 1.0f);
         }
     }
 }
@@ -123,26 +123,26 @@ static void gyroInitFilterNotch2(uint16_t notchHz, uint16_t notchCutoffHz)
         gyro.notchFilter2ApplyFn = (filterApplyFnPtr)biquadFilterApply;
         const float notchQ = filterGetNotchQ(notchHz, notchCutoffHz);
         for (int axis = 0; axis < XYZ_AXIS_COUNT; axis++) {
-            biquadFilterInit(&gyro.notchFilter2[axis], notchHz, gyro.targetLooptime, notchQ, FILTER_NOTCH);
+            biquadFilterInit(&gyro.notchFilter2[axis], notchHz, gyro.targetLooptime, notchQ, FILTER_NOTCH, 1.0f);
         }
     }
 }
 
-#ifdef USE_GYRO_DATA_ANALYSE
+#ifdef USE_DYN_NOTCH_FILTER
 static void gyroInitFilterDynamicNotch()
 {
     gyro.notchFilterDynApplyFn = nullFilterApply;
     gyro.notchFilterDynApplyFn2 = nullFilterApply;
 
-    if (isDynamicFilterActive()) {
+    if (isDynNotchActive()) {
         gyro.notchFilterDynApplyFn = (filterApplyFnPtr)biquadFilterApplyDF1; // must be this function, not DF2
         if(gyroConfig()->dyn_notch_width_percent != 0) {
             gyro.notchFilterDynApplyFn2 = (filterApplyFnPtr)biquadFilterApplyDF1; // must be this function, not DF2
         }
         const float notchQ = filterGetNotchQ(DYNAMIC_NOTCH_DEFAULT_CENTER_HZ, DYNAMIC_NOTCH_DEFAULT_CUTOFF_HZ); // any defaults OK here
         for (int axis = 0; axis < XYZ_AXIS_COUNT; axis++) {
-            biquadFilterInit(&gyro.notchFilterDyn[axis], DYNAMIC_NOTCH_DEFAULT_CENTER_HZ, gyro.targetLooptime, notchQ, FILTER_NOTCH);
-            biquadFilterInit(&gyro.notchFilterDyn2[axis], DYNAMIC_NOTCH_DEFAULT_CENTER_HZ, gyro.targetLooptime, notchQ, FILTER_NOTCH);
+            biquadFilterInit(&gyro.notchFilterDyn[axis], DYNAMIC_NOTCH_DEFAULT_CENTER_HZ, gyro.targetLooptime, notchQ, FILTER_NOTCH, 1.0f);
+            biquadFilterInit(&gyro.notchFilterDyn2[axis], DYNAMIC_NOTCH_DEFAULT_CENTER_HZ, gyro.targetLooptime, notchQ, FILTER_NOTCH, 1.0f);
         }
     }
 }
@@ -267,14 +267,14 @@ void gyroInitFilters(void)
 
     gyroInitFilterNotch1(gyroConfig()->gyro_soft_notch_hz_1, gyroConfig()->gyro_soft_notch_cutoff_1);
     gyroInitFilterNotch2(gyroConfig()->gyro_soft_notch_hz_2, gyroConfig()->gyro_soft_notch_cutoff_2);
-#ifdef USE_GYRO_DATA_ANALYSE
+#ifdef USE_DYN_NOTCH_FILTER
     gyroInitFilterDynamicNotch();
 #endif
 #ifdef USE_DYN_LPF
     dynLpfFilterInit();
 #endif
-#ifdef USE_GYRO_DATA_ANALYSE
-    gyroDataAnalyseStateInit(&gyro.gyroAnalyseState, gyro.targetLooptime);
+#ifdef USE_DYN_NOTCH_FILTER
+    dynNotchInit(dynNotchConfig(), gyro.targetLooptime);
 #endif
 }
 

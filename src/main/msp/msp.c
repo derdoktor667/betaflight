@@ -1713,7 +1713,7 @@ static bool mspProcessOutCommand(int16_t cmdMSP, sbuf_t *dst)
         sbufWriteU16(dst, 0);
 #endif
         // Added in MSP API 1.42
-#if defined(USE_GYRO_DATA_ANALYSE)
+#if defined(USE_DYN_NOTCH_FILTER)
         sbufWriteU8(dst, 0); // DEPRECATED 1.43: dyn_notch_range
         sbufWriteU8(dst, gyroConfig()->dyn_notch_width_percent);
         sbufWriteU16(dst, gyroConfig()->dyn_notch_q);
@@ -1725,13 +1725,16 @@ static bool mspProcessOutCommand(int16_t cmdMSP, sbuf_t *dst)
         sbufWriteU16(dst, 0);
 #endif
 #if defined(USE_RPM_FILTER)
-        sbufWriteU8(dst, rpmFilterConfig()->gyro_rpm_notch_harmonics);
-        sbufWriteU8(dst, rpmFilterConfig()->gyro_rpm_notch_min);
+        sbufWriteU8(dst, rpmFilterConfig()->rpm_filter_harmonics);
+        sbufWriteU8(dst, rpmFilterConfig()->rpm_filter_min_hz);
+        sbufWriteU16(dst, rpmFilterConfig()->rpm_filter_fade_range_hz);
+        sbufWriteU16(dst, rpmFilterConfig()->rpm_filter_q);
+        sbufWriteU16(dst, rpmFilterConfig()->rpm_filter_lpf_hz);
 #else
         sbufWriteU8(dst, 0);
         sbufWriteU8(dst, 0);
 #endif
-#if defined(USE_GYRO_DATA_ANALYSE)
+#if defined(USE_DYN_NOTCH_FILTER)
         // Added in MSP API 1.43
         sbufWriteU16(dst, gyroConfig()->dyn_notch_max_hz);
 #else
@@ -2558,7 +2561,7 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
         }
         if (sbufBytesRemaining(src) >= 8) {
             // Added in MSP API 1.42
-#if defined(USE_GYRO_DATA_ANALYSE)
+#if defined(USE_DYN_NOTCH_FILTER)
             sbufReadU8(src); // DEPRECATED: dyn_notch_range
             gyroConfigMutable()->dyn_notch_width_percent = sbufReadU8(src);
             gyroConfigMutable()->dyn_notch_q = sbufReadU16(src);
@@ -2570,15 +2573,21 @@ static mspResult_e mspProcessInCommand(mspDescriptor_t srcDesc, int16_t cmdMSP, 
             sbufReadU16(src);
 #endif
 #if defined(USE_RPM_FILTER)
-            rpmFilterConfigMutable()->gyro_rpm_notch_harmonics = sbufReadU8(src);
-            rpmFilterConfigMutable()->gyro_rpm_notch_min = sbufReadU8(src);
+            rpmFilterConfigMutable()->rpm_filter_harmonics = sbufReadU8(src);
+            rpmFilterConfigMutable()->rpm_filter_min_hz = sbufReadU8(src);
+            rpmFilterConfigMutable()->rpm_filter_fade_range_hz = sbufReadU16(src);
+            rpmFilterConfigMutable()->rpm_filter_q = sbufReadU16(src);
+            rpmFilterConfigMutable()->rpm_filter_lpf_hz = sbufReadU16(src);
 #else
             sbufReadU8(src);
             sbufReadU8(src);
+            sbufReadU16(src);
+            sbufReadU16(src);
+            sbufReadU16(src);
 #endif
         }
         if (sbufBytesRemaining(src) >= 2) {
-#if defined(USE_GYRO_DATA_ANALYSE)
+#if defined(USE_DYN_NOTCH_FILTER)
             // Added in MSP API 1.43
             gyroConfigMutable()->dyn_notch_max_hz = sbufReadU16(src);
 #else

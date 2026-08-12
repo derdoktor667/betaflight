@@ -63,8 +63,8 @@
 #include "fc/rc_modes.h"
 #include "fc/runtime_config.h"
 
-#if defined(USE_GYRO_DATA_ANALYSE)
-#include "flight/gyroanalyse.h"
+#if defined(USE_DYN_NOTCH_FILTER)
+
 #endif
 #include "flight/imu.h"
 #include "flight/mixer.h"
@@ -776,7 +776,7 @@ static bool osdDisplayStat(int statistic, uint8_t displayRow)
         return true;
 #endif
 
-#if defined(USE_GYRO_DATA_ANALYSE)
+#if defined(USE_DYN_NOTCH_FILTER)
     case OSD_STAT_MAX_FFT:
         if (featureIsEnabled(FEATURE_DYNAMIC_FILTER)) {
             int value = getMaxFFT();

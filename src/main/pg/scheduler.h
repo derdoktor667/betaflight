@@ -18,26 +18,22 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>
-#include <stdint.h>
+#pragma once
 
-#include "platform.h"
-
-#ifdef USE_MCO
-
-#include "drivers/io.h"
 #include "pg/pg.h"
-#include "pg/pg_ids.h"
-#include "pg/mco.h"
 
-PG_REGISTER_ARRAY_WITH_RESET_FN(mcoConfig_t, 2, mcoConfig, PG_MCO_CONFIG, 0);
+#ifdef STM32F411xE
+// Allow RX and OSD tasks to be scheduled at the second attempt on F411 processors
+#define SCHEDULER_RELAX_RX  1
+#define SCHEDULER_RELAX_OSD 1
+#else
+#define SCHEDULER_RELAX_RX  25
+#define SCHEDULER_RELAX_OSD 25
+#endif
 
-void pgResetFn_mcoConfig(mcoConfig_t *mcoConfig)
-{
-    for (int i = 0; i < 2; i++) {
-        mcoConfig[i].enabled = 0;
-        mcoConfig[i].source = 0;
-        mcoConfig[i].divider = 0;
-    }
-}
-#endif // USE_MCO
+typedef struct schedulerConfig_s {
+    uint16_t rxRelaxDeterminism;
+    uint16_t osdRelaxDeterminism;
+} schedulerConfig_t;
+
+PG_DECLARE(schedulerConfig_t, schedulerConfig);

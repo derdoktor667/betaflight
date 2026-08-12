@@ -18,26 +18,23 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "platform.h"
 
-#ifdef USE_MCO
+#ifdef USE_DYN_NOTCH_FILTER
 
-#include "drivers/io.h"
 #include "pg/pg.h"
 #include "pg/pg_ids.h"
-#include "pg/mco.h"
 
-PG_REGISTER_ARRAY_WITH_RESET_FN(mcoConfig_t, 2, mcoConfig, PG_MCO_CONFIG, 0);
+#include "dyn_notch.h"
 
-void pgResetFn_mcoConfig(mcoConfig_t *mcoConfig)
-{
-    for (int i = 0; i < 2; i++) {
-        mcoConfig[i].enabled = 0;
-        mcoConfig[i].source = 0;
-        mcoConfig[i].divider = 0;
-    }
-}
-#endif // USE_MCO
+PG_REGISTER_WITH_RESET_TEMPLATE(dynNotchConfig_t, dynNotchConfig, PG_DYN_NOTCH_CONFIG, 0); 
+const dynNotchConfig_t* dynNotchConfig(void) { return &dynNotchConfig_System; }
+
+PG_RESET_TEMPLATE(dynNotchConfig_t, dynNotchConfig,
+    .dyn_notch_min_hz = 150,
+    .dyn_notch_max_hz = 600,
+    .dyn_notch_q = 300,
+    .dyn_notch_count = 3
+);
+
+#endif // USE_DYN_NOTCH_FILTER
