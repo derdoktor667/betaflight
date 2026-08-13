@@ -23,37 +23,19 @@
 /* ------------------------------------------------------------------------
  * Board identifier
  * ------------------------------------------------------------------------ */
-#if defined(RMDO)
-    #define TARGET_BOARD_IDENTIFIER "RMDO"
-#elif defined(ZCOREF3)
-    #define TARGET_BOARD_IDENTIFIER "ZCF3"
-#elif defined(FLIP32F3OSD)
-    #define TARGET_BOARD_IDENTIFIER "FLF3"
-#elif defined(IRCSYNERGYF3)
-    #define TARGET_BOARD_IDENTIFIER "ISF3"
-#elif defined(SPRF3)
-    #define TARGET_BOARD_IDENTIFIER "SPRF3"
-#else
-    #define TARGET_BOARD_IDENTIFIER "SRF3"
-#endif
+#define TARGET_BOARD_IDENTIFIER "SPRF3"
 
 /* ------------------------------------------------------------------------
  * LED
  * ------------------------------------------------------------------------ */
-#if defined(ZCOREF3)
-    #define LED0_PIN PB8
-#else
-    #define LED0_PIN PB3
-#endif
+#define LED0_PIN PB3
 
 /* ------------------------------------------------------------------------
- * Beeper (not on IRCSYNERGYF3)
+ * Beeper
  * ------------------------------------------------------------------------ */
-#if !defined(IRCSYNERGYF3)
-    #define USE_BEEPER
-    #define BEEPER_PIN      PC15
-    #define BEEPER_INVERTED
-#endif
+#define USE_BEEPER
+#define BEEPER_PIN      PC15
+#define BEEPER_INVERTED
 
 /* ------------------------------------------------------------------------
  * External interrupts / gyro data-ready
@@ -69,89 +51,9 @@
  * ------------------------------------------------------------------------ */
 #define USE_GYRO
 #define USE_ACC
-
-#if defined(FLIP32F3OSD)
-    #define USE_GYRO_MPU6500
-    #define GYRO_1_ALIGN        CW270_DEG
-    #define USE_ACC_MPU6500
-
-#elif defined(ZCOREF3)
-    #define USE_GYRO_MPU6500
-    #define USE_GYRO_SPI_MPU6500
-    #define GYRO_1_ALIGN        CW180_DEG
-    #define USE_ACC_MPU6500
-    #define USE_ACC_SPI_MPU6500
-
-    #define USE_SPI_DEVICE_1
-    #define SPI1_NSS_PIN        PB9
-    #define SPI1_SCK_PIN        PB3
-    #define SPI1_MISO_PIN       PB4
-    #define SPI1_MOSI_PIN       PB5
-    #define GYRO_1_CS_PIN       PB9
-    #define GYRO_1_SPI_INSTANCE SPI1
-
-#elif defined(IRCSYNERGYF3)
-    #define USE_GYRO_SPI_MPU6000
-    #define GYRO_1_ALIGN        CW270_DEG
-    #define USE_ACC_SPI_MPU6000
-    #define GYRO_1_CS_PIN       PB12
-    #define GYRO_1_SPI_INSTANCE SPI2
-
-#else // RMDO, SPRF3, SRF3 (default)
-    #define USE_GYRO_MPU6050
-    #define GYRO_1_ALIGN        CW270_DEG
-    #define USE_ACC_MPU6050
-#endif
-
-/* ------------------------------------------------------------------------
- * Baro
- * SPRF3 has neither baro nor rangefinder/mag -> handled as its own
- * branch instead of the trailing #undef cascade at the end of the file.
- * ------------------------------------------------------------------------ */
-#if !defined(SPRF3)
-    #define USE_BARO
-    #define USE_BARO_BMP280
-#endif
-
-/* ------------------------------------------------------------------------
- * Rangefinder / magnetometer
- * ------------------------------------------------------------------------ */
-#if defined(SPRF3)
-    // no rangefinder, no mag
-
-#elif defined(FLIP32F3OSD)
-    #define USE_RANGEFINDER
-    #define USE_RANGEFINDER_HCSR04
-    #define RANGEFINDER_HCSR04_TRIGGER_PIN PB0
-    #define RANGEFINDER_HCSR04_ECHO_PIN    PB1
-
-#elif defined(ZCOREF3)
-    #define USE_MAG_DATA_READY_SIGNAL
-    #define ENSURE_MAG_DATA_READY_IS_HIGH
-
-#else // RMDO, IRCSYNERGYF3, SRF3
-    #define USE_RANGEFINDER
-    #define USE_RANGEFINDER_HCSR04
-    #define RANGEFINDER_HCSR04_TRIGGER_PIN PB0
-    #define RANGEFINDER_HCSR04_ECHO_PIN    PB1
-
-    #define USE_MAG
-    #define USE_MAG_AK8975
-    #define USE_MAG_HMC5883
-    #define USE_MAG_QMC5883
-    #define MAG_HMC5883_ALIGN CW270_DEG
-    #define USE_MAG_DATA_READY_SIGNAL
-    #define ENSURE_MAG_DATA_READY_IS_HIGH
-    #define MAG_INT_EXTI PC14
-#endif
-
-/* ------------------------------------------------------------------------
- * Flash / blackbox (not on IRCSYNERGYF3)
- * ------------------------------------------------------------------------ */
-#if !defined(IRCSYNERGYF3)
-    #define USE_FLASHFS
-    #define USE_FLASH_M25P16
-#endif
+#define USE_GYRO_MPU6050
+#define GYRO_1_ALIGN        CW270_DEG
+#define USE_ACC_MPU6050
 
 /* ------------------------------------------------------------------------
  * UART
@@ -163,12 +65,10 @@
 #define USE_SOFTSERIAL2
 #define SERIAL_PORT_COUNT 5
 
-#if !defined(ZCOREF3)
-    #define SOFTSERIAL1_RX_PIN PB4
-    #define SOFTSERIAL1_TX_PIN PB5
-    #define SOFTSERIAL2_RX_PIN PB0
-    #define SOFTSERIAL2_TX_PIN PB1
-#endif
+#define SOFTSERIAL1_RX_PIN PB4
+#define SOFTSERIAL1_TX_PIN PB5
+#define SOFTSERIAL2_RX_PIN PB0
+#define SOFTSERIAL2_TX_PIN PB1
 
 #define USE_ESCSERIAL
 #define ESCSERIAL_TIMER_TX_PIN PA0
@@ -188,71 +88,40 @@
 #define I2C_DEVICE (I2CDEV_1)
 
 /* ------------------------------------------------------------------------
- * SPI / ADC / OSD / default blackbox behavior (not on IRCSYNERGYF3)
+ * SPI / ADC / default blackbox behavior
  * ------------------------------------------------------------------------ */
 #define USE_SPI
 #define USE_SPI_DEVICE_2
+#define FLASH_CS_PIN       PB12
+#define FLASH_SPI_INSTANCE SPI2
 
-#if !defined(IRCSYNERGYF3)
-    #define FLASH_CS_PIN       PB12
-    #define FLASH_SPI_INSTANCE SPI2
+#define DEFAULT_VOLTAGE_METER_SOURCE VOLTAGE_METER_ADC
+#define DEFAULT_CURRENT_METER_SOURCE CURRENT_METER_ADC
+#define USE_ADC
+#define ADC_INSTANCE       ADC2
+#define VBAT_ADC_PIN       PA4
+#define CURRENT_METER_ADC_PIN PA5
+#define RSSI_ADC_PIN       PB2
 
-    #define DEFAULT_VOLTAGE_METER_SOURCE VOLTAGE_METER_ADC
-    #define DEFAULT_CURRENT_METER_SOURCE CURRENT_METER_ADC
-    #define USE_ADC
-    #define ADC_INSTANCE       ADC2
-    #define VBAT_ADC_PIN       PA4
-    #define CURRENT_METER_ADC_PIN PA5
-    #define RSSI_ADC_PIN       PB2
-
-    #if !defined(SPRF3)
-        #define USE_OSD
-        #define USE_OSD_OVER_MSP_DISPLAYPORT
-        #define USE_SLOW_MSP_DISPLAYPORT_RATE_WHEN_UNARMED
-    #endif
-
-    #define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
-    #define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
-    #define DEFAULT_FEATURES   (FEATURE_RSSI_ADC | FEATURE_TELEMETRY | FEATURE_DYNAMIC_FILTER)
-#endif
+#define ENABLE_BLACKBOX_LOGGING_ON_SPIFLASH_BY_DEFAULT
+#define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
+#define DEFAULT_FEATURES   (FEATURE_RSSI_ADC | FEATURE_TELEMETRY | FEATURE_DYNAMIC_FILTER)
 
 #define USE_MSP_CURRENT_METER
 #define REMAP_TIM17_DMA
 
 /* ------------------------------------------------------------------------
- * SPRF3-specific: DSHOT instead of PWM/telemetry peripherals.
- * (Baro/mag/rangefinder are already excluded above; this block only
- *  disables the remaining features that can't be cleanly pre-excluded
- *  because they're defined in a shared/common config included earlier.)
+ * SPRF3-specific features
  * ------------------------------------------------------------------------ */
-#if defined(SPRF3)
-    #undef USE_OSD
-    #undef USE_OSD_HD
-    #undef USE_OSD_SD
-    #undef USE_MAX7456
-    #undef USE_CMS
-    #undef USE_DISPLAY
-    #undef USE_DASHBOARD
-    #undef USE_SOFTSERIAL
-    #undef USE_TELEMETRY_FRSKY_HUB
-    #undef USE_TELEMETRY_SMARTPORT
-    #undef USE_TELEMETRY_CRSF
-    #undef USE_VTX_SMARTAUDIO
-    #undef USE_VTX_TRAMP
-
-    #define USE_DSHOT
-    #define USE_DSHOT_TELEMETRY
-    #define USE_GYRO_DATA_ANALYSE
-    #define USE_RPM_FILTER
-    // #define DEFAULT_RX_FEATURE FEATURE_RX_SERIAL
-#endif
+#define USE_DSHOT
+#define USE_DSHOT_TELEMETRY
+#define USE_GYRO_DATA_ANALYSE
+#define USE_RPM_FILTER
 
 /* ------------------------------------------------------------------------
  * UART1 TX-DMA is not compatible with DSHOT
  * ------------------------------------------------------------------------ */
-#if defined(USE_UART1_TX_DMA) && defined(USE_DSHOT)
-    #undef USE_UART1_TX_DMA
-#endif
+#undef USE_UART1_TX_DMA
 
 /* ------------------------------------------------------------------------
  * IO ports
